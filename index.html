@@ -8,60 +8,31 @@
 <title>Shift & Finance · Pro</title>
 <link rel="manifest" href="manifest.json">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-<!-- Firebase SDK (Compat) -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <style>
 :root{
-  --bg-body:#070b14;
-  --bg-body-2:#0d1424;
-  --bg-card:rgba(30,41,59,.65);
-  --bg-card-solid:#1a2436;
-  --bg-input:rgba(51,65,85,.7);
-  --border:rgba(148,163,184,.15);
-  --border-strong:rgba(148,163,184,.3);
-  --text-main:#f1f5f9;
-  --text-muted:#94a3b8;
-  --accent-primary:#3b82f6;
-  --accent-2:#8b5cf6;
-  --accent-glow:rgba(59,130,246,.4);
-  --color-work:#ef4444;
-  --color-work-bg:rgba(239,68,68,.15);
-  --color-night:#f97316;
-  --color-night-bg:rgba(249,115,22,.15);
-  --color-off:#22c55e;
-  --color-off-bg:rgba(34,197,94,.15);
-  --color-leave:#0ea5e9;
-  --color-leave-bg:rgba(14,165,233,.15);
-  --color-sick:#f43f5e;
-  --color-sick-bg:rgba(244,63,94,.15);
-  --radius:16px;
-  --radius-sm:10px;
-  --shadow:0 8px 32px rgba(0,0,0,.4);
+  --bg-body:#070b14; --bg-body-2:#0d1424; --bg-card:rgba(30,41,59,.65); --bg-card-solid:#1a2436; --bg-input:rgba(51,65,85,.7);
+  --border:rgba(148,163,184,.15); --border-strong:rgba(148,163,184,.3); --text-main:#f1f5f9; --text-muted:#94a3b8;
+  --accent-primary:#3b82f6; --accent-2:#8b5cf6; --accent-glow:rgba(59,130,246,.4);
+  --color-work:#ef4444; --color-work-bg:rgba(239,68,68,.15);
+  --color-night:#f97316; --color-night-bg:rgba(249,115,22,.15);
+  --color-off:#22c55e; --color-off-bg:rgba(34,197,94,.15);
+  --color-leave:#0ea5e9; --color-leave-bg:rgba(14,165,233,.15);
+  --color-sick:#f43f5e; --color-sick-bg:rgba(244,63,94,.15);
+  --radius:16px; --radius-sm:10px; --shadow:0 8px 32px rgba(0,0,0,.4);
 }
 body.light{
-  --bg-body:#f0f4f8;
-  --bg-body-2:#e2e8f0;
-  --bg-card:rgba(255,255,255,.75);
-  --bg-card-solid:#ffffff;
-  --bg-input:rgba(241,245,249,.9);
-  --border:rgba(15,23,42,.1);
-  --border-strong:rgba(15,23,42,.2);
-  --text-main:#0f172a;
-  --text-muted:#64748b;
-  --shadow:0 8px 32px rgba(15,23,42,.1);
+  --bg-body:#f0f4f8; --bg-body-2:#e2e8f0; --bg-card:rgba(255,255,255,.75); --bg-card-solid:#ffffff; --bg-input:rgba(241,245,249,.9);
+  --border:rgba(15,23,42,.1); --border-strong:rgba(15,23,42,.2); --text-main:#0f172a; --text-muted:#64748b; --shadow:0 8px 32px rgba(15,23,42,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg-body);color:var(--text-main);padding-bottom:80px;min-height:100vh;position:relative;overflow-x:hidden;transition:background .3s,color .3s;}
-body::before{
-  content:'';position:fixed;inset:0;z-index:-2;
-  background:radial-gradient(circle at 15% 20%,rgba(59,130,246,.18),transparent 45%),radial-gradient(circle at 85% 30%,rgba(139,92,246,.15),transparent 40%),linear-gradient(180deg,var(--bg-body) 0%,var(--bg-body-2) 100%);
-}
-header{
-  background:rgba(15,23,42,.6);backdrop-filter:blur(20px);padding:.9rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;
-}
+body::before{content:'';position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 15% 20%,rgba(59,130,246,.18),transparent 45%),radial-gradient(circle at 85% 30%,rgba(139,92,246,.15),transparent 40%),linear-gradient(180deg,var(--bg-body) 0%,var(--bg-body-2) 100%);}
+header{background:rgba(15,23,42,.6);backdrop-filter:blur(20px);padding:.9rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
 body.light header{background:rgba(255,255,255,.7)}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-icon{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent-primary),var(--accent-2));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px var(--accent-glow);}
@@ -128,20 +99,19 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
 .list-item .li-title{font-weight:700;font-size:.9rem}
 .list-item .li-meta{font-size:.72rem;color:var(--text-muted);margin-top:2px}
 .badge{font-size:.65rem;padding:3px 8px;border-radius:6px;font-weight:800;text-transform:uppercase;}
-.badge-paid{background:rgba(34,197,94,.2);color:var(--color-paid);border:1px solid rgba(34,197,94,.3)}
+.badge-paid{background:rgba(34,197,94,.2);color:var(--color-off);border:1px solid rgba(34,197,94,.3)}
 .inv-item-row{display:grid;grid-template-columns:2fr 1fr 1fr 40px;gap:6px;margin-bottom:8px;}
 .totals-box{background:var(--bg-input);border-radius:var(--radius-sm);padding:1rem;text-align:right;font-size:.9rem;border:1px solid var(--border);}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:none;justify-content:center;align-items:center;z-index:200;padding:1rem;}
 .modal-content{background:var(--bg-card-solid);border-radius:var(--radius);padding:1.4rem;width:100%;max-width:460px;border:1px solid var(--border-strong);max-height: 90vh; overflow-y: auto;}
 .salary-box{background: linear-gradient(135deg, rgba(16,185,129,.15), rgba(59,130,246,.15)); border: 1px solid rgba(16,185,129,.3); text-align: center; padding: 1.2rem; border-radius: var(--radius); margin-bottom: 1rem;}
 .salary-label{font-size: .8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;}
-.salary-val{font-size: 2rem; font-weight: 900; color: var(--color-income); margin: 5px 0;}
+.salary-val{font-size: 2rem; font-weight: 900; color:var(--color-off); margin: 5px 0;}
 .inv-thumb{width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-strong); cursor: pointer;}
 </style>
 </head>
 <body>
 
-<!-- ECRAN LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <h1 style="font-size: 2rem; margin-bottom: 10px;">🗓️ Shift & Finance</h1>
@@ -153,7 +123,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
   </div>
 </div>
 
-<!-- APLICAȚIA PRINCIPALĂ (Ascunsă la început) -->
 <div id="main-app" style="display:none;">
   <header>
     <div class="brand">
@@ -166,6 +135,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
     <div class="header-actions">
       <button class="icon-btn" onclick="requestNotifPermission()" title="Notificări" style="color:var(--color-off);">🔔</button>
       <button class="icon-btn region-btn" id="region-btn" onclick="toggleRegion()">🇷🇴 RO</button>
+      <button class="icon-btn" onclick="toggleTheme()" title="Theme" aria-label="Theme">
+        <svg id="theme-icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 01-4.4 2.26 5.4 5.4 0 01-5.4-5.4c0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/></svg>
+      </button>
       <button class="icon-btn" onclick="logout()" title="Deconectare" style="background:#ef4444;color:white;border-color:#dc2626;">
         <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
       </button>
@@ -177,30 +149,30 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
     <div class="card today-widget" style="background: linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.15)); border: 1px solid rgba(59,130,246,.3); display:flex; gap:14px; align-items:center;">
       <div class="today-icon" id="today-icon" style="width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:rgba(59,130,246,.25);">📅</div>
       <div class="today-info" style="flex:1;">
-        <div class="today-label" data-i18n="today" style="font-size:.7rem;color:var(--text-muted);font-weight:700;">Astăzi</div>
+        <div class="today-label" style="font-size:.7rem;color:var(--text-muted);font-weight:700;">Astăzi</div>
         <div class="today-status" id="today-status" style="font-size:1.15rem;font-weight:800;margin:2px 0;">—</div>
         <div class="today-date" id="today-date" style="font-size:.8rem;color:var(--text-muted);">—</div>
       </div>
       <div class="countdown" style="text-align:right;font-size:.75rem;color:var(--text-muted);">
-        <span class="cd-label" id="countdown-label" data-i18n="next" style="font-size:.65rem;text-transform:uppercase;font-weight:700;">Următoarea</span>
+        <span class="cd-label" id="countdown-label" style="font-size:.65rem;text-transform:uppercase;font-weight:700;">Următoarea</span>
         <strong id="countdown-value" style="display:block;font-size:1.3rem;font-weight:800;color:var(--accent-primary);">—</strong>
-        <span class="cd-label" id="countdown-sub" data-i18n="shift" style="font-size:.65rem;text-transform:uppercase;">tură</span>
+        <span class="cd-label" id="countdown-sub" style="font-size:.65rem;text-transform:uppercase;">tură</span>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title"><span data-i18n="config_shift">⚙️ Configurare Tură</span></div>
+      <div class="card-title"><span>⚙️ Configurare Tură</span></div>
       <div class="form-group">
-        <label data-i18n="shift_pattern">Model Tură</label>
+        <label>Model Tură</label>
         <select id="shift-pattern" onchange="renderCalendar(); saveDataToCloud();">
-          <option value="4-4" data-i18n="opt_44">4 Lucru / 4 Liber (4/4)</option>
-          <option value="3-4" data-i18n="opt_34">3 Lucru / 4 Liber (3/4)</option>
-          <option value="5-2" data-i18n="opt_52">5 Lucru / 2 Liber (Luni-Vineri)</option>
-          <option value="12-24" data-i18n="opt_12">12h Zi / 12h Noapte / 48h Liber</option>
+          <option value="4-4">4 Lucru / 4 Liber (4/4)</option>
+          <option value="3-4">3 Lucru / 4 Liber (3/4)</option>
+          <option value="5-2">5 Lucru / 2 Liber (Luni-Vineri)</option>
+          <option value="12-24">12h Zi / 12h Noapte / 48h Liber</option>
         </select>
       </div>
       <div class="form-group">
-        <label data-i18n="start_date">Data de Start (Ziua 1)</label>
+        <label>Data de Start (Ziua 1)</label>
         <input type="date" id="shift-start-date" onchange="renderCalendar(); saveDataToCloud();">
       </div>
     </div>
@@ -211,19 +183,17 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
         <h2 id="calendar-month-year" style="font-size:.95rem;font-weight:800">—</h2>
         <button class="btn btn-secondary btn-sm" onclick="changeMonth(1)">▶</button>
       </div>
-      <div class="calendar-grid" id="calendar-headers">
-        <div class="calendar-day-header" data-i18n="mon">Lu</div><div class="calendar-day-header" data-i18n="tue">Ma</div>
-        <div class="calendar-day-header" data-i18n="wed">Mi</div><div class="calendar-day-header" data-i18n="thu">Jo</div>
-        <div class="calendar-day-header" data-i18n="fri">Vi</div><div class="calendar-day-header" data-i18n="sat">Sâ</div>
-        <div class="calendar-day-header" data-i18n="sun">Du</div>
+      <div class="calendar-grid">
+        <div class="calendar-day-header">Lu</div><div class="calendar-day-header">Ma</div><div class="calendar-day-header">Mi</div>
+        <div class="calendar-day-header">Jo</div><div class="calendar-day-header">Vi</div><div class="calendar-day-header">Sâ</div><div class="calendar-day-header">Du</div>
       </div>
       <div id="calendar-days-container" class="calendar-grid" style="margin-top:5px;"></div>
 
       <div class="stats-grid">
-        <div class="stat-box"><div id="stat-work-days" class="stat-value">0</div><div class="stat-label" data-i18n="worked">Lucrate</div></div>
-        <div class="stat-box"><div id="stat-off-days" class="stat-value">0</div><div class="stat-label" data-i18n="off">Libere</div></div>
-        <div class="stat-box"><div id="stat-leave-days" class="stat-value">0</div><div class="stat-label" data-i18n="leave">Concediu</div></div>
-        <div class="stat-box"><div id="stat-sick-days" class="stat-value">0</div><div class="stat-label" data-i18n="sick">Medicale</div></div>
+        <div class="stat-box"><div id="stat-work-days" class="stat-value">0</div><div class="stat-label">Lucrate</div></div>
+        <div class="stat-box"><div id="stat-off-days" class="stat-value">0</div><div class="stat-label">Libere</div></div>
+        <div class="stat-box"><div id="stat-leave-days" class="stat-value">0</div><div class="stat-label">Concediu</div></div>
+        <div class="stat-box"><div id="stat-sick-days" class="stat-value">0</div><div class="stat-label">Medicale</div></div>
       </div>
     </div>
   </div>
@@ -232,11 +202,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
   <div id="tab-budget" class="tab-content">
     <div class="salary-box card">
       <div class="card-title" style="justify-content: center; margin-bottom: 5px;">
-        <span data-i18n="estimated_salary">💰 Salariu Estimat Luna Aceasta</span>
+        <span>💰 Salariu Estimat Luna Aceasta</span>
       </div>
       <div class="salary-val" id="salary-estimated">0.00</div>
       <div style="display: flex; justify-content: center; align-items: center; gap: 5px; font-size: .8rem; color: var(--text-muted); margin-top: 10px;">
-        <span data-i18n="rate">Tarif/oră:</span>
+        <span>Tarif/oră:</span>
         <input type="number" id="hourly-rate" style="width: 70px; padding: 4px; text-align: center;" oninput="renderBudget(); saveDataToCloud();">
         <span id="curr-symbol-rate">lei</span>
       </div>
@@ -244,31 +214,45 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
 
     <div class="card">
       <div class="card-title">
-        <span data-i18n="budget_month">🎯 Buget Lunar</span>
-        <button class="btn btn-secondary btn-sm" onclick="editBudget()" data-i18n="set">Setează</button>
+        <span>🎯 Buget Lunar</span>
+        <button class="btn btn-secondary btn-sm" onclick="editBudget()">Setează</button>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;">
-        <span id="budget-spent-text" data-i18n="spent">Cheltuit: 0 lei</span>
-        <span id="budget-target-text" data-i18n="target">Țintă: 5000 lei</span>
+        <span id="budget-spent-text">Cheltuit: 0 lei</span>
+        <span id="budget-target-text">Țintă: 5000 lei</span>
       </div>
       <div class="progress-bar-container"><div id="budget-progress-bar" class="progress-bar"></div></div>
       <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.75rem;color:var(--text-muted);">
-        <span id="budget-remaining" data-i18n="remaining">Rămas: 5000 lei</span>
+        <span id="budget-remaining">Rămas: 5000 lei</span>
         <span id="budget-percent">0%</span>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title" data-i18n="add_tx">➕ Adaugă Tranzacție</div>
+      <div class="card-title">➕ Adaugă Tranzacție</div>
       <form id="transaction-form" onsubmit="addTransaction(event)">
-        <div class="form-group"><label data-i18n="title">Titlu</label><input type="text" id="tx-title" required></div>
-        <div class="form-group"><label data-i18n="amount">Sumă</label><input type="number" step="0.01" id="tx-amount" required></div>
-        <button type="submit" class="btn" data-i18n="btn_add_tx">Adaugă Tranzacție</button>
+        <div class="form-group"><label>Titlu</label><input type="text" id="tx-title" required></div>
+        <div class="form-group"><label>Sumă</label><input type="number" step="0.01" id="tx-amount" required></div>
+        <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div><label>Tip</label>
+            <select id="tx-type"><option value="expense">Cheltuială</option><option value="income">Venit</option></select>
+          </div>
+          <div><label>Categorie</label>
+            <select id="tx-category">
+              <option value="Fuel">Combustibil</option>
+              <option value="Food">Mâncare</option>
+              <option value="Parts">Piese</option>
+              <option value="Rent">Chirie</option>
+              <option value="Service">Servicii</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn">Adaugă Tranzacție</button>
       </form>
     </div>
-    
+
     <div class="card">
-      <div class="card-title" data-i18n="tx_history">📋 Istoric Tranzacții</div>
+      <div class="card-title">📋 Istoric Tranzacții</div>
       <div id="transaction-list"></div>
     </div>
   </div>
@@ -276,39 +260,77 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
   <!-- TAB FACTURI -->
   <div id="tab-invoices" class="tab-content">
     <div class="card">
-      <div class="card-title"><span data-i18n="new_inv">📄 Factură Nouă</span></div>
+      <div class="card-title"><span>📄 Factură Nouă</span></div>
       <div class="form-group">
-        <label data-i18n="client_info">Client</label>
+        <label>Client</label>
         <input type="text" id="inv-client-info">
       </div>
-      <div class="totals-box">
-        <div><span data-i18n="total">TOTAL</span>: <span id="inv-total" style="font-weight:900; font-size:1.2rem; color:var(--accent-primary);">0.00 lei</span></div>
+      
+      <div class="form-group" style="padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
+        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+          📸 <span>Adaugă o poză (Chitanță)</span>
+          <input type="file" id="inv-image" accept="image/*" style="display: none;" onchange="previewImage(event)">
+        </label>
+        <div id="image-preview-container" style="display: none; margin-top: 10px; text-align: center;">
+          <img id="image-preview" style="max-width: 100%; max-height: 100px; border-radius: 8px;">
+        </div>
       </div>
-      <button class="btn" onclick="saveInvoice()" data-i18n="save">💾 Salvează</button>
+
+      <div class="totals-box" style="margin-bottom: 1rem;">
+        <div>TOTAL: <span id="inv-total" style="font-weight:900; font-size:1.2rem; color:var(--accent-primary);">0.00 lei</span></div>
+      </div>
+      <button class="btn" onclick="saveInvoice()">💾 Salvează</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📚 Istoric Facturi</div>
+      <div id="invoices-history-list">Nicio factură.</div>
     </div>
   </div>
 
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab(this,'shifts')">
-      <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg><span data-i18n="nav_shifts">Ture</span>
+      <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg><span>Ture</span>
     </button>
     <button class="nav-item" onclick="switchTab(this,'budget')">
-      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg><span data-i18n="nav_budget">Buget</span>
+      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg><span>Buget</span>
     </button>
     <button class="nav-item" onclick="switchTab(this,'invoices')">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span data-i18n="nav_inv">Facturi</span>
+      <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>Facturi</span>
     </button>
   </nav>
+</div>
+
+<!-- MODAL ZI -->
+<div id="day-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="card-title"><span>Editează Ziua</span> <span id="modal-date-str" style="color:var(--accent-primary)"></span></div>
+    <div class="form-group">
+      <label>Tip Tură</label>
+      <select id="modal-shift-override">
+        <option value="auto">Automat (din model)</option>
+        <option value="work">💪 Muncă (Zi)</option>
+        <option value="night">🌙 Muncă (Noapte)</option>
+        <option value="off">🏖️ Liber</option>
+        <option value="leave">🌴 Concediu (Holiday)</option>
+        <option value="sick">🤒 Medical (Bolnav)</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn" onclick="saveDayModal()">Salvează</button>
+      <button class="btn btn-secondary" onclick="closeDayModal()">Închide</button>
+    </div>
+  </div>
 </div>
 
 <div id="toast-container" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;"></div>
 
 <script>
 // ==========================================
-// 1. SETĂRI FIREBASE (Cheile tale din poză)
+// 1. SETĂRI FIREBASE
 // ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyAN9nxuOO3_B_8zlvcJp9-E2Y7LiQeDVQY",
+  apiKey: "AIzaSyAN9nxu003_B_8zlvcJp9-E2Y7LiQeDVQY",
   authDomain: "shift-finance-app.firebaseapp.com",
   projectId: "shift-finance-app",
   storageBucket: "shift-finance-app.firebasestorage.app",
@@ -316,35 +338,27 @@ const firebaseConfig = {
   appId: "1:470894842358:web:538b9cecd79bb4474bb7d7"
 };
 
-// Inițializare Firebase
 try {
   firebase.initializeApp(firebaseConfig);
   var auth = firebase.auth();
   var db = firebase.firestore();
-} catch (e) {
-  console.error("Eroare Firebase: ", e);
-}
+} catch (e) { console.error("Eroare Firebase: ", e); }
 
 let currentUser = null;
-let currentLang = 'ro';
-let currentTaxRate = 0.19;
 let currentMonth = new Date().getMonth(), currentYear = new Date().getFullYear();
 let budgetTarget = 5000, hourlyRate = 0;
-let transactions = [], dayOverrides = {}, customDayNotes = {};
+let transactions = [], invoices = [], dayOverrides = {};
+let currentImageBase64 = null; 
 
 // ==========================================
 // 2. LOGICA DE LOGIN
 // ==========================================
 function loginWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(error => {
-    alert("Eroare la logare: " + error.message);
-  });
+  auth.signInWithPopup(provider).catch(error => alert("Eroare la logare: " + error.message));
 }
 
-function logout() {
-  auth.signOut();
-}
+function logout() { auth.signOut(); }
 
 auth.onAuthStateChanged(user => {
   if (user) {
@@ -352,8 +366,6 @@ auth.onAuthStateChanged(user => {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
     document.getElementById('header-sub').innerText = user.displayName || user.email;
-    
-    // Încărcăm datele din Cloud
     loadDataFromCloud();
   } else {
     currentUser = null;
@@ -376,11 +388,10 @@ function saveDataToCloud() {
       budgetTarget: budgetTarget,
       hourlyRate: hourlyRate,
       transactions: transactions,
+      invoices: invoices,
       dayOverrides: dayOverrides
-    }, { merge: true }).then(() => {
-      console.log("Date salvate în Cloud.");
-    }).catch(err => console.error("Eroare salvare:", err));
-  }, 1000); // Salvează la 1 secunda după ultima modificare
+    }, { merge: true }).catch(err => console.error("Eroare salvare:", err));
+  }, 1000); 
 }
 
 function loadDataFromCloud() {
@@ -392,24 +403,23 @@ function loadDataFromCloud() {
       if(data.budgetTarget) budgetTarget = data.budgetTarget;
       if(data.hourlyRate) { hourlyRate = data.hourlyRate; document.getElementById('hourly-rate').value = hourlyRate; }
       if(data.transactions) transactions = data.transactions;
+      if(data.invoices) invoices = data.invoices;
       if(data.dayOverrides) dayOverrides = data.dayOverrides;
     } else {
       document.getElementById('shift-start-date').valueAsDate = new Date();
     }
-    
-    // Randare
     renderCalendar();
     renderBudget();
+    renderInvoicesHistory();
   }).catch(err => {
     console.error("Eroare citire: ", err);
     document.getElementById('shift-start-date').valueAsDate = new Date();
     renderCalendar();
-    renderBudget();
   });
 }
 
 // ==========================================
-// 4. LOGICA APLICAȚIEI
+// 4. FUNCȚII APLICAȚIE
 // ==========================================
 function switchTab(btn, id){
   document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
@@ -428,6 +438,7 @@ function formatDateKey(d){
 function computeDayInfo(currDate, pattern, startDate){
   const dateKey=formatDateKey(currDate);
   let isWork=false,isNight=false,shiftLabel="Liber";
+  let isLeave=false, isSick=false;
   const diffDays=Math.round((currDate-startDate)/86400000);
   
   if(pattern==='4-4'){ const p=((diffDays%8)+8)%8; isWork=p<4; }
@@ -440,13 +451,17 @@ function computeDayInfo(currDate, pattern, startDate){
     if(ov==='work'){isWork=true;isNight=false;}
     if(ov==='night'){isWork=true;isNight=true;}
     if(ov==='off'){isWork=false;isNight=false;}
+    if(ov==='leave'){isWork=false;isNight=false;isLeave=true;}
+    if(ov==='sick'){isWork=false;isNight=false;isSick=true;}
   }
 
-  if(isNight) shiftLabel="Noapte";
+  if(isLeave) shiftLabel="Concediu";
+  else if(isSick) shiftLabel="Medical";
+  else if(isNight) shiftLabel="Noapte";
   else if(isWork) shiftLabel="Lucru";
   else shiftLabel="Liber";
 
-  return {dateKey,isWork,isNight,shiftLabel};
+  return {dateKey,isWork,isNight,isLeave,isSick,shiftLabel};
 }
 
 function changeMonth(delta){
@@ -480,37 +495,57 @@ function renderCalendar(){
     const info=computeDayInfo(curr,pattern,startDate);
     
     if(info.isWork) workDays++;
+    else if(info.isLeave) leaveDays++;
+    else if(info.isSick) sickDays++;
     else offDays++;
     
     let cls='off';
-    if(info.isNight) cls='night';
+    if(info.isLeave) cls='leave';
+    else if(info.isSick) cls='sick';
+    else if(info.isNight) cls='night';
     else if(info.isWork) cls='work';
     
     const isToday=info.dateKey===todayKey;
-    html+=`<div class="day-cell ${cls} ${isToday?'today':''}"><span class="day-number">${d}</span><span class="day-badge">${info.shiftLabel}</span></div>`;
+    html+=`<div class="day-cell ${cls} ${isToday?'today':''}" onclick="openDayModal('${info.dateKey}')"><span class="day-number">${d}</span><span class="day-badge">${info.shiftLabel}</span></div>`;
   }
   container.innerHTML=html;
   
   document.getElementById('stat-work-days').innerText=workDays;
   document.getElementById('stat-off-days').innerText=offDays;
+  document.getElementById('stat-leave-days').innerText=leaveDays;
+  document.getElementById('stat-sick-days').innerText=sickDays;
   document.getElementById('salary-estimated').innerText = (workDays * hourlyRate).toFixed(2) + ' lei';
 }
 
+let activeModalDate=null;
+function openDayModal(k){
+  activeModalDate=k;
+  document.getElementById('modal-date-str').innerText=k;
+  document.getElementById('modal-shift-override').value=dayOverrides[k]||'auto';
+  document.getElementById('day-modal').style.display='flex';
+}
+function closeDayModal(){document.getElementById('day-modal').style.display='none';}
+function saveDayModal(){
+  const ov=document.getElementById('modal-shift-override').value;
+  if(ov==='auto') delete dayOverrides[activeModalDate]; else dayOverrides[activeModalDate]=ov;
+  closeDayModal(); renderCalendar(); saveDataToCloud();
+}
+
 function renderBudget(){
-  let totalExp=0, totalInc=0; let html='';
+  let totalExp=0; let html='';
   transactions.forEach(tx=>{
-    if(tx.type==='expense'){totalExp+=tx.amount;}
-    else totalInc+=tx.amount;
+    if(tx.type==='expense') totalExp+=tx.amount;
     const sign=tx.type==='income'?'+':'-';
-    html+=`<div class="list-item"><div><div class="li-title">${tx.title}</div><div class="li-meta">${tx.date}</div></div><div style="font-weight:bold;color:${tx.type==='income'?'green':'red'};">${sign}${tx.amount.toFixed(2)} lei</div></div>`;
+    const color=tx.type==='income'?'var(--color-off)':'var(--color-work)';
+    html+=`<div class="list-item"><div><div class="li-title">${tx.title}</div><div class="li-meta">${tx.date} • ${tx.category}</div></div><div style="font-weight:bold;color:${color};">${sign}${tx.amount.toFixed(2)} lei</div></div>`;
   });
   document.getElementById('transaction-list').innerHTML=html||'Fără tranzacții.';
-  
   document.getElementById('budget-spent-text').innerText = 'Cheltuit: ' + totalExp.toFixed(0) + ' lei';
   document.getElementById('budget-target-text').innerText = 'Țintă: ' + budgetTarget.toFixed(0) + ' lei';
-  
   const pct=Math.min((totalExp/budgetTarget)*100,100);
   document.getElementById('budget-progress-bar').style.width=pct+'%';
+  document.getElementById('budget-remaining').innerText = 'Rămas: ' + Math.max(budgetTarget-totalExp,0).toFixed(0) + ' lei';
+  document.getElementById('budget-percent').innerText=pct.toFixed(0)+'%';
 }
 
 function addTransaction(e){
@@ -518,15 +553,10 @@ function addTransaction(e){
   const amount=parseFloat(document.getElementById('tx-amount').value);
   if(isNaN(amount)) return;
   transactions.unshift({
-    id:Date.now(),
-    title:document.getElementById('tx-title').value,
-    amount:amount,
-    type:'expense',
-    date:new Date().toISOString().split('T')[0]
+    id:Date.now(), title:document.getElementById('tx-title').value, amount:amount, type:document.getElementById('tx-type').value, category:document.getElementById('tx-category').value, date:new Date().toISOString().split('T')[0]
   });
   document.getElementById('transaction-form').reset();
-  renderBudget();
-  saveDataToCloud();
+  renderBudget(); saveDataToCloud();
 }
 
 function editBudget(){
@@ -534,13 +564,58 @@ function editBudget(){
   if(v && !isNaN(v)){ budgetTarget=parseFloat(v); renderBudget(); saveDataToCloud(); }
 }
 
-function saveInvoice(){
-  alert("Factura a fost salvata (functie demo)!");
-  saveDataToCloud();
+function previewImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 500; const scaleSize = MAX_WIDTH / img.width;
+      canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
+      const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      currentImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+      document.getElementById('image-preview').src = currentImageBase64;
+      document.getElementById('image-preview-container').style.display = 'block';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
+
+function saveInvoice(){
+  invoices.unshift({
+    number: 'FAC-' + Math.floor(Math.random()*1000), date:new Date().toISOString().split('T')[0],
+    client:document.getElementById('inv-client-info').value || 'Client', total:'0.00 lei', status:'Plătită', image: currentImageBase64
+  });
+  document.getElementById('inv-client-info').value = '';
+  document.getElementById('image-preview-container').style.display = 'none';
+  currentImageBase64 = null;
+  renderInvoicesHistory(); saveDataToCloud();
+}
+
+function renderInvoicesHistory(){
+  let html='';
+  invoices.forEach(i=>{
+    let imgHtml = i.image ? `<img src="${i.image}" class="inv-thumb">` : '';
+    html+=`<div class="list-item"><div><div class="li-title">${i.number} · ${i.client}</div><div class="li-meta">${i.date}</div></div><div style="display:flex;gap:8px;align-items:center;">${imgHtml}<span class="badge badge-paid">${i.status}</span></div></div>`;
+  });
+  document.getElementById('invoices-history-list').innerHTML=html||'Nicio factură.';
+}
+
 function requestNotifPermission(){
   if ("Notification" in window) Notification.requestPermission();
 }
+
+// Theme
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  const isLight=document.body.classList.contains('light');
+  localStorage.setItem('theme',isLight?'light':'dark');
+}
+if(localStorage.getItem('theme')==='light') document.body.classList.add('light');
+
 </script>
 </body>
 </html>
