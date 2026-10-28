@@ -32,7 +32,6 @@
   --color-paid:#22c55e;
   --color-income:#10b981;
   --color-expense:#ef4444;
-  /* Culori noi pt Concediu si Medical */
   --color-leave:#0ea5e9;
   --color-leave-bg:rgba(14,165,233,.15);
   --color-sick:#f43f5e;
@@ -163,7 +162,6 @@ body.light nav.bottom-nav{background:rgba(255,255,255,.85)}
   display:flex;justify-content:space-between;align-items:center;gap:8px;
 }
 
-/* widget azi */
 .today-widget{
   background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.15));
   border:1px solid rgba(59,130,246,.3);
@@ -185,13 +183,10 @@ body.light nav.bottom-nav{background:rgba(255,255,255,.85)}
 .today-label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
 .today-status{font-size:1.15rem;font-weight:800;margin:2px 0}
 .today-date{font-size:.8rem;color:var(--text-muted)}
-.countdown{
-  text-align:right;font-size:.75rem;color:var(--text-muted);
-}
+.countdown{text-align:right;font-size:.75rem;color:var(--text-muted);}
 .countdown strong{display:block;font-size:1.3rem;font-weight:800;color:var(--accent-primary)}
 .countdown .cd-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.05em}
 
-/* inputs */
 .form-group{margin-bottom:1rem}
 label{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:600}
 input,select,textarea{
@@ -206,7 +201,6 @@ input:focus,select:focus,textarea:focus{
   background:var(--bg-card-solid);
 }
 
-/* buttons */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
   width:100%;padding:.85rem;border:none;border-radius:var(--radius-sm);
@@ -220,9 +214,7 @@ input:focus,select:focus,textarea:focus{
 .btn-secondary:hover{background:var(--bg-card-solid);box-shadow:var(--shadow)}
 .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,.3)}
 .btn-sm{padding:.5rem .9rem;font-size:.78rem;width:auto}
-.btn-icon{padding:.5rem;width:36px;height:36px}
 
-/* calendar */
 .calendar-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:8px}
 .calendar-controls h2{font-size:.95rem;font-weight:800}
 .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
@@ -247,17 +239,14 @@ input:focus,select:focus,textarea:focus{
 .day-cell.night .day-badge{background:var(--color-night);color:#fff}
 .day-cell.off{background:var(--color-off-bg);border-color:rgba(34,197,94,.35)}
 .day-cell.off .day-badge{background:var(--color-off);color:#fff}
-/* Style noi pt Concediu / Medical */
 .day-cell.leave{background:var(--color-leave-bg);border-color:rgba(14,165,233,.4)}
 .day-cell.leave .day-badge{background:var(--color-leave);color:#fff}
 .day-cell.sick{background:var(--color-sick-bg);border-color:rgba(244,63,94,.4)}
 .day-cell.sick .day-badge{background:var(--color-sick);color:#fff}
-
 .day-cell.holiday{box-shadow:inset 0 0 0 1px var(--color-holiday)}
 .holiday-dot{width:6px;height:6px;background:var(--color-holiday);border-radius:50%;position:absolute;top:5px;right:5px;box-shadow:0 0 6px var(--color-holiday)}
 .note-dot{width:6px;height:6px;background:var(--accent-primary);border-radius:50%;position:absolute;bottom:5px;right:5px;box-shadow:0 0 6px var(--accent-primary)}
 
-/* stats */
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:1rem}
 .stat-box{
   background:var(--bg-input);padding:.9rem;border-radius:var(--radius-sm);
@@ -273,7 +262,6 @@ input:focus,select:focus,textarea:focus{
 .stat-value{font-size:1.5rem;font-weight:900;color:var(--accent-primary);letter-spacing:-.02em;line-height:1}
 .stat-label{font-size:.7rem;color:var(--text-muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 
-/* progress */
 .progress-bar-container{
   background:var(--bg-input);height:14px;border-radius:8px;overflow:hidden;
   margin:10px 0;border:1px solid var(--border);position:relative;
@@ -291,7 +279,6 @@ input:focus,select:focus,textarea:focus{
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .progress-bar.over{background:linear-gradient(90deg,#f59e0b,#ef4444)}
 
-/* list */
 .list-item{
   display:flex;justify-content:space-between;align-items:center;
   padding:12px 0;border-bottom:1px solid var(--border);
@@ -309,7 +296,6 @@ input:focus,select:focus,textarea:focus{
 .badge-income{background:rgba(16,185,129,.2);color:var(--color-income);border:1px solid rgba(16,185,129,.3)}
 .badge-expense{background:rgba(239,68,68,.2);color:var(--color-expense);border:1px solid rgba(239,68,68,.3)}
 
-/* invoice */
 .inv-item-row{display:grid;grid-template-columns:2fr 1fr 1fr 40px;gap:6px;margin-bottom:8px;animation:fadeUp .2s}
 .totals-box{
   background:var(--bg-input);border-radius:var(--radius-sm);padding:1rem;
@@ -318,7 +304,6 @@ input:focus,select:focus,textarea:focus{
 }
 .total-final{font-size:1.35rem;font-weight:900;color:var(--accent-primary);letter-spacing:-.02em}
 
-/* modal */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.75);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
@@ -332,7 +317,6 @@ input:focus,select:focus,textarea:focus{
 }
 @keyframes modalIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 
-/* toast */
 #toast-container{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:calc(100% - 32px);max-width:400px}
 .toast{
   background:var(--bg-card-solid);color:var(--text-main);
@@ -347,7 +331,6 @@ input:focus,select:focus,textarea:focus{
 .toast.info{border-left:3px solid var(--accent-primary)}
 @keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 
-/* charts */
 .chart-wrapper{position:relative;height:220px}
 .chart-wrapper.small{height:180px}
 
@@ -379,12 +362,12 @@ input:focus,select:focus,textarea:focus{
       </div>
       <div>
         <h1>Shift & Finance</h1>
-        <small id="header-sub">Panou personal</small>
+        <small id="header-sub" data-i18n="header_sub">Panou personal</small>
       </div>
     </div>
     <div class="header-actions">
       <button class="icon-btn region-btn" id="region-btn" onclick="toggleRegion()">🇷🇴 RO</button>
-      <button class="icon-btn" onclick="toggleTheme()" title="Schimbă tema" aria-label="Temă">
+      <button class="icon-btn" onclick="toggleTheme()" title="Theme" aria-label="Theme">
         <svg id="theme-icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 01-4.4 2.26 5.4 5.4 0 01-5.4-5.4c0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/></svg>
       </button>
     </div>
@@ -395,30 +378,30 @@ input:focus,select:focus,textarea:focus{
     <div class="card today-widget">
       <div class="today-icon" id="today-icon">📅</div>
       <div class="today-info">
-        <div class="today-label">Astăzi</div>
+        <div class="today-label" data-i18n="today">Astăzi</div>
         <div class="today-status" id="today-status">—</div>
         <div class="today-date" id="today-date">—</div>
       </div>
       <div class="countdown">
-        <span class="cd-label" id="countdown-label">Următoarea</span>
+        <span class="cd-label" id="countdown-label" data-i18n="next">Următoarea</span>
         <strong id="countdown-value">—</strong>
-        <span class="cd-label" id="countdown-sub">tură</span>
+        <span class="cd-label" id="countdown-sub" data-i18n="shift">tură</span>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">⚙️ Configurare Tură</div>
+      <div class="card-title"><span data-i18n="config_shift">⚙️ Configurare Tură</span></div>
       <div class="form-group">
-        <label>Model Tură</label>
+        <label data-i18n="shift_pattern">Model Tură</label>
         <select id="shift-pattern" onchange="renderCalendar()">
-          <option value="4-4">4 Lucru / 4 Liber (4/4)</option>
-          <option value="3-4">3 Lucru / 4 Liber (3/4)</option>
-          <option value="5-2">5 Lucru / 2 Liber (Luni-Vineri)</option>
-          <option value="12-24">12h Zi / 12h Noapte / 48h Liber</option>
+          <option value="4-4" data-i18n="opt_44">4 Lucru / 4 Liber (4/4)</option>
+          <option value="3-4" data-i18n="opt_34">3 Lucru / 4 Liber (3/4)</option>
+          <option value="5-2" data-i18n="opt_52">5 Lucru / 2 Liber (Luni-Vineri)</option>
+          <option value="12-24" data-i18n="opt_12">12h Zi / 12h Noapte / 48h Liber</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Data de Start (Ziua 1)</label>
+        <label data-i18n="start_date">Data de Start (Ziua 1)</label>
         <input type="date" id="shift-start-date" onchange="renderCalendar()">
       </div>
     </div>
@@ -429,27 +412,27 @@ input:focus,select:focus,textarea:focus{
         <h2 id="calendar-month-year">—</h2>
         <button class="btn btn-secondary btn-sm" onclick="changeMonth(1)">▶</button>
       </div>
-      <div class="calendar-grid">
-        <div class="calendar-day-header">Lu</div><div class="calendar-day-header">Ma</div>
-        <div class="calendar-day-header">Mi</div><div class="calendar-day-header">Jo</div>
-        <div class="calendar-day-header">Vi</div><div class="calendar-day-header">Sâ</div>
-        <div class="calendar-day-header">Du</div>
+      <div class="calendar-grid" id="calendar-headers">
+        <div class="calendar-day-header" data-i18n="mon">Lu</div><div class="calendar-day-header" data-i18n="tue">Ma</div>
+        <div class="calendar-day-header" data-i18n="wed">Mi</div><div class="calendar-day-header" data-i18n="thu">Jo</div>
+        <div class="calendar-day-header" data-i18n="fri">Vi</div><div class="calendar-day-header" data-i18n="sat">Sâ</div>
+        <div class="calendar-day-header" data-i18n="sun">Du</div>
       </div>
       <div id="calendar-days-container" class="calendar-grid" style="margin-top:5px;"></div>
 
       <div class="stats-grid">
-        <div class="stat-box"><div id="stat-work-days" class="stat-value">0</div><div class="stat-label">Lucrate</div></div>
-        <div class="stat-box"><div id="stat-off-days" class="stat-value">0</div><div class="stat-label">Libere</div></div>
-        <div class="stat-box"><div id="stat-leave-days" class="stat-value">0</div><div class="stat-label">Concediu</div></div>
-        <div class="stat-box"><div id="stat-sick-days" class="stat-value">0</div><div class="stat-label">Medicale</div></div>
+        <div class="stat-box"><div id="stat-work-days" class="stat-value">0</div><div class="stat-label" data-i18n="worked">Lucrate</div></div>
+        <div class="stat-box"><div id="stat-off-days" class="stat-value">0</div><div class="stat-label" data-i18n="off">Libere</div></div>
+        <div class="stat-box"><div id="stat-leave-days" class="stat-value">0</div><div class="stat-label" data-i18n="leave">Concediu</div></div>
+        <div class="stat-box"><div id="stat-sick-days" class="stat-value">0</div><div class="stat-label" data-i18n="sick">Medicale</div></div>
       </div>
       <div class="stats-grid" style="margin-top: 5px;">
-        <div class="stat-box" style="grid-column: span 2;"><div id="stat-weekend-work" class="stat-value">0</div><div class="stat-label">Weekend Lucrat</div></div>
-        <div class="stat-box" style="grid-column: span 2;"><div id="stat-holiday-work" class="stat-value">0</div><div class="stat-label">Sărbători Lucrate</div></div>
+        <div class="stat-box" style="grid-column: span 2;"><div id="stat-weekend-work" class="stat-value">0</div><div class="stat-label" data-i18n="weekend_work">Weekend Lucrat</div></div>
+        <div class="stat-box" style="grid-column: span 2;"><div id="stat-holiday-work" class="stat-value">0</div><div class="stat-label" data-i18n="holiday_work">Sărbători Lucrate</div></div>
       </div>
 
       <div style="margin-top:1rem;">
-        <button class="btn btn-secondary btn-sm" onclick="exportICS()">📥 Exportă .ics</button>
+        <button class="btn btn-secondary btn-sm" onclick="exportICS()" data-i18n="export_ics">📥 Exportă .ics</button>
       </div>
     </div>
   </div>
@@ -458,75 +441,78 @@ input:focus,select:focus,textarea:focus{
   <div id="tab-budget" class="tab-content">
     <div class="card">
       <div class="card-title">
-        <span>🎯 Buget Lunar</span>
-        <button class="btn btn-secondary btn-sm" onclick="editBudget()">Setează</button>
+        <span data-i18n="budget_month">🎯 Buget Lunar</span>
+        <button class="btn btn-secondary btn-sm" onclick="editBudget()" data-i18n="set">Setează</button>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;">
-        <span id="budget-spent-text">Cheltuit: 0 lei</span>
-        <span id="budget-target-text">Țintă: 5000 lei</span>
+        <span id="budget-spent-text" data-i18n="spent">Cheltuit: 0 lei</span>
+        <span id="budget-target-text" data-i18n="target">Țintă: 5000 lei</span>
       </div>
       <div class="progress-bar-container"><div id="budget-progress-bar" class="progress-bar"></div></div>
       <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.75rem;color:var(--text-muted);">
-        <span id="budget-remaining">Rămas: 5000 lei</span>
+        <span id="budget-remaining" data-i18n="remaining">Rămas: 5000 lei</span>
         <span id="budget-percent">0%</span>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">📊 Venituri vs Cheltuieli</div>
+      <div class="card-title" data-i18n="inc_vs_exp">📊 Venituri vs Cheltuieli</div>
       <div class="chart-wrapper small"><canvas id="flowChart"></canvas></div>
     </div>
 
     <div class="card">
-      <div class="card-title">➕ Adaugă Tranzacție</div>
+      <div class="card-title" data-i18n="add_tx">➕ Adaugă Tranzacție</div>
       <form id="transaction-form" onsubmit="addTransaction(event)">
-        <div class="form-group"><label>Titlu</label><input type="text" id="tx-title" placeholder="Ex: Motorină, Piese..." required></div>
-        <div class="form-group"><label>Sumă (lei)</label><input type="number" step="0.01" id="tx-amount" placeholder="0.00" required></div>
+        <div class="form-group"><label data-i18n="title">Titlu</label><input type="text" id="tx-title" required></div>
+        <div class="form-group"><label data-i18n="amount">Sumă (lei)</label><input type="number" step="0.01" id="tx-amount" required></div>
         <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div><label>Tip</label>
-            <select id="tx-type"><option value="expense">📉 Cheltuială</option><option value="income">📈 Venit</option></select>
+          <div><label data-i18n="type">Tip</label>
+            <select id="tx-type">
+              <option value="expense" data-i18n="opt_expense">📉 Cheltuială</option>
+              <option value="income" data-i18n="opt_income">📈 Venit</option>
+            </select>
           </div>
-          <div><label>Categorie</label>
+          <div><label data-i18n="category">Categorie</label>
             <select id="tx-category">
-              <option value="Combustibil / Transport">Combustibil / Transport</option>
-              <option value="Mâncare / Utilități">Mâncare / Utilități</option>
-              <option value="Piese / Echipamente">Piese / Echipamente</option>
-              <option value="Chirie / Abonamente">Chirie / Abonamente</option>
-              <option value="Servicii / Venituri">Servicii / Venituri</option>
+              <option value="Fuel / Transport" data-i18n="cat_fuel">Combustibil / Transport</option>
+              <option value="Food / Utilities" data-i18n="cat_food">Mâncare / Utilități</option>
+              <option value="Parts / Equipment" data-i18n="cat_parts">Piese / Echipamente</option>
+              <option value="Rent / Subs" data-i18n="cat_rent">Chirie / Abonamente</option>
+              <option value="Services / Income" data-i18n="cat_service">Servicii / Venituri</option>
             </select>
           </div>
         </div>
-        <button type="submit" class="btn">Adaugă Tranzacție</button>
+        <button type="submit" class="btn" data-i18n="btn_add_tx">Adaugă Tranzacție</button>
       </form>
     </div>
 
     <div class="card">
-      <div class="card-title">🍩 Cheltuieli pe Categorii</div>
+      <div class="card-title" data-i18n="exp_cat">🍩 Cheltuieli pe Categorii</div>
       <div class="chart-wrapper"><canvas id="categoryChart"></canvas></div>
     </div>
 
     <div class="card">
-      <div class="card-title">📋 Istoric Tranzacții</div>
+      <div class="card-title" data-i18n="tx_history">📋 Istoric Tranzacții</div>
       <div id="transaction-list"></div>
-      <div style="margin-top:1rem;"><button class="btn btn-secondary btn-sm" onclick="exportBackup()">💾 Backup JSON</button></div>
+      <div style="margin-top:1rem;"><button class="btn btn-secondary btn-sm" onclick="exportBackup()" data-i18n="backup">💾 Backup JSON</button></div>
     </div>
   </div>
 
   <!-- TAB FACTURI -->
   <div id="tab-invoices" class="tab-content">
     <div class="card no-print">
-      <div class="card-title">⚙️ Datele Firmei Tale</div>
-      <div class="form-group"><label>Nume Firmă / PFA</label><input type="text" id="my-company-name" oninput="saveCompanyInfo()"></div>
+      <div class="card-title" data-i18n="company_data">⚙️ Datele Firmei Tale</div>
+      <div class="form-group"><label data-i18n="comp_name">Nume Firmă / PFA</label><input type="text" id="my-company-name" oninput="saveCompanyInfo()"></div>
       <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><label>CUI / CIF</label><input type="text" id="my-company-tax" oninput="saveCompanyInfo()"></div>
-        <div><label>IBAN</label><input type="text" id="my-company-iban" oninput="saveCompanyInfo()"></div>
+        <div><label data-i18n="comp_tax">CUI / CIF</label><input type="text" id="my-company-tax" oninput="saveCompanyInfo()"></div>
+        <div><label data-i18n="comp_iban">IBAN</label><input type="text" id="my-company-iban" oninput="saveCompanyInfo()"></div>
       </div>
     </div>
 
     <div class="card">
       <div class="card-title">
-        <span>📄 Factură Nouă</span>
-        <button class="btn btn-secondary btn-sm no-print" onclick="addInvoiceItem()">+ Linie</button>
+        <span data-i18n="new_inv">📄 Factură Nouă</span>
+        <button class="btn btn-secondary btn-sm no-print" onclick="addInvoiceItem()" data-i18n="add_line">+ Linie</button>
       </div>
 
       <div style="display:flex;justify-content:space-between;margin-bottom:1rem;font-size:.9rem;gap:10px;flex-wrap:wrap;">
@@ -536,49 +522,49 @@ input:focus,select:focus,textarea:focus{
           <span id="print-my-iban" style="color:var(--text-muted);font-size:.8rem">IBAN: RO98...</span>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:.7rem;color:var(--text-muted);font-weight:800;letter-spacing:.1em;margin-bottom:4px;">FACTURĂ</div>
+          <div style="font-size:.7rem;color:var(--text-muted);font-weight:800;letter-spacing:.1em;margin-bottom:4px;" data-i18n="invoice_word">FACTURĂ</div>
           <input type="text" id="inv-number" value="FAC-001" style="width:110px;text-align:right;font-weight:800;">
           <input type="date" id="inv-date" style="width:140px;text-align:right;margin-top:6px;">
         </div>
       </div>
 
       <div class="form-group">
-        <label>Client (Nume / CUI / Adresă)</label>
-        <textarea id="inv-client-info" rows="2" placeholder="Date client..."></textarea>
+        <label data-i18n="client_info">Client (Nume / CUI / Adresă)</label>
+        <textarea id="inv-client-info" rows="2" data-i18n-placeholder="client_ph"></textarea>
       </div>
 
-      <label>Articole / Servicii</label>
+      <label data-i18n="items">Articole / Servicii</label>
       <div id="inv-items-container" style="margin-bottom:1rem;"></div>
 
       <div class="totals-box">
-        <div>Subtotal: <strong id="inv-subtotal">0.00 lei</strong></div>
-        <div>TVA (<span id="tax-rate-label">19</span>%): <strong id="inv-tax">0.00 lei</strong></div>
+        <div><span data-i18n="subtotal">Subtotal</span>: <strong id="inv-subtotal">0.00 lei</strong></div>
+        <div><span data-i18n="vat">TVA</span> (<span id="tax-rate-label">19</span>%): <strong id="inv-tax">0.00 lei</strong></div>
         <div style="margin-top:6px;padding-top:8px;border-top:1px solid var(--border);">
-          TOTAL: <span class="total-final" id="inv-total">0.00 lei</span>
+          <span data-i18n="total">TOTAL</span>: <span class="total-final" id="inv-total">0.00 lei</span>
         </div>
       </div>
 
       <div style="display:flex;gap:10px;" class="no-print">
-        <button class="btn btn-secondary" onclick="window.print()">🖨️ Print / PDF</button>
-        <button class="btn" onclick="saveInvoice()">💾 Salvează</button>
+        <button class="btn btn-secondary" onclick="window.print()" data-i18n="print">🖨️ Print / PDF</button>
+        <button class="btn" onclick="saveInvoice()" data-i18n="save">💾 Salvează</button>
       </div>
     </div>
 
     <div class="card no-print">
-      <div class="card-title">📚 Istoric Facturi</div>
-      <div id="invoices-history-list">Nicio factură.</div>
+      <div class="card-title" data-i18n="inv_history">📚 Istoric Facturi</div>
+      <div id="invoices-history-list" data-i18n="no_inv">Nicio factură.</div>
     </div>
   </div>
 
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab(this,'shifts')">
-      <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>Ture
+      <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg><span data-i18n="nav_shifts">Ture</span>
     </button>
     <button class="nav-item" onclick="switchTab(this,'budget')">
-      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Buget
+      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg><span data-i18n="nav_budget">Buget</span>
     </button>
     <button class="nav-item" onclick="switchTab(this,'invoices')">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>Facturi
+      <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span data-i18n="nav_inv">Facturi</span>
     </button>
   </nav>
 </div>
@@ -586,25 +572,25 @@ input:focus,select:focus,textarea:focus{
 <!-- MODAL ZI -->
 <div id="day-modal" class="modal-overlay">
   <div class="modal-content">
-    <div class="card-title">Editează Ziua <span id="modal-date-str" style="color:var(--accent-primary)"></span></div>
+    <div class="card-title"><span data-i18n="edit_day">Editează Ziua</span> <span id="modal-date-str" style="color:var(--accent-primary)"></span></div>
     <div class="form-group">
-      <label>Tip Tură</label>
+      <label data-i18n="shift_type">Tip Tură</label>
       <select id="modal-shift-override">
-        <option value="auto">Automat (din model)</option>
-        <option value="work">💪 Muncă (Zi)</option>
-        <option value="night">🌙 Muncă (Noapte)</option>
-        <option value="off">🏖️ Liber</option>
-        <option value="leave">🌴 Concediu (Holiday)</option>
-        <option value="sick">🤒 Medical (Bolnav)</option>
+        <option value="auto" data-i18n="opt_auto">Automat (din model)</option>
+        <option value="work" data-i18n="opt_work">💪 Muncă (Zi)</option>
+        <option value="night" data-i18n="opt_night">🌙 Muncă (Noapte)</option>
+        <option value="off" data-i18n="opt_off">🏖️ Liber</option>
+        <option value="leave" data-i18n="opt_leave">🌴 Concediu (Holiday)</option>
+        <option value="sick" data-i18n="opt_sick">🤒 Medical (Bolnav)</option>
       </select>
     </div>
     <div class="form-group">
-      <label>Notițe</label>
-      <textarea id="modal-day-note" rows="3" placeholder="Adaugă o notiță..."></textarea>
+      <label data-i18n="notes">Notițe</label>
+      <textarea id="modal-day-note" rows="3" data-i18n-placeholder="notes_ph"></textarea>
     </div>
     <div style="display:flex;gap:10px;">
-      <button class="btn" onclick="saveDayModal()">Salvează</button>
-      <button class="btn btn-secondary" onclick="closeDayModal()">Închide</button>
+      <button class="btn" onclick="saveDayModal()" data-i18n="save">Salvează</button>
+      <button class="btn btn-secondary" onclick="closeDayModal()" data-i18n="close">Închide</button>
     </div>
   </div>
 </div>
@@ -612,15 +598,92 @@ input:focus,select:focus,textarea:focus{
 <div id="toast-container"></div>
 
 <script>
+/* ===== DICTIONARE LIMBI ===== */
+const translations = {
+  ro: {
+    header_sub: "Panou personal",
+    today: "Astăzi", next: "Următoarea", shift: "tură",
+    config_shift: "⚙️ Configurare Tură", shift_pattern: "Model Tură", start_date: "Data de Start (Ziua 1)",
+    opt_44: "4 Lucru / 4 Liber (4/4)", opt_34: "3 Lucru / 4 Liber (3/4)", opt_52: "5 Lucru / 2 Liber (Luni-Vineri)", opt_12: "12h Zi / 12h Noapte / 48h Liber",
+    mon: "Lu", tue: "Ma", wed: "Mi", thu: "Jo", fri: "Vi", sat: "Sâ", sun: "Du",
+    worked: "Lucrate", off: "Libere", leave: "Concediu", sick: "Medicale", weekend_work: "Weekend Lucrat", holiday_work: "Sărbători Lucrate",
+    export_ics: "📥 Exportă .ics",
+    budget_month: "🎯 Buget Lunar", set: "Setează", spent: "Cheltuit", target: "Țintă", remaining: "Rămas",
+    inc_vs_exp: "📊 Venituri vs Cheltuieli", add_tx: "➕ Adaugă Tranzacție", title: "Titlu", amount: "Sumă", type: "Tip", category: "Categorie",
+    opt_expense: "📉 Cheltuială", opt_income: "📈 Venit",
+    cat_fuel: "Combustibil / Transport", cat_food: "Mâncare / Utilități", cat_parts: "Piese / Echipamente", cat_rent: "Chirie / Abonamente", cat_service: "Servicii / Venituri",
+    btn_add_tx: "Adaugă Tranzacție", exp_cat: "🍩 Cheltuieli pe Categorii", tx_history: "📋 Istoric Tranzacții", backup: "💾 Backup JSON",
+    company_data: "⚙️ Datele Firmei Tale", comp_name: "Nume Firmă / PFA", comp_tax: "CUI / CIF", comp_iban: "IBAN",
+    new_inv: "📄 Factură Nouă", add_line: "+ Linie", invoice_word: "FACTURĂ", client_info: "Client (Nume / CUI / Adresă)", client_ph: "Date client...",
+    items: "Articole / Servicii", subtotal: "Subtotal", vat: "TVA", total: "TOTAL", print: "🖨️ Print / PDF", save: "💾 Salvează",
+    inv_history: "📚 Istoric Facturi", no_inv: "Nicio factură.",
+    nav_shifts: "Ture", nav_budget: "Buget", nav_inv: "Facturi",
+    edit_day: "Editează Ziua", shift_type: "Tip Tură", opt_auto: "Automat (din model)", opt_work: "💪 Muncă (Zi)", opt_night: "🌙 Muncă (Noapte)", opt_off: "🏖️ Liber", opt_leave: "🌴 Concediu", opt_sick: "🤒 Medical", notes: "Notițe", notes_ph: "Adaugă o notiță...", close: "Închide",
+    curr_symbol: "lei", days: ["Duminică","Luni","Marți","Miercuri","Joi","Vineri","Sâmbătă"], months: ["Ianuarie","Februarie","Martie","Aprilie","Mai","Iunie","Iulie","August","Septembrie","Octombrie","Noiembrie","Decembrie"], months_short: ["ian","feb","mar","apr","mai","iun","iul","aug","sep","oct","nov","dec"],
+    status_off: "Zi Liberă", status_leave: "Concediu", status_sick: "Medical", status_night: "Tură de Noapte", status_work: "Tură de Zi",
+    cd_rest: "Te odihnești", cd_home: "Acasă", cd_you_are: "Ești în", cd_today: "astăzi", cd_in: "Peste", cd_until: "până la tură", cd_none: "Fără", cd_soon: "tură curând",
+    t_saved: "Zi salvată", t_tx: "Tranzacție adăugată", t_budget: "Buget actualizat", t_inv: "Factură salvată", t_bkp: "Backup descărcat", t_ics: "Calendar .ics descărcat", t_err: "Eroare", t_err_start: "Setează data de start mai întâi", t_no_shifts: "Nu există ture în această lună",
+    item_desc: "Descriere", item_qty: "Cant.", item_price: "Preț", no_tx: "Fără tranzacții încă."
+  },
+  uk: {
+    header_sub: "Personal Dashboard",
+    today: "Today", next: "Next", shift: "shift",
+    config_shift: "⚙️ Shift Settings", shift_pattern: "Shift Pattern", start_date: "Start Date (Day 1)",
+    opt_44: "4 On / 4 Off (4/4)", opt_34: "3 On / 4 Off (3/4)", opt_52: "5 On / 2 Off (Mon-Fri)", opt_12: "12h Day / 12h Night / 48h Off",
+    mon: "Mo", tue: "Tu", wed: "We", thu: "Th", fri: "Fr", sat: "Sa", sun: "Su",
+    worked: "Worked", off: "Off", leave: "Holiday", sick: "Sick", weekend_work: "Weekend Worked", holiday_work: "Bank Holidays Worked",
+    export_ics: "📥 Export .ics",
+    budget_month: "🎯 Monthly Budget", set: "Set", spent: "Spent", target: "Target", remaining: "Left",
+    inc_vs_exp: "📊 Income vs Expenses", add_tx: "➕ Add Transaction", title: "Title", amount: "Amount", type: "Type", category: "Category",
+    opt_expense: "📉 Expense", opt_income: "📈 Income",
+    cat_fuel: "Fuel / Transport", cat_food: "Food / Utilities", cat_parts: "Parts / Equipment", cat_rent: "Rent / Subscriptions", cat_service: "Services / Income",
+    btn_add_tx: "Add Transaction", exp_cat: "🍩 Expenses by Category", tx_history: "📋 Transaction History", backup: "💾 Backup JSON",
+    company_data: "⚙️ Company Details", comp_name: "Company Name", comp_tax: "VAT No / Tax ID", comp_iban: "IBAN",
+    new_inv: "📄 New Invoice", add_line: "+ Line", invoice_word: "INVOICE", client_info: "Client (Name / Tax ID / Address)", client_ph: "Client details...",
+    items: "Items / Services", subtotal: "Subtotal", vat: "VAT", total: "TOTAL", print: "🖨️ Print / PDF", save: "💾 Save",
+    inv_history: "📚 Invoice History", no_inv: "No invoices yet.",
+    nav_shifts: "Shifts", nav_budget: "Budget", nav_inv: "Invoices",
+    edit_day: "Edit Day", shift_type: "Shift Type", opt_auto: "Auto (from pattern)", opt_work: "💪 Work (Day)", opt_night: "🌙 Work (Night)", opt_off: "🏖️ Off", opt_leave: "🌴 Holiday", opt_sick: "🤒 Sick", notes: "Notes", notes_ph: "Add a note...", close: "Close",
+    curr_symbol: "£", days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], months: ["January","February","March","April","May","June","July","August","September","October","November","December"], months_short: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+    status_off: "Day Off", status_leave: "Holiday", status_sick: "Sick Leave", status_night: "Night Shift", status_work: "Day Shift",
+    cd_rest: "Resting", cd_home: "At home", cd_you_are: "You are in", cd_today: "today", cd_in: "In", cd_until: "until shift", cd_none: "No", cd_soon: "shift soon",
+    t_saved: "Day saved", t_tx: "Transaction added", t_budget: "Budget updated", t_inv: "Invoice saved", t_bkp: "Backup downloaded", t_ics: "Calendar .ics downloaded", t_err: "Error", t_err_start: "Set start date first", t_no_shifts: "No shifts this month",
+    item_desc: "Description", item_qty: "Qty", item_price: "Price", no_tx: "No transactions yet."
+  }
+};
+
 /* ===== STARE ===== */
-let currentRegion='RO', currentTaxRate=0.19;
-let currentMonth=new Date().getMonth(), currentYear=new Date().getFullYear();
-let budgetTarget=parseFloat(localStorage.getItem('budgetTarget'))||5000;
-let customDayNotes=JSON.parse(localStorage.getItem('customDayNotes')||'{}');
-let dayOverrides=JSON.parse(localStorage.getItem('dayOverrides')||'{}');
-let transactions=JSON.parse(localStorage.getItem('transactions')||'[]');
-let invoices=JSON.parse(localStorage.getItem('invoices')||'[]');
-let categoryChart=null, flowChart=null;
+let currentLang = localStorage.getItem('lang') || 'ro';
+let currentRegion = currentLang === 'ro' ? 'RO' : 'UK';
+let currentTaxRate = currentRegion === 'RO' ? 0.19 : 0.20;
+let currentMonth = new Date().getMonth(), currentYear = new Date().getFullYear();
+let budgetTarget = parseFloat(localStorage.getItem('budgetTarget'))||5000;
+let customDayNotes = JSON.parse(localStorage.getItem('customDayNotes')||'{}');
+let dayOverrides = JSON.parse(localStorage.getItem('dayOverrides')||'{}');
+let transactions = JSON.parse(localStorage.getItem('transactions')||'[]');
+let invoices = JSON.parse(localStorage.getItem('invoices')||'[]');
+let categoryChart = null, flowChart = null;
+
+const t = (key) => translations[currentLang][key] || key;
+const sym = () => t('curr_symbol');
+
+/* ===== FUNCȚIE TRADUCERE INTERFAȚĂ ===== */
+function updateLanguageUI() {
+  document.documentElement.lang = currentLang;
+  document.getElementById('region-btn').innerText = currentLang === 'ro' ? '🇷🇴 RO' : '🇬🇧 UK';
+  document.getElementById('tax-rate-label').innerText = currentLang === 'ro' ? '19' : '20';
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.innerText = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+  
+  renderCalendar();
+  renderBudget();
+  renderInvoicesHistory();
+}
 
 /* ===== TOAST ===== */
 function toast(msg, type='info'){
@@ -654,12 +717,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const d=document.getElementById('inv-date');
   if(!d.value) d.valueAsDate=new Date();
   loadCompanyInfo();
-  renderCalendar();
-  renderBudget();
-  renderInvoicesHistory();
-  if(document.querySelectorAll('.inv-item-row').length===0) addInvoiceItem("Serviciu / Intervenție",1,500);
-  updateTodayWidget();
-  setInterval(updateTodayWidget, 60000);
+  updateLanguageUI();
+  if(document.querySelectorAll('.inv-item-row').length===0) addInvoiceItem("",1,500);
 });
 
 /* ===== TABURI ===== */
@@ -672,14 +731,16 @@ function switchTab(btn, id){
   if(navigator.vibrate) navigator.vibrate(10);
 }
 
-/* ===== REGIUNE ===== */
+/* ===== LIMBĂ / REGIUNE ===== */
 function toggleRegion(){
-  currentRegion = currentRegion==='RO'?'UK':'RO';
-  currentTaxRate = currentRegion==='RO'?0.19:0.20;
-  document.getElementById('region-btn').innerText = currentRegion==='RO'?'🇷🇴 RO':'🇬🇧 UK';
-  document.getElementById('tax-rate-label').innerText = currentRegion==='RO'?'19':'20';
-  renderCalendar(); calculateInvoiceTotals();
-  toast('Regiune: '+currentRegion,'info');
+  currentLang = currentLang === 'ro' ? 'uk' : 'ro';
+  currentRegion = currentLang === 'ro' ? 'RO' : 'UK';
+  currentTaxRate = currentRegion === 'RO' ? 0.19 : 0.20;
+  localStorage.setItem('lang', currentLang);
+  
+  updateLanguageUI();
+  calculateInvoiceTotals();
+  toast(currentLang === 'ro' ? 'Limba: Română' : 'Language: English', 'info');
 }
 
 /* ===== HELPERS ===== */
@@ -693,32 +754,38 @@ function getPublicHolidays(year, region){
   if(region==='RO'){
     h[year+'-01-01']="Anul Nou"; h[year+'-05-01']="Ziua Muncii"; h[year+'-12-25']="Crăciunul";
   } else {
-    h[year+'-01-01']="New Year's Day"; h[year+'-12-25']="Christmas Day";
+    h[year+'-01-01']="New Year's Day"; h[year+'-12-25']="Christmas Day"; h[year+'-12-26']="Boxing Day";
   }
   return h;
 }
 function computeDayInfo(currDate, pattern, startDate){
   const dateKey=formatDateKey(currDate);
-  let isWork=false,isNight=false,shiftLabel="Liber";
+  let isWork=false,isNight=false,shiftLabel="";
   const diffDays=Math.round((currDate-startDate)/86400000);
-  if(pattern==='4-4'){ const p=((diffDays%8)+8)%8; isWork=p<4; shiftLabel=isWork?"Lucru":"Liber"; }
-  else if(pattern==='3-4'){ const p=((diffDays%7)+7)%7; isWork=p<3; shiftLabel=isWork?"Lucru":"Liber"; }
-  else if(pattern==='5-2'){ const dow=currDate.getDay(); isWork=(dow!==0&&dow!==6); shiftLabel=isWork?"Lucru":"Liber"; }
+  if(pattern==='4-4'){ const p=((diffDays%8)+8)%8; isWork=p<4; }
+  else if(pattern==='3-4'){ const p=((diffDays%7)+7)%7; isWork=p<3; }
+  else if(pattern==='5-2'){ const dow=currDate.getDay(); isWork=(dow!==0&&dow!==6); }
   else if(pattern==='12-24'){ const p=((diffDays%4)+4)%4;
-    if(p===0){isWork=true;shiftLabel="Zi 12h";}
-    else if(p===1){isNight=true;isWork=true;shiftLabel="Noapte";}
+    if(p===0){isWork=true;}
+    else if(p===1){isNight=true;isWork=true;}
   }
   
-  // Aici verificam suprascrierile (inclusiv Concediu si Medical)
   let isLeave=false, isSick=false;
   if(dayOverrides[dateKey]){
     const ov=dayOverrides[dateKey];
-    if(ov==='work'){isWork=true;isNight=false;shiftLabel="Zi";}
-    if(ov==='night'){isWork=true;isNight=true;shiftLabel="Noapte";}
-    if(ov==='off'){isWork=false;isNight=false;shiftLabel="Liber";}
-    if(ov==='leave'){isWork=false;isNight=false;isLeave=true;shiftLabel="Concediu";}
-    if(ov==='sick'){isWork=false;isNight=false;isSick=true;shiftLabel="Medical";}
+    if(ov==='work'){isWork=true;isNight=false;}
+    if(ov==='night'){isWork=true;isNight=true;}
+    if(ov==='off'){isWork=false;isNight=false;}
+    if(ov==='leave'){isWork=false;isNight=false;isLeave=true;}
+    if(ov==='sick'){isWork=false;isNight=false;isSick=true;}
   }
+
+  if(isLeave) shiftLabel = currentLang==='ro' ? "Concediu" : "Holiday";
+  else if(isSick) shiftLabel = currentLang==='ro' ? "Medical" : "Sick";
+  else if(isNight) shiftLabel = currentLang==='ro' ? "Noapte" : "Night";
+  else if(isWork) shiftLabel = currentLang==='ro' ? "Lucru" : "Work";
+  else shiftLabel = currentLang==='ro' ? "Liber" : "Off";
+
   return {dateKey,isWork,isNight,isLeave,isSick,shiftLabel};
 }
 
@@ -733,22 +800,21 @@ function updateTodayWidget(){
 
   const iconEl=document.getElementById('today-icon');
   iconEl.className='today-icon';
-  let emoji='🏖️', statusText='Zi Liberă';
+  let emoji='🏖️', statusText=t('status_off');
   
-  if(info.isLeave){emoji='🌴';statusText='Concediu';iconEl.classList.add('leave');}
-  else if(info.isSick){emoji='🤒';statusText='Medical';iconEl.classList.add('sick');}
-  else if(info.isNight){emoji='🌙';statusText='Tură de Noapte';iconEl.classList.add('night');}
-  else if(info.isWork){emoji='💪';statusText='Tură de Zi';iconEl.classList.add('work');}
+  if(info.isLeave){emoji='🌴';statusText=t('status_leave');iconEl.classList.add('leave');}
+  else if(info.isSick){emoji='🤒';statusText=t('status_sick');iconEl.classList.add('sick');}
+  else if(info.isNight){emoji='🌙';statusText=t('status_night');iconEl.classList.add('night');}
+  else if(info.isWork){emoji='💪';statusText=t('status_work');iconEl.classList.add('work');}
   else iconEl.classList.add('off');
   
   iconEl.innerText=emoji;
-
   document.getElementById('today-status').innerText=statusText;
-  const months=["ian","feb","mar","apr","mai","iun","iul","aug","sep","oct","nov","dec"];
-  const days=["Duminică","Luni","Marți","Miercuri","Joi","Vineri","Sâmbătă"];
-  document.getElementById('today-date').innerText=days[today.getDay()]+', '+today.getDate()+' '+months[today.getMonth()]+' '+today.getFullYear();
+  
+  const dName = t('days')[today.getDay()];
+  const mName = t('months_short')[today.getMonth()];
+  document.getElementById('today-date').innerText = `${dName}, ${today.getDate()} ${mName} ${today.getFullYear()}`;
 
-  // countdown
   let nextWorkDate=null;
   for(let i=1;i<=60;i++){
     const d=new Date(today); d.setDate(d.getDate()+i);
@@ -757,22 +823,22 @@ function updateTodayWidget(){
   }
   
   if(info.isLeave || info.isSick){
-    document.getElementById('countdown-label').innerText='Te odihnești';
-    document.getElementById('countdown-value').innerText='Acasă';
+    document.getElementById('countdown-label').innerText=t('cd_rest');
+    document.getElementById('countdown-value').innerText=t('cd_home');
     document.getElementById('countdown-sub').innerText='';
   } else if(info.isWork){
-    document.getElementById('countdown-label').innerText='Ești în';
-    document.getElementById('countdown-value').innerText=info.isNight?'Noapte':'Tură';
-    document.getElementById('countdown-sub').innerText='astăzi';
+    document.getElementById('countdown-label').innerText=t('cd_you_are');
+    document.getElementById('countdown-value').innerText=info.isNight ? (currentLang==='ro'?'Noapte':'Night') : (currentLang==='ro'?'Tură':'Shift');
+    document.getElementById('countdown-sub').innerText=t('cd_today');
   } else if(nextWorkDate){
     const diff=Math.round((nextWorkDate-today)/86400000);
-    document.getElementById('countdown-label').innerText='Peste';
-    document.getElementById('countdown-value').innerText=diff+' z';
-    document.getElementById('countdown-sub').innerText='până la tură';
+    document.getElementById('countdown-label').innerText=t('cd_in');
+    document.getElementById('countdown-value').innerText=diff+' '+(currentLang==='ro'?'z':'d');
+    document.getElementById('countdown-sub').innerText=t('cd_until');
   } else {
-    document.getElementById('countdown-label').innerText='Fără';
+    document.getElementById('countdown-label').innerText=t('cd_none');
     document.getElementById('countdown-value').innerText='—';
-    document.getElementById('countdown-sub').innerText='tură curând';
+    document.getElementById('countdown-sub').innerText=t('cd_soon');
   }
 }
 
@@ -786,8 +852,8 @@ function changeMonth(delta){
 function renderCalendar(){
   const startVal=document.getElementById('shift-start-date').value;
   if(!startVal) return;
-  const months=["Ianuarie","Februarie","Martie","Aprilie","Mai","Iunie","Iulie","August","Septembrie","Octombrie","Noiembrie","Decembrie"];
-  document.getElementById('calendar-month-year').innerText=months[currentMonth]+' '+currentYear;
+  
+  document.getElementById('calendar-month-year').innerText = t('months')[currentMonth] + ' ' + currentYear;
 
   const container=document.getElementById('calendar-days-container');
   container.innerHTML='';
@@ -867,57 +933,72 @@ function saveDayModal(){
   
   closeDayModal(); 
   renderCalendar();
-  toast('Zi salvată','success');
+  toast(t('t_saved'),'success');
 }
 
 /* ===== BUGET ===== */
 function renderBudget(){
   let totalExp=0, totalInc=0; const cats={}; let html='';
-  transactions.forEach(t=>{
-    if(t.type==='expense'){totalExp+=t.amount;cats[t.category]=(cats[t.category]||0)+t.amount;}
-    else totalInc+=t.amount;
-    const sign=t.type==='income'?'+':'-';
-    const cls=t.type==='income'?'income':'expense';
-    const badge=t.type==='income'?'<span class="badge badge-income">Venit</span>':'<span class="badge badge-expense">Chelt.</span>';
-    html+=`<div class="list-item"><div><div class="li-title">${t.title}</div><div class="li-meta">${t.date} • ${t.category}</div></div><div style="display:flex;align-items:center;gap:8px;">${badge}<span class="li-amount ${cls}">${sign}${t.amount.toFixed(2)}</span></div></div>`;
+  transactions.forEach(tx=>{
+    if(tx.type==='expense'){totalExp+=tx.amount;cats[tx.category]=(cats[tx.category]||0)+tx.amount;}
+    else totalInc+=tx.amount;
+    const sign=tx.type==='income'?'+':'-';
+    const cls=tx.type==='income'?'income':'expense';
+    const badge=tx.type==='income'?`<span class="badge badge-income">${currentLang==='ro'?'Venit':'Income'}</span>`:`<span class="badge badge-expense">${currentLang==='ro'?'Chelt.':'Exp.'}</span>`;
+    
+    // Traducem categoria veche daca e cazul
+    let catDisplay = tx.category;
+    if(currentLang==='en' || currentLang==='uk'){
+       if(tx.category==='Combustibil / Transport') catDisplay='Fuel / Transport';
+       if(tx.category==='Mâncare / Utilități') catDisplay='Food / Utilities';
+       if(tx.category==='Piese / Echipamente') catDisplay='Parts / Equipment';
+       if(tx.category==='Chirie / Abonamente') catDisplay='Rent / Subs';
+       if(tx.category==='Servicii / Venituri') catDisplay='Services / Income';
+    }
+
+    html+=`<div class="list-item"><div><div class="li-title">${tx.title}</div><div class="li-meta">${tx.date} • ${catDisplay}</div></div><div style="display:flex;align-items:center;gap:8px;">${badge}<span class="li-amount ${cls}">${sign}${tx.amount.toFixed(2)} ${sym()}</span></div></div>`;
   });
-  document.getElementById('transaction-list').innerHTML=html||'<div style="text-align:center;color:var(--text-muted);padding:2rem 0;font-size:.85rem;">Fără tranzacții încă.</div>';
-  document.getElementById('budget-spent-text').innerText='Cheltuit: '+totalExp.toFixed(0)+' lei';
-  document.getElementById('budget-target-text').innerText='Țintă: '+budgetTarget.toFixed(0)+' lei';
+  document.getElementById('transaction-list').innerHTML=html||`<div style="text-align:center;color:var(--text-muted);padding:2rem 0;font-size:.85rem;">${t('no_tx')}</div>`;
+  
+  document.getElementById('budget-spent-text').innerText = t('spent') + ': ' + totalExp.toFixed(0) + ' ' + sym();
+  document.getElementById('budget-target-text').innerText = t('target') + ': ' + budgetTarget.toFixed(0) + ' ' + sym();
+  
   const pct=Math.min((totalExp/budgetTarget)*100,100);
   const bar=document.getElementById('budget-progress-bar');
   bar.style.width=pct+'%';
   bar.classList.toggle('over', totalExp>budgetTarget);
-  document.getElementById('budget-remaining').innerText='Rămas: '+Math.max(budgetTarget-totalExp,0).toFixed(0)+' lei';
+  
+  document.getElementById('budget-remaining').innerText = t('remaining') + ': ' + Math.max(budgetTarget-totalExp,0).toFixed(0) + ' ' + sym();
   document.getElementById('budget-percent').innerText=pct.toFixed(0)+'%';
-  document.getElementById('header-sub').innerText='Balanță: '+(totalInc-totalExp).toFixed(0)+' lei';
+  document.getElementById('header-sub').innerText = (currentLang==='ro'?'Balanță: ':'Balance: ') + (totalInc-totalExp).toFixed(0) + ' ' + sym();
+  
   renderChart(cats);
   renderFlowChart(totalInc, totalExp);
 }
 function addTransaction(e){
   e.preventDefault();
   const amount=parseFloat(document.getElementById('tx-amount').value);
-  if(isNaN(amount)||amount<=0){toast('Sumă invalidă','error');return;}
+  if(isNaN(amount)||amount<=0){toast(t('t_err'),'error');return;}
   transactions.unshift({
     id:Date.now(),
     title:document.getElementById('tx-title').value,
     amount,
     type:document.getElementById('tx-type').value,
-    category:document.getElementById('tx-category').value,
+    category:document.getElementById('tx-category').value, // salvam valoarea standard
     date:new Date().toISOString().split('T')[0]
   });
   localStorage.setItem('transactions',JSON.stringify(transactions));
   document.getElementById('transaction-form').reset();
   renderBudget();
-  toast('Tranzacție adăugată','success');
+  toast(t('t_tx'),'success');
   if(navigator.vibrate) navigator.vibrate(20);
 }
 function editBudget(){
-  const v=prompt("Introdu limita de buget (lei):",budgetTarget);
+  const v=prompt((currentLang==='ro'?"Introdu limita de buget (":"Enter budget limit (")+sym()+"):",budgetTarget);
   if(v===null) return;
   const p=parseFloat(v);
-  if(!isNaN(p)&&p>0){budgetTarget=p;localStorage.setItem('budgetTarget',budgetTarget);renderBudget();toast('Buget actualizat','success');}
-  else toast('Valoare invalidă','error');
+  if(!isNaN(p)&&p>0){budgetTarget=p;localStorage.setItem('budgetTarget',budgetTarget);renderBudget();toast(t('t_budget'),'success');}
+  else toast(t('t_err'),'error');
 }
 function chartColors(){
   const light=document.body.classList.contains('light');
@@ -933,10 +1014,23 @@ function renderChart(cats){
   const c=chartColors();
   const labels=Object.keys(cats);
   const data=Object.values(cats);
-  if(labels.length===0){labels.push('Fără date');data.push(1);}
+  if(labels.length===0){labels.push('—');data.push(1);}
+  
+  // Traducem etichetele graficului
+  const translatedLabels = labels.map(l => {
+    if(currentLang==='uk'){
+      if(l==='Combustibil / Transport') return 'Fuel / Transport';
+      if(l==='Mâncare / Utilități') return 'Food / Utilities';
+      if(l==='Piese / Echipamente') return 'Parts / Equipment';
+      if(l==='Chirie / Abonamente') return 'Rent / Subs';
+      if(l==='Servicii / Venituri') return 'Services / Income';
+    }
+    return l;
+  });
+
   categoryChart=new Chart(ctx,{
     type:'doughnut',
-    data:{labels,datasets:[{data,backgroundColor:['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4'],borderWidth:0,hoverOffset:8}]},
+    data:{labels:translatedLabels,datasets:[{data,backgroundColor:['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4'],borderWidth:0,hoverOffset:8}]},
     options:{
       responsive:true,maintainAspectRatio:false,cutout:'65%',
       plugins:{
@@ -953,7 +1047,7 @@ function renderFlowChart(inc, exp){
   flowChart=new Chart(ctx,{
     type:'bar',
     data:{
-      labels:['Venituri','Cheltuieli','Balanță'],
+      labels:[currentLang==='ro'?'Venituri':'Income', currentLang==='ro'?'Cheltuieli':'Expenses', currentLang==='ro'?'Balanță':'Balance'],
       datasets:[{
         data:[inc,exp,inc-exp],
         backgroundColor:['rgba(16,185,129,.8)','rgba(239,68,68,.8)','rgba(59,130,246,.8)'],
@@ -974,7 +1068,7 @@ function renderFlowChart(inc, exp){
 /* ===== FIRMA ===== */
 function loadCompanyInfo(){
   document.getElementById('my-company-name').value=localStorage.getItem('myCompName')||'Service & Repair SRL';
-  document.getElementById('my-company-tax').value=localStorage.getItem('myCompTax')||'RO 12345678';
+  document.getElementById('my-company-tax').value=localStorage.getItem('myCompTax')|| (currentLang==='ro' ? 'RO 12345678' : 'GB 123456789');
   document.getElementById('my-company-iban').value=localStorage.getItem('myCompIban')||'RO98 RNCB ...';
   updatePrintCompanyHeader();
 }
@@ -986,7 +1080,8 @@ function saveCompanyInfo(){
 }
 function updatePrintCompanyHeader(){
   document.getElementById('print-my-name').innerText=document.getElementById('my-company-name').value;
-  document.getElementById('print-my-tax').innerText='CUI: '+document.getElementById('my-company-tax').value;
+  const taxLabel = currentLang === 'ro' ? 'CUI:' : 'VAT:';
+  document.getElementById('print-my-tax').innerText=taxLabel+' '+document.getElementById('my-company-tax').value;
   document.getElementById('print-my-iban').innerText='IBAN: '+document.getElementById('my-company-iban').value;
 }
 
@@ -995,9 +1090,9 @@ function addInvoiceItem(desc='',qty=1,price=0){
   const c=document.getElementById('inv-items-container');
   const row=document.createElement('div');
   row.className='inv-item-row';
-  row.innerHTML=`<input type="text" placeholder="Descriere" value="${desc}" oninput="calculateInvoiceTotals()">
-    <input type="number" placeholder="Cant." value="${qty}" oninput="calculateInvoiceTotals()">
-    <input type="number" placeholder="Preț" value="${price}" oninput="calculateInvoiceTotals()">
+  row.innerHTML=`<input type="text" placeholder="${t('item_desc')}" value="${desc}" oninput="calculateInvoiceTotals()">
+    <input type="number" placeholder="${t('item_qty')}" value="${qty}" oninput="calculateInvoiceTotals()">
+    <input type="number" placeholder="${t('item_price')}" value="${price}" oninput="calculateInvoiceTotals()">
     <button class="btn btn-danger btn-sm no-print" style="padding:.4rem;width:36px;" onclick="this.parentElement.remove();calculateInvoiceTotals();">×</button>`;
   c.appendChild(row);
   calculateInvoiceTotals();
@@ -1009,9 +1104,10 @@ function calculateInvoiceTotals(){
     sub+=(parseFloat(i[1].value)||0)*(parseFloat(i[2].value)||0);
   });
   const tax=sub*currentTaxRate;
-  document.getElementById('inv-subtotal').innerText=sub.toFixed(2)+' lei';
-  document.getElementById('inv-tax').innerText=tax.toFixed(2)+' lei';
-  document.getElementById('inv-total').innerText=(sub+tax).toFixed(2)+' lei';
+  const s = sym();
+  document.getElementById('inv-subtotal').innerText=sub.toFixed(2)+' '+s;
+  document.getElementById('inv-tax').innerText=tax.toFixed(2)+' '+s;
+  document.getElementById('inv-total').innerText=(sub+tax).toFixed(2)+' '+s;
 }
 function saveInvoice(){
   invoices.unshift({
@@ -1019,22 +1115,27 @@ function saveInvoice(){
     date:document.getElementById('inv-date').value,
     client:(document.getElementById('inv-client-info').value.split('\n')[0]||'Client').trim(),
     total:document.getElementById('inv-total').innerText,
-    status:'Încasată'
+    status: currentLang==='ro' ? 'Încasată' : 'Paid'
   });
   localStorage.setItem('invoices',JSON.stringify(invoices));
   renderInvoicesHistory();
   const numEl=document.getElementById('inv-number');
   const m=numEl.value.match(/(\d+)$/);
   if(m){const n=(parseInt(m[1],10)+1).toString().padStart(m[1].length,'0');numEl.value=numEl.value.replace(/\d+$/,n);}
-  toast('Factură salvată','success');
+  toast(t('t_inv'),'success');
   if(navigator.vibrate) navigator.vibrate(20);
 }
 function renderInvoicesHistory(){
   let html='';
   invoices.forEach(i=>{
-    html+=`<div class="list-item"><div><div class="li-title">${i.number} · ${i.client}</div><div class="li-meta">${i.date}</div></div><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-paid">${i.status}</span><strong style="color:var(--accent-primary);">${i.total}</strong></div></div>`;
+    // Traducem statusul vechi daca a fost salvat in alta limba
+    let stat = i.status;
+    if(currentLang==='ro' && stat==='Paid') stat='Încasată';
+    if(currentLang!=='ro' && stat==='Încasată') stat='Paid';
+
+    html+=`<div class="list-item"><div><div class="li-title">${i.number} · ${i.client}</div><div class="li-meta">${i.date}</div></div><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-paid">${stat}</span><strong style="color:var(--accent-primary);">${i.total}</strong></div></div>`;
   });
-  document.getElementById('invoices-history-list').innerHTML=html||'<div style="text-align:center;color:var(--text-muted);padding:2rem 0;font-size:.85rem;">Nicio factură încă.</div>';
+  document.getElementById('invoices-history-list').innerHTML=html||`<div style="text-align:center;color:var(--text-muted);padding:2rem 0;font-size:.85rem;">${t('no_inv')}</div>`;
 }
 
 /* ===== EXPORT ===== */
@@ -1044,11 +1145,11 @@ function exportBackup(){
   a.href=URL.createObjectURL(blob);
   a.download='backup_'+new Date().toISOString().split('T')[0]+'.json';
   a.click();
-  toast('Backup descărcat','success');
+  toast(t('t_bkp'),'success');
 }
 function exportICS(){
   const startVal=document.getElementById('shift-start-date').value;
-  if(!startVal){toast('Setează data de start mai întâi','error');return;}
+  if(!startVal){toast(t('t_err_start'),'error');return;}
   const pattern=document.getElementById('shift-pattern').value;
   const startDate=new Date(startVal); startDate.setHours(0,0,0,0);
   const totalDays=new Date(currentYear,currentMonth+1,0).getDate();
@@ -1056,20 +1157,20 @@ function exportICS(){
   for(let d=1;d<=totalDays;d++){
     const curr=new Date(currentYear,currentMonth,d); curr.setHours(0,0,0,0);
     const info=computeDayInfo(curr,pattern,startDate);
-    if(!info.isWork) continue; // Exportam doar turele lucrate
+    if(!info.isWork) continue; 
     const s=formatDateKey(curr).replace(/-/g,'');
     const nx=new Date(curr); nx.setDate(nx.getDate()+1);
     const e=formatDateKey(nx).replace(/-/g,'');
-    ev+=`BEGIN:VEVENT\nDTSTART;VALUE=DATE:${s}\nDTEND;VALUE=DATE:${e}\nSUMMARY:Tură - ${info.shiftLabel}\nEND:VEVENT\n`;
+    ev+=`BEGIN:VEVENT\nDTSTART;VALUE=DATE:${s}\nDTEND;VALUE=DATE:${e}\nSUMMARY:${currentLang==='ro'?'Tură':'Shift'} - ${info.shiftLabel}\nEND:VEVENT\n`;
   }
-  if(!ev){toast('Nu există ture în această lună','error');return;}
+  if(!ev){toast(t('t_no_shifts'),'error');return;}
   const ics="BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//ShiftManager//RO\nCALSCALE:GREGORIAN\n"+ev+"END:VCALENDAR";
   const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='Ture_'+currentYear+'_'+(currentMonth+1)+'.ics';
   a.click();
-  toast('Calendar .ics descărcat','success');
+  toast(t('t_ics'),'success');
 }
 </script>
 </body>
