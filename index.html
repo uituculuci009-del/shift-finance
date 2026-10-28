@@ -3,14 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0f172a"> 
-  <link rel="manifest" href="manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
+<meta name="theme-color" content="#0f172a">
 <title>Shift & Finance · Pro</title>
+<link rel="manifest" href="manifest.json">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <style>
 :root{
@@ -120,9 +115,7 @@ body.light header{background:rgba(255,255,255,.7)}
 .icon-btn:hover{background:var(--accent-primary);border-color:var(--accent-primary);transform:translateY(-1px)}
 .icon-btn:active{transform:scale(.95)}
 .icon-btn svg{width:18px;height:18px;fill:currentColor}
-.region-btn{
-  width:auto;padding:0 12px;font-size:.8rem;font-weight:600;gap:4px;
-}
+.region-btn{width:auto;padding:0 12px;font-size:.8rem;font-weight:600;gap:4px;}
 
 nav.bottom-nav{
   position:fixed;bottom:0;left:0;right:0;
@@ -206,6 +199,9 @@ input:focus,select:focus,textarea:focus{
   box-shadow:0 0 0 3px rgba(59,130,246,.15);
   background:var(--bg-card-solid);
 }
+input[type="file"]{
+  padding:.5rem; font-size:.8rem;
+}
 
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
@@ -219,7 +215,7 @@ input:focus,select:focus,textarea:focus{
 .btn-secondary{background:var(--bg-input);color:var(--text-main);box-shadow:none;border:1px solid var(--border-strong)}
 .btn-secondary:hover{background:var(--bg-card-solid);box-shadow:var(--shadow)}
 .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,.3)}
-.btn-sm{padding:.5rem .9rem;font-size:.78rem;width:auto}
+.btn-sm{padding:.5rem .9rem;font-size:.78rem;width:auto;}
 
 .calendar-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:8px}
 .calendar-controls h2{font-size:.95rem;font-weight:800}
@@ -320,6 +316,7 @@ input:focus,select:focus,textarea:focus{
   background:var(--bg-card-solid);border-radius:var(--radius);
   padding:1.4rem;width:100%;max-width:460px;border:1px solid var(--border-strong);
   box-shadow:var(--shadow);animation:modalIn .3s cubic-bezier(.34,1.56,.64,1);
+  max-height: 90vh; overflow-y: auto;
 }
 @keyframes modalIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 
@@ -339,6 +336,19 @@ input:focus,select:focus,textarea:focus{
 
 .chart-wrapper{position:relative;height:220px}
 .chart-wrapper.small{height:180px}
+
+/* Salariu widget */
+.salary-box{
+  background: linear-gradient(135deg, rgba(16,185,129,.15), rgba(59,130,246,.15));
+  border: 1px solid rgba(16,185,129,.3);
+  text-align: center; padding: 1.2rem; border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+.salary-label{font-size: .8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: .05em;}
+.salary-val{font-size: 2rem; font-weight: 900; color: var(--color-income); margin: 5px 0;}
+
+/* poza in lista de facturi */
+.inv-thumb{width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-strong); cursor: pointer;}
 
 @media print{
   body{background:#fff!important;color:#000!important;padding-bottom:0!important}
@@ -372,6 +382,7 @@ input:focus,select:focus,textarea:focus{
       </div>
     </div>
     <div class="header-actions">
+      <button class="icon-btn" onclick="requestNotifPermission()" title="Notificări" style="color:var(--color-off);">🔔</button>
       <button class="icon-btn region-btn" id="region-btn" onclick="toggleRegion()">🇷🇴 RO</button>
       <button class="icon-btn" onclick="toggleTheme()" title="Theme" aria-label="Theme">
         <svg id="theme-icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 01-4.4 2.26 5.4 5.4 0 01-5.4-5.4c0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/></svg>
@@ -445,6 +456,20 @@ input:focus,select:focus,textarea:focus{
 
   <!-- TAB BUGET -->
   <div id="tab-budget" class="tab-content">
+    
+    <!-- Noul card de Salariu Estimat -->
+    <div class="salary-box card">
+      <div class="card-title" style="justify-content: center; margin-bottom: 5px;">
+        <span data-i18n="estimated_salary">💰 Salariu Estimat Luna Aceasta</span>
+      </div>
+      <div class="salary-val" id="salary-estimated">0.00</div>
+      <div style="display: flex; justify-content: center; align-items: center; gap: 5px; font-size: .8rem; color: var(--text-muted); margin-top: 10px;">
+        <span data-i18n="rate">Tarif/oră:</span>
+        <input type="number" id="hourly-rate" style="width: 70px; padding: 4px; text-align: center;" oninput="renderBudget()">
+        <span id="curr-symbol-rate">lei</span>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-title">
         <span data-i18n="budget_month">🎯 Buget Lunar</span>
@@ -542,6 +567,18 @@ input:focus,select:focus,textarea:focus{
       <label data-i18n="items">Articole / Servicii</label>
       <div id="inv-items-container" style="margin-bottom:1rem;"></div>
 
+      <!-- Noul input de poza -->
+      <div class="form-group no-print" style="margin-top: 10px; padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
+        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+          📸 <span data-i18n="add_photo">Adaugă o poză (Chitanță / Bon)</span>
+          <input type="file" id="inv-image" accept="image/*" style="display: none;" onchange="previewImage(event)">
+        </label>
+        <div id="image-preview-container" style="display: none; margin-top: 10px; text-align: center;">
+          <img id="image-preview" style="max-width: 100%; max-height: 150px; border-radius: 8px; border: 1px solid var(--border-strong);">
+          <button class="btn btn-danger btn-sm" style="margin-top: 8px;" onclick="removeImage()" data-i18n="remove_photo">Șterge Poza</button>
+        </div>
+      </div>
+
       <div class="totals-box">
         <div><span data-i18n="subtotal">Subtotal</span>: <strong id="inv-subtotal">0.00 lei</strong></div>
         <div><span data-i18n="vat">TVA</span> (<span id="tax-rate-label">19</span>%): <strong id="inv-tax">0.00 lei</strong></div>
@@ -601,19 +638,24 @@ input:focus,select:focus,textarea:focus{
   </div>
 </div>
 
+<!-- MODAL POZA MARITA -->
+<div id="image-modal" class="modal-overlay" onclick="this.style.display='none'">
+  <img id="full-image" style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 20px #000;">
+</div>
+
 <div id="toast-container"></div>
 
 <script>
 /* ===== DICTIONARE LIMBI ===== */
 const translations = {
   ro: {
-    header_sub: "Panou personal",
-    today: "Astăzi", next: "Următoarea", shift: "tură",
+    header_sub: "Panou personal", today: "Astăzi", next: "Următoarea", shift: "tură",
     config_shift: "⚙️ Configurare Tură", shift_pattern: "Model Tură", start_date: "Data de Start (Ziua 1)",
     opt_44: "4 Lucru / 4 Liber (4/4)", opt_34: "3 Lucru / 4 Liber (3/4)", opt_52: "5 Lucru / 2 Liber (Luni-Vineri)", opt_12: "12h Zi / 12h Noapte / 48h Liber",
     mon: "Lu", tue: "Ma", wed: "Mi", thu: "Jo", fri: "Vi", sat: "Sâ", sun: "Du",
     worked: "Lucrate", off: "Libere", leave: "Concediu", sick: "Medicale", weekend_work: "Weekend Lucrat", holiday_work: "Sărbători Lucrate",
     export_ics: "📥 Exportă .ics",
+    estimated_salary: "💰 Salariu Estimat Luna Aceasta", rate: "Tarif/oră:",
     budget_month: "🎯 Buget Lunar", set: "Setează", spent: "Cheltuit", target: "Țintă", remaining: "Rămas",
     inc_vs_exp: "📊 Venituri vs Cheltuieli", add_tx: "➕ Adaugă Tranzacție", title: "Titlu", amount: "Sumă", type: "Tip", category: "Categorie",
     opt_expense: "📉 Cheltuială", opt_income: "📈 Venit",
@@ -625,20 +667,21 @@ const translations = {
     inv_history: "📚 Istoric Facturi", no_inv: "Nicio factură.",
     nav_shifts: "Ture", nav_budget: "Buget", nav_inv: "Facturi",
     edit_day: "Editează Ziua", shift_type: "Tip Tură", opt_auto: "Automat (din model)", opt_work: "💪 Muncă (Zi)", opt_night: "🌙 Muncă (Noapte)", opt_off: "🏖️ Liber", opt_leave: "🌴 Concediu", opt_sick: "🤒 Medical", notes: "Notițe", notes_ph: "Adaugă o notiță...", close: "Închide",
+    add_photo: "Adaugă o poză (Chitanță / Bon)", remove_photo: "Șterge Poza", view_photo: "Vezi poza",
     curr_symbol: "lei", days: ["Duminică","Luni","Marți","Miercuri","Joi","Vineri","Sâmbătă"], months: ["Ianuarie","Februarie","Martie","Aprilie","Mai","Iunie","Iulie","August","Septembrie","Octombrie","Noiembrie","Decembrie"], months_short: ["ian","feb","mar","apr","mai","iun","iul","aug","sep","oct","nov","dec"],
     status_off: "Zi Liberă", status_leave: "Concediu", status_sick: "Medical", status_night: "Tură de Noapte", status_work: "Tură de Zi",
     cd_rest: "Te odihnești", cd_home: "Acasă", cd_you_are: "Ești în", cd_today: "astăzi", cd_in: "Peste", cd_until: "până la tură", cd_none: "Fără", cd_soon: "tură curând",
-    t_saved: "Zi salvată", t_tx: "Tranzacție adăugată", t_budget: "Buget actualizat", t_inv: "Factură salvată", t_bkp: "Backup descărcat", t_ics: "Calendar .ics descărcat", t_err: "Eroare", t_err_start: "Setează data de start mai întâi", t_no_shifts: "Nu există ture în această lună",
+    t_saved: "Zi salvată", t_tx: "Tranzacție adăugată", t_budget: "Buget actualizat", t_inv: "Factură salvată", t_bkp: "Backup descărcat", t_ics: "Calendar .ics descărcat", t_err: "Eroare", t_err_start: "Setează data de start mai întâi", t_no_shifts: "Nu există ture în această lună", t_notif_ok: "Notificări activate!", t_notif_err: "Notificările au fost blocate din setările browserului.",
     item_desc: "Descriere", item_qty: "Cant.", item_price: "Preț", no_tx: "Fără tranzacții încă."
   },
   uk: {
-    header_sub: "Personal Dashboard",
-    today: "Today", next: "Next", shift: "shift",
+    header_sub: "Personal Dashboard", today: "Today", next: "Next", shift: "shift",
     config_shift: "⚙️ Shift Settings", shift_pattern: "Shift Pattern", start_date: "Start Date (Day 1)",
     opt_44: "4 On / 4 Off (4/4)", opt_34: "3 On / 4 Off (3/4)", opt_52: "5 On / 2 Off (Mon-Fri)", opt_12: "12h Day / 12h Night / 48h Off",
     mon: "Mo", tue: "Tu", wed: "We", thu: "Th", fri: "Fr", sat: "Sa", sun: "Su",
     worked: "Worked", off: "Off", leave: "Holiday", sick: "Sick", weekend_work: "Weekend Worked", holiday_work: "Bank Holidays Worked",
     export_ics: "📥 Export .ics",
+    estimated_salary: "💰 Estimated Salary This Month", rate: "Rate/hour:",
     budget_month: "🎯 Monthly Budget", set: "Set", spent: "Spent", target: "Target", remaining: "Left",
     inc_vs_exp: "📊 Income vs Expenses", add_tx: "➕ Add Transaction", title: "Title", amount: "Amount", type: "Type", category: "Category",
     opt_expense: "📉 Expense", opt_income: "📈 Income",
@@ -650,10 +693,11 @@ const translations = {
     inv_history: "📚 Invoice History", no_inv: "No invoices yet.",
     nav_shifts: "Shifts", nav_budget: "Budget", nav_inv: "Invoices",
     edit_day: "Edit Day", shift_type: "Shift Type", opt_auto: "Auto (from pattern)", opt_work: "💪 Work (Day)", opt_night: "🌙 Work (Night)", opt_off: "🏖️ Off", opt_leave: "🌴 Holiday", opt_sick: "🤒 Sick", notes: "Notes", notes_ph: "Add a note...", close: "Close",
+    add_photo: "Add a photo (Receipt)", remove_photo: "Remove Photo", view_photo: "View photo",
     curr_symbol: "£", days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], months: ["January","February","March","April","May","June","July","August","September","October","November","December"], months_short: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
     status_off: "Day Off", status_leave: "Holiday", status_sick: "Sick Leave", status_night: "Night Shift", status_work: "Day Shift",
     cd_rest: "Resting", cd_home: "At home", cd_you_are: "You are in", cd_today: "today", cd_in: "In", cd_until: "until shift", cd_none: "No", cd_soon: "shift soon",
-    t_saved: "Day saved", t_tx: "Transaction added", t_budget: "Budget updated", t_inv: "Invoice saved", t_bkp: "Backup downloaded", t_ics: "Calendar .ics downloaded", t_err: "Error", t_err_start: "Set start date first", t_no_shifts: "No shifts this month",
+    t_saved: "Day saved", t_tx: "Transaction added", t_budget: "Budget updated", t_inv: "Invoice saved", t_bkp: "Backup downloaded", t_ics: "Calendar .ics downloaded", t_err: "Error", t_err_start: "Set start date first", t_no_shifts: "No shifts this month", t_notif_ok: "Notifications enabled!", t_notif_err: "Notifications blocked in browser settings.",
     item_desc: "Description", item_qty: "Qty", item_price: "Price", no_tx: "No transactions yet."
   }
 };
@@ -669,6 +713,9 @@ let dayOverrides = JSON.parse(localStorage.getItem('dayOverrides')||'{}');
 let transactions = JSON.parse(localStorage.getItem('transactions')||'[]');
 let invoices = JSON.parse(localStorage.getItem('invoices')||'[]');
 let categoryChart = null, flowChart = null;
+let currentImageBase64 = null; // Pt poza de la factura
+
+let hourlyRate = parseFloat(localStorage.getItem('hourlyRate')) || 0;
 
 const t = (key) => translations[currentLang][key] || key;
 const sym = () => t('curr_symbol');
@@ -678,6 +725,7 @@ function updateLanguageUI() {
   document.documentElement.lang = currentLang;
   document.getElementById('region-btn').innerText = currentLang === 'ro' ? '🇷🇴 RO' : '🇬🇧 UK';
   document.getElementById('tax-rate-label').innerText = currentLang === 'ro' ? '19' : '20';
+  document.getElementById('curr-symbol-rate').innerText = sym();
 
   document.querySelectorAll('[data-i18n]').forEach(el => {
     el.innerText = t(el.getAttribute('data-i18n'));
@@ -722,9 +770,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if(!s.value) s.valueAsDate=new Date();
   const d=document.getElementById('inv-date');
   if(!d.value) d.valueAsDate=new Date();
+  
+  document.getElementById('hourly-rate').value = hourlyRate > 0 ? hourlyRate : '';
+  
   loadCompanyInfo();
   updateLanguageUI();
   if(document.querySelectorAll('.inv-item-row').length===0) addInvoiceItem("",1,500);
+  
+  checkNotifications();
 });
 
 /* ===== TABURI ===== */
@@ -912,6 +965,9 @@ function renderCalendar(){
   document.getElementById('stat-holiday-work').innerText=holidayWork;
   
   updateTodayWidget();
+  
+  // Calcul salariu estimat pe luna afisata
+  document.getElementById('salary-estimated').innerText = (workDays * hourlyRate).toFixed(2) + ' ' + sym();
 }
 
 /* ===== MODAL ZI ===== */
@@ -952,14 +1008,19 @@ function renderBudget(){
     const cls=tx.type==='income'?'income':'expense';
     const badge=tx.type==='income'?`<span class="badge badge-income">${currentLang==='ro'?'Venit':'Income'}</span>`:`<span class="badge badge-expense">${currentLang==='ro'?'Chelt.':'Exp.'}</span>`;
     
-    // Traducem categoria veche daca e cazul
     let catDisplay = tx.category;
-    if(currentLang==='en' || currentLang==='uk'){
+    if(currentLang==='uk'){
        if(tx.category==='Combustibil / Transport') catDisplay='Fuel / Transport';
        if(tx.category==='Mâncare / Utilități') catDisplay='Food / Utilities';
        if(tx.category==='Piese / Echipamente') catDisplay='Parts / Equipment';
        if(tx.category==='Chirie / Abonamente') catDisplay='Rent / Subs';
        if(tx.category==='Servicii / Venituri') catDisplay='Services / Income';
+    } else {
+       if(tx.category==='Fuel / Transport') catDisplay='Combustibil / Transport';
+       if(tx.category==='Food / Utilities') catDisplay='Mâncare / Utilități';
+       if(tx.category==='Parts / Equipment') catDisplay='Piese / Echipamente';
+       if(tx.category==='Rent / Subs') catDisplay='Chirie / Abonamente';
+       if(tx.category==='Services / Income') catDisplay='Servicii / Venituri';
     }
 
     html+=`<div class="list-item"><div><div class="li-title">${tx.title}</div><div class="li-meta">${tx.date} • ${catDisplay}</div></div><div style="display:flex;align-items:center;gap:8px;">${badge}<span class="li-amount ${cls}">${sign}${tx.amount.toFixed(2)} ${sym()}</span></div></div>`;
@@ -990,7 +1051,7 @@ function addTransaction(e){
     title:document.getElementById('tx-title').value,
     amount,
     type:document.getElementById('tx-type').value,
-    category:document.getElementById('tx-category').value, // salvam valoarea standard
+    category:document.getElementById('tx-category').value,
     date:new Date().toISOString().split('T')[0]
   });
   localStorage.setItem('transactions',JSON.stringify(transactions));
@@ -1008,11 +1069,7 @@ function editBudget(){
 }
 function chartColors(){
   const light=document.body.classList.contains('light');
-  return {
-    text: light?'#0f172a':'#f1f5f9',
-    muted: light?'#64748b':'#94a3b8',
-    grid: light?'rgba(15,23,42,.08)':'rgba(148,163,184,.1)'
-  };
+  return { text: light?'#0f172a':'#f1f5f9', muted: light?'#64748b':'#94a3b8', grid: light?'rgba(15,23,42,.08)':'rgba(148,163,184,.1)' };
 }
 function renderChart(cats){
   const ctx=document.getElementById('categoryChart').getContext('2d');
@@ -1022,7 +1079,6 @@ function renderChart(cats){
   const data=Object.values(cats);
   if(labels.length===0){labels.push('—');data.push(1);}
   
-  // Traducem etichetele graficului
   const translatedLabels = labels.map(l => {
     if(currentLang==='uk'){
       if(l==='Combustibil / Transport') return 'Fuel / Transport';
@@ -1030,6 +1086,12 @@ function renderChart(cats){
       if(l==='Piese / Echipamente') return 'Parts / Equipment';
       if(l==='Chirie / Abonamente') return 'Rent / Subs';
       if(l==='Servicii / Venituri') return 'Services / Income';
+    } else {
+      if(l==='Fuel / Transport') return 'Combustibil / Transport';
+      if(l==='Food / Utilities') return 'Mâncare / Utilități';
+      if(l==='Parts / Equipment') return 'Piese / Echipamente';
+      if(l==='Rent / Subs') return 'Chirie / Abonamente';
+      if(l==='Services / Income') return 'Servicii / Venituri';
     }
     return l;
   });
@@ -1037,13 +1099,7 @@ function renderChart(cats){
   categoryChart=new Chart(ctx,{
     type:'doughnut',
     data:{labels:translatedLabels,datasets:[{data,backgroundColor:['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4'],borderWidth:0,hoverOffset:8}]},
-    options:{
-      responsive:true,maintainAspectRatio:false,cutout:'65%',
-      plugins:{
-        legend:{position:'bottom',labels:{color:c.muted,font:{size:11,weight:'600'},padding:12,usePointStyle:true,pointStyle:'circle'}},
-        tooltip:{backgroundColor:'rgba(15,23,42,.95)',borderColor:'rgba(148,163,184,.3)',borderWidth:1,padding:10,titleFont:{size:12},bodyFont:{size:12}}
-      }
-    }
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:c.muted,font:{size:11,weight:'600'},padding:12,usePointStyle:true,pointStyle:'circle'}},tooltip:{backgroundColor:'rgba(15,23,42,.95)',borderColor:'rgba(148,163,184,.3)',borderWidth:1,padding:10,titleFont:{size:12},bodyFont:{size:12}}}}
   });
 }
 function renderFlowChart(inc, exp){
@@ -1054,22 +1110,18 @@ function renderFlowChart(inc, exp){
     type:'bar',
     data:{
       labels:[currentLang==='ro'?'Venituri':'Income', currentLang==='ro'?'Cheltuieli':'Expenses', currentLang==='ro'?'Balanță':'Balance'],
-      datasets:[{
-        data:[inc,exp,inc-exp],
-        backgroundColor:['rgba(16,185,129,.8)','rgba(239,68,68,.8)','rgba(59,130,246,.8)'],
-        borderRadius:8,borderSkipped:false,barThickness:36
-      }]
+      datasets:[{data:[inc,exp,inc-exp],backgroundColor:['rgba(16,185,129,.8)','rgba(239,68,68,.8)','rgba(59,130,246,.8)'],borderRadius:8,borderSkipped:false,barThickness:36}]
     },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(15,23,42,.95)',padding:10}},
-      scales:{
-        y:{beginAtZero:true,grid:{color:c.grid},ticks:{color:c.muted,font:{size:10}}},
-        x:{grid:{display:false},ticks:{color:c.muted,font:{size:11,weight:'600'}}}
-      }
-    }
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(15,23,42,.95)',padding:10}},scales:{y:{beginAtZero:true,grid:{color:c.grid},ticks:{color:c.muted,font:{size:10}}},x:{grid:{display:false},ticks:{color:c.muted,font:{size:11,weight:'600'}}}}}
   });
 }
+
+/* ===== SALARIU ===== */
+document.getElementById('hourly-rate').addEventListener('input', function() {
+  hourlyRate = parseFloat(this.value) || 0;
+  localStorage.setItem('hourlyRate', hourlyRate);
+  renderCalendar(); // Recalculeaza salariul
+});
 
 /* ===== FIRMA ===== */
 function loadCompanyInfo(){
@@ -1115,38 +1167,149 @@ function calculateInvoiceTotals(){
   document.getElementById('inv-tax').innerText=tax.toFixed(2)+' '+s;
   document.getElementById('inv-total').innerText=(sub+tax).toFixed(2)+' '+s;
 }
+
+/* Gestiune Poze Facturi */
+function previewImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Comprimam poza ca sa nu umplem memoria
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 600;
+      const scaleSize = MAX_WIDTH / img.width;
+      canvas.width = MAX_WIDTH;
+      canvas.height = img.height * scaleSize;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      
+      currentImageBase64 = canvas.toDataURL('image/jpeg', 0.6); // Compresie 60%
+      
+      document.getElementById('image-preview').src = currentImageBase64;
+      document.getElementById('image-preview-container').style.display = 'block';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage() {
+  currentImageBase64 = null;
+  document.getElementById('inv-image').value = '';
+  document.getElementById('image-preview').src = '';
+  document.getElementById('image-preview-container').style.display = 'none';
+}
+
+function viewImage(src) {
+  document.getElementById('full-image').src = src;
+  document.getElementById('image-modal').style.display = 'flex';
+}
+
 function saveInvoice(){
   invoices.unshift({
     number:document.getElementById('inv-number').value,
     date:document.getElementById('inv-date').value,
     client:(document.getElementById('inv-client-info').value.split('\n')[0]||'Client').trim(),
     total:document.getElementById('inv-total').innerText,
-    status: currentLang==='ro' ? 'Încasată' : 'Paid'
+    status: currentLang==='ro' ? 'Încasată' : 'Paid',
+    image: currentImageBase64 // Salvam poza
   });
   localStorage.setItem('invoices',JSON.stringify(invoices));
   renderInvoicesHistory();
+  
   const numEl=document.getElementById('inv-number');
   const m=numEl.value.match(/(\d+)$/);
   if(m){const n=(parseInt(m[1],10)+1).toString().padStart(m[1].length,'0');numEl.value=numEl.value.replace(/\d+$/,n);}
+  
+  removeImage(); // Curatam poza dupa salvare
   toast(t('t_inv'),'success');
   if(navigator.vibrate) navigator.vibrate(20);
 }
+
 function renderInvoicesHistory(){
   let html='';
   invoices.forEach(i=>{
-    // Traducem statusul vechi daca a fost salvat in alta limba
     let stat = i.status;
     if(currentLang==='ro' && stat==='Paid') stat='Încasată';
     if(currentLang!=='ro' && stat==='Încasată') stat='Paid';
 
-    html+=`<div class="list-item"><div><div class="li-title">${i.number} · ${i.client}</div><div class="li-meta">${i.date}</div></div><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-paid">${stat}</span><strong style="color:var(--accent-primary);">${i.total}</strong></div></div>`;
+    // Verificam daca are poza
+    let imgHtml = '';
+    if (i.image) {
+      imgHtml = `<img src="${i.image}" class="inv-thumb" onclick="viewImage('${i.image}')" title="${t('view_photo')}">`;
+    }
+
+    html+=`<div class="list-item">
+      <div><div class="li-title">${i.number} · ${i.client}</div><div class="li-meta">${i.date}</div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        ${imgHtml}
+        <span class="badge badge-paid">${stat}</span>
+        <strong style="color:var(--accent-primary);">${i.total}</strong>
+      </div>
+    </div>`;
   });
   document.getElementById('invoices-history-list').innerHTML=html||`<div style="text-align:center;color:var(--text-muted);padding:2rem 0;font-size:.85rem;">${t('no_inv')}</div>`;
 }
 
+/* ===== NOTIFICARI ===== */
+function requestNotifPermission() {
+  if (!("Notification" in window)) {
+    alert("Browserul tău nu suportă notificări.");
+    return;
+  }
+  Notification.requestPermission().then(function (permission) {
+    if (permission === "granted") {
+      toast(t('t_notif_ok'), 'success');
+      // Simulam o notificare de test
+      new Notification("Shift & Finance", { body: "Notificările sunt acum active! Te vom anunța când ai tură.", icon: "https://cdn-icons-png.flaticon.com/512/2965/2965335.png" });
+    } else {
+      toast(t('t_notif_err'), 'error');
+    }
+  });
+}
+
+function checkNotifications() {
+  // Aceasta functie verifica daca maine este tura, si trimite notificare (o data pe zi)
+  if (Notification.permission !== "granted") return;
+  
+  const today = new Date();
+  const todayKey = formatDateKey(today);
+  
+  // Verificam daca am trimis deja notificare azi
+  if (localStorage.getItem('lastNotifDate') === todayKey) return;
+  
+  const startVal = document.getElementById('shift-start-date').value;
+  if(!startVal) return;
+  
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowKey = formatDateKey(tomorrow);
+  
+  const pattern = document.getElementById('shift-pattern').value;
+  const startDate = new Date(startVal); startDate.setHours(0,0,0,0);
+  
+  const infoTom = computeDayInfo(tomorrow, pattern, startDate);
+  const infoToday = computeDayInfo(today, pattern, startDate);
+
+  let msg = "";
+  if (infoTom.isWork) {
+    msg = currentLang === 'ro' ? "Mâine ai tură! Pregătește-te." : "You have a shift tomorrow!";
+  } else if (infoToday.isWork) {
+    msg = currentLang === 'ro' ? "Ai tură astăzi! Spor la treabă." : "You have a shift today!";
+  }
+
+  if (msg) {
+    new Notification("Shift & Finance", { body: msg, icon: "https://cdn-icons-png.flaticon.com/512/2965/2965335.png" });
+    localStorage.setItem('lastNotifDate', todayKey);
+  }
+}
+
 /* ===== EXPORT ===== */
 function exportBackup(){
-  const blob=new Blob([JSON.stringify({transactions,invoices,budgetTarget,dayOverrides,customDayNotes},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({transactions,invoices,budgetTarget,dayOverrides,customDayNotes, hourlyRate},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='backup_'+new Date().toISOString().split('T')[0]+'.json';
