@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -7,6 +8,11 @@
 <title>Shift & Finance · Pro</title>
 <link rel="manifest" href="manifest.json">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<!-- Firebase SDK (Compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
 <style>
 :root{
   --bg-body:#070b14;
@@ -20,28 +26,20 @@
   --text-muted:#94a3b8;
   --accent-primary:#3b82f6;
   --accent-2:#8b5cf6;
-  --accent-3:#ec4899;
   --accent-glow:rgba(59,130,246,.4);
-  --accent-hover:#2563eb;
   --color-work:#ef4444;
   --color-work-bg:rgba(239,68,68,.15);
   --color-night:#f97316;
   --color-night-bg:rgba(249,115,22,.15);
   --color-off:#22c55e;
   --color-off-bg:rgba(34,197,94,.15);
-  --color-holiday:#a855f7;
-  --color-paid:#22c55e;
-  --color-income:#10b981;
-  --color-expense:#ef4444;
   --color-leave:#0ea5e9;
   --color-leave-bg:rgba(14,165,233,.15);
   --color-sick:#f43f5e;
   --color-sick-bg:rgba(244,63,94,.15);
-  
   --radius:16px;
   --radius-sm:10px;
   --shadow:0 8px 32px rgba(0,0,0,.4);
-  --shadow-glow:0 0 30px var(--accent-glow);
 }
 body.light{
   --bg-body:#f0f4f8;
@@ -56,185 +54,59 @@ body.light{
   --shadow:0 8px 32px rgba(15,23,42,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg-body);color:var(--text-main);padding-bottom:80px;min-height:100vh;
-  position:relative;overflow-x:hidden;transition:background .3s,color .3s;
-}
+body{background:var(--bg-body);color:var(--text-main);padding-bottom:80px;min-height:100vh;position:relative;overflow-x:hidden;transition:background .3s,color .3s;}
 body::before{
   content:'';position:fixed;inset:0;z-index:-2;
-  background:
-    radial-gradient(circle at 15% 20%,rgba(59,130,246,.18),transparent 45%),
-    radial-gradient(circle at 85% 30%,rgba(139,92,246,.15),transparent 40%),
-    radial-gradient(circle at 50% 95%,rgba(236,72,153,.12),transparent 45%),
-    linear-gradient(180deg,var(--bg-body) 0%,var(--bg-body-2) 100%);
-  background-size:200% 200%,200% 200%,200% 200%,100% 100%;
-  animation:bgShift 24s ease infinite;
+  background:radial-gradient(circle at 15% 20%,rgba(59,130,246,.18),transparent 45%),radial-gradient(circle at 85% 30%,rgba(139,92,246,.15),transparent 40%),linear-gradient(180deg,var(--bg-body) 0%,var(--bg-body-2) 100%);
 }
-body::after{
-  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background-image:radial-gradient(rgba(148,163,184,.06) 1px,transparent 1px);
-  background-size:24px 24px;
-  mask-image:radial-gradient(ellipse at top,black,transparent 70%);
-}
-@keyframes bgShift{
-  0%,100%{background-position:0% 0%,100% 0%,50% 100%,0 0}
-  50%{background-position:100% 100%,0% 100%,50% 0%,0 0}
-}
-
 header{
-  background:rgba(15,23,42,.6);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  padding:.9rem 1rem;border-bottom:1px solid var(--border);
-  position:sticky;top:0;z-index:100;
-  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(15,23,42,.6);backdrop-filter:blur(20px);padding:.9rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;
 }
 body.light header{background:rgba(255,255,255,.7)}
 .brand{display:flex;align-items:center;gap:10px}
-.brand-icon{
-  width:38px;height:38px;border-radius:12px;
-  background:linear-gradient(135deg,var(--accent-primary),var(--accent-2));
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 16px var(--accent-glow);
-  animation:pulse 3s ease-in-out infinite;
-}
-@keyframes pulse{
-  0%,100%{box-shadow:0 4px 16px var(--accent-glow)}
-  50%{box-shadow:0 4px 26px var(--accent-glow),0 0 0 8px rgba(59,130,246,.08)}
-}
+.brand-icon{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent-primary),var(--accent-2));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px var(--accent-glow);}
 .brand-icon svg{width:22px;height:22px;fill:#fff}
 .brand h1{font-size:1.05rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
 .brand small{font-size:.65rem;color:var(--text-muted);font-weight:500}
 .header-actions{display:flex;gap:8px}
-.icon-btn{
-  width:38px;height:38px;border-radius:10px;background:var(--bg-input);
-  border:1px solid var(--border-strong);color:var(--text-main);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:all .2s;
-}
+.icon-btn{width:38px;height:38px;border-radius:10px;background:var(--bg-input);border:1px solid var(--border-strong);color:var(--text-main);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
 .icon-btn:hover{background:var(--accent-primary);border-color:var(--accent-primary);transform:translateY(-1px)}
-.icon-btn:active{transform:scale(.95)}
 .icon-btn svg{width:18px;height:18px;fill:currentColor}
 .region-btn{width:auto;padding:0 12px;font-size:.8rem;font-weight:600;gap:4px;}
-
-nav.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(15,23,42,.85);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  display:flex;justify-content:space-around;
-  border-top:1px solid var(--border);z-index:100;height:68px;
-  padding-bottom:env(safe-area-inset-bottom);
-}
+nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,23,42,.85);backdrop-filter:blur(20px);display:flex;justify-content:space-around;border-top:1px solid var(--border);z-index:100;height:68px;padding-bottom:env(safe-area-inset-bottom);}
 body.light nav.bottom-nav{background:rgba(255,255,255,.85)}
-.nav-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  color:var(--text-muted);font-size:.7rem;background:none;border:none;cursor:pointer;
-  gap:3px;transition:color .2s;position:relative;font-weight:600;
-}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);font-size:.7rem;background:none;border:none;cursor:pointer;gap:3px;transition:color .2s;position:relative;font-weight:600;}
 .nav-item svg{width:22px;height:22px;fill:currentColor;transition:transform .2s}
 .nav-item.active{color:var(--accent-primary)}
 .nav-item.active svg{transform:translateY(-2px) scale(1.1)}
-.nav-item.active::before{
-  content:'';position:absolute;top:6px;width:24px;height:3px;border-radius:2px;
-  background:linear-gradient(90deg,var(--accent-primary),var(--accent-2));
-  animation:slideIn .3s;
-}
-@keyframes slideIn{from{width:0}to{width:24px}}
-
 .tab-content{display:none;padding:1rem;max-width:820px;margin:0 auto;animation:fadeUp .35s ease}
 .tab-content.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-.card{
-  background:var(--bg-card);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-radius:var(--radius);padding:1.2rem;margin-bottom:1rem;
-  border:1px solid var(--border);box-shadow:var(--shadow);
-  position:relative;overflow:hidden;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
-}
-.card-title{
-  font-size:.95rem;font-weight:700;margin-bottom:1rem;
-  display:flex;justify-content:space-between;align-items:center;gap:8px;
-}
-
-.today-widget{
-  background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.15));
-  border:1px solid rgba(59,130,246,.3);
-  display:flex;align-items:center;gap:14px;
-}
-.today-icon{
-  width:56px;height:56px;border-radius:14px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:1.6rem;
-  background:rgba(59,130,246,.25);border:1px solid rgba(59,130,246,.4);
-  animation:breathe 3s ease-in-out infinite;
-}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.today-icon.work{background:rgba(239,68,68,.2);border-color:var(--color-work)}
-.today-icon.off{background:rgba(34,197,94,.2);border-color:var(--color-off)}
-.today-icon.night{background:rgba(249,115,22,.2);border-color:var(--color-night)}
-.today-icon.leave{background:var(--color-leave-bg);border-color:var(--color-leave)}
-.today-icon.sick{background:var(--color-sick-bg);border-color:var(--color-sick)}
-.today-info{flex:1;min-width:0}
-.today-label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
-.today-status{font-size:1.15rem;font-weight:800;margin:2px 0}
-.today-date{font-size:.8rem;color:var(--text-muted)}
-.countdown{text-align:right;font-size:.75rem;color:var(--text-muted);}
-.countdown strong{display:block;font-size:1.3rem;font-weight:800;color:var(--accent-primary)}
-.countdown .cd-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.05em}
-
+.card{background:var(--bg-card);backdrop-filter:blur(20px);border-radius:var(--radius);padding:1.2rem;margin-bottom:1rem;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.card-title{font-size:.95rem;font-weight:700;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;gap:8px;}
 .form-group{margin-bottom:1rem}
 label{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:600}
-input,select,textarea{
-  width:100%;padding:.8rem;background:var(--bg-input);
-  border:1px solid var(--border-strong);border-radius:var(--radius-sm);
-  color:var(--text-main);font-size:.95rem;outline:none;transition:all .2s;
-  font-family:inherit;
-}
-input:focus,select:focus,textarea:focus{
-  border-color:var(--accent-primary);
-  box-shadow:0 0 0 3px rgba(59,130,246,.15);
-  background:var(--bg-card-solid);
-}
-input[type="file"]{
-  padding:.5rem; font-size:.8rem;
-}
-
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  width:100%;padding:.85rem;border:none;border-radius:var(--radius-sm);
-  font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;
-  background:linear-gradient(135deg,var(--accent-primary),var(--accent-2));
-  color:#fff;box-shadow:0 4px 16px var(--accent-glow);
-}
-.btn:hover{transform:translateY(-1px);box-shadow:0 6px 22px var(--accent-glow)}
-.btn:active{transform:scale(.98)}
+input,select,textarea{width:100%;padding:.8rem;background:var(--bg-input);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-main);font-size:.95rem;outline:none;transition:all .2s;font-family:inherit;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-shadow:0 0 0 3px rgba(59,130,246,.15);background:var(--bg-card-solid);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:.85rem;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,var(--accent-primary),var(--accent-2));color:#fff;box-shadow:0 4px 16px var(--accent-glow);}
+.btn:hover{transform:translateY(-1px);}
 .btn-secondary{background:var(--bg-input);color:var(--text-main);box-shadow:none;border:1px solid var(--border-strong)}
-.btn-secondary:hover{background:var(--bg-card-solid);box-shadow:var(--shadow)}
-.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,.3)}
+.btn-secondary:hover{background:var(--bg-card-solid);}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);}
 .btn-sm{padding:.5rem .9rem;font-size:.78rem;width:auto;}
 
-.calendar-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:8px}
-.calendar-controls h2{font-size:.95rem;font-weight:800}
+#login-screen{position:fixed;inset:0;background:var(--bg-body);z-index:1000;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2rem;text-align:center;}
+.login-card{background:var(--bg-card);padding:2rem;border-radius:var(--radius);border:1px solid var(--border-strong);max-width:400px;width:100%;box-shadow:var(--shadow);}
+.google-btn{background:#fff;color:#333;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;border:none;padding:.8rem;border-radius:8px;cursor:pointer;width:100%;margin-top:1.5rem;font-size:.95rem;}
+.google-btn img{width:20px;}
+
 .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.calendar-day-header{text-align:center;font-size:.7rem;font-weight:800;color:var(--text-muted);padding:6px 0;text-transform:uppercase;letter-spacing:.05em}
-.day-cell{
-  background:var(--bg-input);aspect-ratio:1;border-radius:10px;padding:5px;
-  display:flex;flex-direction:column;justify-content:space-between;font-size:.8rem;
-  cursor:pointer;position:relative;border:1px solid transparent;
-  transition:all .15s;
-}
-.day-cell:hover{transform:translateY(-2px);border-color:var(--border-strong)}
-.day-cell:active{transform:scale(.96)}
+.calendar-day-header{text-align:center;font-size:.7rem;font-weight:800;color:var(--text-muted);padding:6px 0;text-transform:uppercase;}
+.day-cell{background:var(--bg-input);aspect-ratio:1;border-radius:10px;padding:5px;display:flex;flex-direction:column;justify-content:space-between;font-size:.8rem;cursor:pointer;position:relative;border:1px solid transparent;transition:all .15s;}
 .day-cell.empty{background:transparent;cursor:default;border:none}
-.day-cell.empty:hover{transform:none}
-.day-cell.today{box-shadow:0 0 0 2px var(--accent-primary),0 0 20px var(--accent-glow);animation:todayPulse 2s ease-in-out infinite}
-@keyframes todayPulse{0%,100%{box-shadow:0 0 0 2px var(--accent-primary),0 0 20px var(--accent-glow)}50%{box-shadow:0 0 0 2px var(--accent-primary),0 0 30px var(--accent-glow)}}
+.day-cell.today{box-shadow:0 0 0 2px var(--accent-primary);}
 .day-number{font-weight:800;font-size:.85rem}
-.day-badge{font-size:.6rem;padding:2px 4px;border-radius:4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.day-badge{font-size:.6rem;padding:2px 4px;border-radius:4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;text-transform:uppercase;}
 .day-cell.work{background:var(--color-work-bg);border-color:rgba(239,68,68,.4)}
 .day-cell.work .day-badge{background:var(--color-work);color:#fff}
 .day-cell.night{background:var(--color-night-bg);border-color:rgba(249,115,22,.4)}
@@ -245,164 +117,74 @@ input[type="file"]{
 .day-cell.leave .day-badge{background:var(--color-leave);color:#fff}
 .day-cell.sick{background:var(--color-sick-bg);border-color:rgba(244,63,94,.4)}
 .day-cell.sick .day-badge{background:var(--color-sick);color:#fff}
-.day-cell.holiday{box-shadow:inset 0 0 0 1px var(--color-holiday)}
-.holiday-dot{width:6px;height:6px;background:var(--color-holiday);border-radius:50%;position:absolute;top:5px;right:5px;box-shadow:0 0 6px var(--color-holiday)}
-.note-dot{width:6px;height:6px;background:var(--accent-primary);border-radius:50%;position:absolute;bottom:5px;right:5px;box-shadow:0 0 6px var(--accent-primary)}
-
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:1rem}
-.stat-box{
-  background:var(--bg-input);padding:.9rem;border-radius:var(--radius-sm);
-  text-align:center;border:1px solid var(--border);position:relative;overflow:hidden;
-  transition:all .2s;
-}
-.stat-box:hover{transform:translateY(-2px);border-color:var(--border-strong)}
-.stat-box::after{
-  content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;
-  background:radial-gradient(circle,rgba(59,130,246,.15),transparent 70%);
-  pointer-events:none;
-}
-.stat-value{font-size:1.5rem;font-weight:900;color:var(--accent-primary);letter-spacing:-.02em;line-height:1}
-.stat-label{font-size:.7rem;color:var(--text-muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-
-.progress-bar-container{
-  background:var(--bg-input);height:14px;border-radius:8px;overflow:hidden;
-  margin:10px 0;border:1px solid var(--border);position:relative;
-}
-.progress-bar{
-  height:100%;width:0%;transition:width .5s cubic-bezier(.4,0,.2,1);
-  background:linear-gradient(90deg,var(--accent-primary),var(--accent-2));
-  position:relative;
-}
-.progress-bar::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
-  animation:shimmer 2s infinite;
-}
-@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.progress-bar.over{background:linear-gradient(90deg,#f59e0b,#ef4444)}
-
-.list-item{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 0;border-bottom:1px solid var(--border);
-  transition:all .15s;
-}
-.list-item:hover{padding-left:4px}
+.stat-box{background:var(--bg-input);padding:.9rem;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);}
+.stat-value{font-size:1.5rem;font-weight:900;color:var(--accent-primary);}
+.stat-label{font-size:.7rem;color:var(--text-muted);margin-top:4px;font-weight:600;text-transform:uppercase;}
+.progress-bar-container{background:var(--bg-input);height:14px;border-radius:8px;overflow:hidden;margin:10px 0;border:1px solid var(--border);}
+.progress-bar{height:100%;width:0%;transition:width .5s;background:linear-gradient(90deg,var(--accent-primary),var(--accent-2));}
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
 .list-item:last-child{border-bottom:none}
 .list-item .li-title{font-weight:700;font-size:.9rem}
 .list-item .li-meta{font-size:.72rem;color:var(--text-muted);margin-top:2px}
-.list-item .li-amount{font-weight:900;font-size:.95rem}
-.li-amount.income{color:var(--color-income)}
-.li-amount.expense{color:var(--color-expense)}
-.badge{font-size:.65rem;padding:3px 8px;border-radius:6px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.badge{font-size:.65rem;padding:3px 8px;border-radius:6px;font-weight:800;text-transform:uppercase;}
 .badge-paid{background:rgba(34,197,94,.2);color:var(--color-paid);border:1px solid rgba(34,197,94,.3)}
-.badge-income{background:rgba(16,185,129,.2);color:var(--color-income);border:1px solid rgba(16,185,129,.3)}
-.badge-expense{background:rgba(239,68,68,.2);color:var(--color-expense);border:1px solid rgba(239,68,68,.3)}
-
-.inv-item-row{display:grid;grid-template-columns:2fr 1fr 1fr 40px;gap:6px;margin-bottom:8px;animation:fadeUp .2s}
-.totals-box{
-  background:var(--bg-input);border-radius:var(--radius-sm);padding:1rem;
-  text-align:right;font-size:.9rem;line-height:1.7;margin-bottom:1rem;
-  border:1px solid var(--border);
-}
-.total-final{font-size:1.35rem;font-weight:900;color:var(--accent-primary);letter-spacing:-.02em}
-
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.75);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  display:none;justify-content:center;align-items:center;z-index:200;padding:1rem;
-  animation:fadeUp .2s;
-}
-.modal-content{
-  background:var(--bg-card-solid);border-radius:var(--radius);
-  padding:1.4rem;width:100%;max-width:460px;border:1px solid var(--border-strong);
-  box-shadow:var(--shadow);animation:modalIn .3s cubic-bezier(.34,1.56,.64,1);
-  max-height: 90vh; overflow-y: auto;
-}
-@keyframes modalIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-
-#toast-container{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:calc(100% - 32px);max-width:400px}
-.toast{
-  background:var(--bg-card-solid);color:var(--text-main);
-  padding:.8rem 1.1rem;border-radius:var(--radius-sm);
-  border:1px solid var(--border-strong);box-shadow:var(--shadow);
-  font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:10px;
-  animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);
-  pointer-events:auto;
-}
-.toast.success{border-left:3px solid var(--color-off)}
-.toast.error{border-left:3px solid var(--color-expense)}
-.toast.info{border-left:3px solid var(--accent-primary)}
-@keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-
-.chart-wrapper{position:relative;height:220px}
-.chart-wrapper.small{height:180px}
-
-/* Salariu widget */
-.salary-box{
-  background: linear-gradient(135deg, rgba(16,185,129,.15), rgba(59,130,246,.15));
-  border: 1px solid rgba(16,185,129,.3);
-  text-align: center; padding: 1.2rem; border-radius: var(--radius);
-  margin-bottom: 1rem;
-}
-.salary-label{font-size: .8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: .05em;}
+.inv-item-row{display:grid;grid-template-columns:2fr 1fr 1fr 40px;gap:6px;margin-bottom:8px;}
+.totals-box{background:var(--bg-input);border-radius:var(--radius-sm);padding:1rem;text-align:right;font-size:.9rem;border:1px solid var(--border);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:none;justify-content:center;align-items:center;z-index:200;padding:1rem;}
+.modal-content{background:var(--bg-card-solid);border-radius:var(--radius);padding:1.4rem;width:100%;max-width:460px;border:1px solid var(--border-strong);max-height: 90vh; overflow-y: auto;}
+.salary-box{background: linear-gradient(135deg, rgba(16,185,129,.15), rgba(59,130,246,.15)); border: 1px solid rgba(16,185,129,.3); text-align: center; padding: 1.2rem; border-radius: var(--radius); margin-bottom: 1rem;}
+.salary-label{font-size: .8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;}
 .salary-val{font-size: 2rem; font-weight: 900; color: var(--color-income); margin: 5px 0;}
-
-/* poza in lista de facturi */
 .inv-thumb{width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-strong); cursor: pointer;}
-
-@media print{
-  body{background:#fff!important;color:#000!important;padding-bottom:0!important}
-  header,nav.bottom-nav,.no-print,#toast-container{display:none!important}
-  .tab-content{display:none!important}
-  #tab-invoices{display:block!important}
-  .card{background:#fff!important;border:none!important;box-shadow:none!important;padding:0!important;color:#000!important;backdrop-filter:none!important}
-  .card::before{display:none!important}
-  input,select,textarea{border:none!important;background:transparent!important;color:#000!important;padding:0!important}
-  .btn{display:none!important}
-  body::before,body::after{display:none!important}
-}
-
-@media (min-width:640px){
-  .stats-grid{grid-template-columns:repeat(4,1fr)}
-  .brand h1{font-size:1.2rem}
-}
 </style>
 </head>
 <body>
 
-<div id="main-app">
+<!-- ECRAN LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1 style="font-size: 2rem; margin-bottom: 10px;">🗓️ Shift & Finance</h1>
+    <p style="color: var(--text-muted); margin-bottom: 20px;">Conectează-te pentru a-ți salva datele în Cloud. Astfel, nu le vei pierde niciodată, chiar dacă îți schimbi telefonul.</p>
+    <button class="google-btn" onclick="loginWithGoogle()">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg">
+      Continuă cu Google
+    </button>
+  </div>
+</div>
+
+<!-- APLICAȚIA PRINCIPALĂ (Ascunsă la început) -->
+<div id="main-app" style="display:none;">
   <header>
     <div class="brand">
-      <div class="brand-icon">
-        <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z"/></svg>
-      </div>
+      <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z"/></svg></div>
       <div>
         <h1>Shift & Finance</h1>
-        <small id="header-sub" data-i18n="header_sub">Panou personal</small>
+        <small id="header-sub">Se încarcă...</small>
       </div>
     </div>
     <div class="header-actions">
       <button class="icon-btn" onclick="requestNotifPermission()" title="Notificări" style="color:var(--color-off);">🔔</button>
       <button class="icon-btn region-btn" id="region-btn" onclick="toggleRegion()">🇷🇴 RO</button>
-      <button class="icon-btn" onclick="toggleTheme()" title="Theme" aria-label="Theme">
-        <svg id="theme-icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 01-4.4 2.26 5.4 5.4 0 01-5.4-5.4c0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/></svg>
+      <button class="icon-btn" onclick="logout()" title="Deconectare" style="background:#ef4444;color:white;border-color:#dc2626;">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
       </button>
     </div>
   </header>
 
   <!-- TAB TURE -->
   <div id="tab-shifts" class="tab-content active">
-    <div class="card today-widget">
-      <div class="today-icon" id="today-icon">📅</div>
-      <div class="today-info">
-        <div class="today-label" data-i18n="today">Astăzi</div>
-        <div class="today-status" id="today-status">—</div>
-        <div class="today-date" id="today-date">—</div>
+    <div class="card today-widget" style="background: linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.15)); border: 1px solid rgba(59,130,246,.3); display:flex; gap:14px; align-items:center;">
+      <div class="today-icon" id="today-icon" style="width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:rgba(59,130,246,.25);">📅</div>
+      <div class="today-info" style="flex:1;">
+        <div class="today-label" data-i18n="today" style="font-size:.7rem;color:var(--text-muted);font-weight:700;">Astăzi</div>
+        <div class="today-status" id="today-status" style="font-size:1.15rem;font-weight:800;margin:2px 0;">—</div>
+        <div class="today-date" id="today-date" style="font-size:.8rem;color:var(--text-muted);">—</div>
       </div>
-      <div class="countdown">
-        <span class="cd-label" id="countdown-label" data-i18n="next">Următoarea</span>
-        <strong id="countdown-value">—</strong>
-        <span class="cd-label" id="countdown-sub" data-i18n="shift">tură</span>
+      <div class="countdown" style="text-align:right;font-size:.75rem;color:var(--text-muted);">
+        <span class="cd-label" id="countdown-label" data-i18n="next" style="font-size:.65rem;text-transform:uppercase;font-weight:700;">Următoarea</span>
+        <strong id="countdown-value" style="display:block;font-size:1.3rem;font-weight:800;color:var(--accent-primary);">—</strong>
+        <span class="cd-label" id="countdown-sub" data-i18n="shift" style="font-size:.65rem;text-transform:uppercase;">tură</span>
       </div>
     </div>
 
@@ -410,7 +192,7 @@ input[type="file"]{
       <div class="card-title"><span data-i18n="config_shift">⚙️ Configurare Tură</span></div>
       <div class="form-group">
         <label data-i18n="shift_pattern">Model Tură</label>
-        <select id="shift-pattern" onchange="renderCalendar()">
+        <select id="shift-pattern" onchange="renderCalendar(); saveDataToCloud();">
           <option value="4-4" data-i18n="opt_44">4 Lucru / 4 Liber (4/4)</option>
           <option value="3-4" data-i18n="opt_34">3 Lucru / 4 Liber (3/4)</option>
           <option value="5-2" data-i18n="opt_52">5 Lucru / 2 Liber (Luni-Vineri)</option>
@@ -419,14 +201,14 @@ input[type="file"]{
       </div>
       <div class="form-group">
         <label data-i18n="start_date">Data de Start (Ziua 1)</label>
-        <input type="date" id="shift-start-date" onchange="renderCalendar()">
+        <input type="date" id="shift-start-date" onchange="renderCalendar(); saveDataToCloud();">
       </div>
     </div>
 
     <div class="card">
-      <div class="calendar-controls">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:8px;">
         <button class="btn btn-secondary btn-sm" onclick="changeMonth(-1)">◀</button>
-        <h2 id="calendar-month-year">—</h2>
+        <h2 id="calendar-month-year" style="font-size:.95rem;font-weight:800">—</h2>
         <button class="btn btn-secondary btn-sm" onclick="changeMonth(1)">▶</button>
       </div>
       <div class="calendar-grid" id="calendar-headers">
@@ -443,21 +225,11 @@ input[type="file"]{
         <div class="stat-box"><div id="stat-leave-days" class="stat-value">0</div><div class="stat-label" data-i18n="leave">Concediu</div></div>
         <div class="stat-box"><div id="stat-sick-days" class="stat-value">0</div><div class="stat-label" data-i18n="sick">Medicale</div></div>
       </div>
-      <div class="stats-grid" style="margin-top: 5px;">
-        <div class="stat-box" style="grid-column: span 2;"><div id="stat-weekend-work" class="stat-value">0</div><div class="stat-label" data-i18n="weekend_work">Weekend Lucrat</div></div>
-        <div class="stat-box" style="grid-column: span 2;"><div id="stat-holiday-work" class="stat-value">0</div><div class="stat-label" data-i18n="holiday_work">Sărbători Lucrate</div></div>
-      </div>
-
-      <div style="margin-top:1rem;">
-        <button class="btn btn-secondary btn-sm" onclick="exportICS()" data-i18n="export_ics">📥 Exportă .ics</button>
-      </div>
     </div>
   </div>
 
   <!-- TAB BUGET -->
   <div id="tab-budget" class="tab-content">
-    
-    <!-- Noul card de Salariu Estimat -->
     <div class="salary-box card">
       <div class="card-title" style="justify-content: center; margin-bottom: 5px;">
         <span data-i18n="estimated_salary">💰 Salariu Estimat Luna Aceasta</span>
@@ -465,7 +237,7 @@ input[type="file"]{
       <div class="salary-val" id="salary-estimated">0.00</div>
       <div style="display: flex; justify-content: center; align-items: center; gap: 5px; font-size: .8rem; color: var(--text-muted); margin-top: 10px;">
         <span data-i18n="rate">Tarif/oră:</span>
-        <input type="number" id="hourly-rate" style="width: 70px; padding: 4px; text-align: center;" oninput="renderBudget()">
+        <input type="number" id="hourly-rate" style="width: 70px; padding: 4px; text-align: center;" oninput="renderBudget(); saveDataToCloud();">
         <span id="curr-symbol-rate">lei</span>
       </div>
     </div>
@@ -487,115 +259,32 @@ input[type="file"]{
     </div>
 
     <div class="card">
-      <div class="card-title" data-i18n="inc_vs_exp">📊 Venituri vs Cheltuieli</div>
-      <div class="chart-wrapper small"><canvas id="flowChart"></canvas></div>
-    </div>
-
-    <div class="card">
       <div class="card-title" data-i18n="add_tx">➕ Adaugă Tranzacție</div>
       <form id="transaction-form" onsubmit="addTransaction(event)">
         <div class="form-group"><label data-i18n="title">Titlu</label><input type="text" id="tx-title" required></div>
-        <div class="form-group"><label data-i18n="amount">Sumă (lei)</label><input type="number" step="0.01" id="tx-amount" required></div>
-        <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div><label data-i18n="type">Tip</label>
-            <select id="tx-type">
-              <option value="expense" data-i18n="opt_expense">📉 Cheltuială</option>
-              <option value="income" data-i18n="opt_income">📈 Venit</option>
-            </select>
-          </div>
-          <div><label data-i18n="category">Categorie</label>
-            <select id="tx-category">
-              <option value="Fuel / Transport" data-i18n="cat_fuel">Combustibil / Transport</option>
-              <option value="Food / Utilities" data-i18n="cat_food">Mâncare / Utilități</option>
-              <option value="Parts / Equipment" data-i18n="cat_parts">Piese / Echipamente</option>
-              <option value="Rent / Subs" data-i18n="cat_rent">Chirie / Abonamente</option>
-              <option value="Services / Income" data-i18n="cat_service">Servicii / Venituri</option>
-            </select>
-          </div>
-        </div>
+        <div class="form-group"><label data-i18n="amount">Sumă</label><input type="number" step="0.01" id="tx-amount" required></div>
         <button type="submit" class="btn" data-i18n="btn_add_tx">Adaugă Tranzacție</button>
       </form>
     </div>
-
-    <div class="card">
-      <div class="card-title" data-i18n="exp_cat">🍩 Cheltuieli pe Categorii</div>
-      <div class="chart-wrapper"><canvas id="categoryChart"></canvas></div>
-    </div>
-
+    
     <div class="card">
       <div class="card-title" data-i18n="tx_history">📋 Istoric Tranzacții</div>
       <div id="transaction-list"></div>
-      <div style="margin-top:1rem;"><button class="btn btn-secondary btn-sm" onclick="exportBackup()" data-i18n="backup">💾 Backup JSON</button></div>
     </div>
   </div>
 
   <!-- TAB FACTURI -->
   <div id="tab-invoices" class="tab-content">
-    <div class="card no-print">
-      <div class="card-title" data-i18n="company_data">⚙️ Datele Firmei Tale</div>
-      <div class="form-group"><label data-i18n="comp_name">Nume Firmă / PFA</label><input type="text" id="my-company-name" oninput="saveCompanyInfo()"></div>
-      <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><label data-i18n="comp_tax">CUI / CIF</label><input type="text" id="my-company-tax" oninput="saveCompanyInfo()"></div>
-        <div><label data-i18n="comp_iban">IBAN</label><input type="text" id="my-company-iban" oninput="saveCompanyInfo()"></div>
-      </div>
-    </div>
-
     <div class="card">
-      <div class="card-title">
-        <span data-i18n="new_inv">📄 Factură Nouă</span>
-        <button class="btn btn-secondary btn-sm no-print" onclick="addInvoiceItem()" data-i18n="add_line">+ Linie</button>
-      </div>
-
-      <div style="display:flex;justify-content:space-between;margin-bottom:1rem;font-size:.9rem;gap:10px;flex-wrap:wrap;">
-        <div style="flex:1;min-width:150px;">
-          <strong id="print-my-name" style="font-size:1rem">Service & Repair SRL</strong><br>
-          <span id="print-my-tax" style="color:var(--text-muted);font-size:.8rem">CUI: RO12345678</span><br>
-          <span id="print-my-iban" style="color:var(--text-muted);font-size:.8rem">IBAN: RO98...</span>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:.7rem;color:var(--text-muted);font-weight:800;letter-spacing:.1em;margin-bottom:4px;" data-i18n="invoice_word">FACTURĂ</div>
-          <input type="text" id="inv-number" value="FAC-001" style="width:110px;text-align:right;font-weight:800;">
-          <input type="date" id="inv-date" style="width:140px;text-align:right;margin-top:6px;">
-        </div>
-      </div>
-
+      <div class="card-title"><span data-i18n="new_inv">📄 Factură Nouă</span></div>
       <div class="form-group">
-        <label data-i18n="client_info">Client (Nume / CUI / Adresă)</label>
-        <textarea id="inv-client-info" rows="2" data-i18n-placeholder="client_ph"></textarea>
+        <label data-i18n="client_info">Client</label>
+        <input type="text" id="inv-client-info">
       </div>
-
-      <label data-i18n="items">Articole / Servicii</label>
-      <div id="inv-items-container" style="margin-bottom:1rem;"></div>
-
-      <!-- Noul input de poza -->
-      <div class="form-group no-print" style="margin-top: 10px; padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
-        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-          📸 <span data-i18n="add_photo">Adaugă o poză (Chitanță / Bon)</span>
-          <input type="file" id="inv-image" accept="image/*" style="display: none;" onchange="previewImage(event)">
-        </label>
-        <div id="image-preview-container" style="display: none; margin-top: 10px; text-align: center;">
-          <img id="image-preview" style="max-width: 100%; max-height: 150px; border-radius: 8px; border: 1px solid var(--border-strong);">
-          <button class="btn btn-danger btn-sm" style="margin-top: 8px;" onclick="removeImage()" data-i18n="remove_photo">Șterge Poza</button>
-        </div>
-      </div>
-
       <div class="totals-box">
-        <div><span data-i18n="subtotal">Subtotal</span>: <strong id="inv-subtotal">0.00 lei</strong></div>
-        <div><span data-i18n="vat">TVA</span> (<span id="tax-rate-label">19</span>%): <strong id="inv-tax">0.00 lei</strong></div>
-        <div style="margin-top:6px;padding-top:8px;border-top:1px solid var(--border);">
-          <span data-i18n="total">TOTAL</span>: <span class="total-final" id="inv-total">0.00 lei</span>
-        </div>
+        <div><span data-i18n="total">TOTAL</span>: <span id="inv-total" style="font-weight:900; font-size:1.2rem; color:var(--accent-primary);">0.00 lei</span></div>
       </div>
-
-      <div style="display:flex;gap:10px;" class="no-print">
-        <button class="btn btn-secondary" onclick="window.print()" data-i18n="print">🖨️ Print / PDF</button>
-        <button class="btn" onclick="saveInvoice()" data-i18n="save">💾 Salvează</button>
-      </div>
-    </div>
-
-    <div class="card no-print">
-      <div class="card-title" data-i18n="inv_history">📚 Istoric Facturi</div>
-      <div id="invoices-history-list" data-i18n="no_inv">Nicio factură.</div>
+      <button class="btn" onclick="saveInvoice()" data-i18n="save">💾 Salvează</button>
     </div>
   </div>
 
@@ -612,734 +301,245 @@ input[type="file"]{
   </nav>
 </div>
 
-<!-- MODAL ZI -->
-<div id="day-modal" class="modal-overlay">
-  <div class="modal-content">
-    <div class="card-title"><span data-i18n="edit_day">Editează Ziua</span> <span id="modal-date-str" style="color:var(--accent-primary)"></span></div>
-    <div class="form-group">
-      <label data-i18n="shift_type">Tip Tură</label>
-      <select id="modal-shift-override">
-        <option value="auto" data-i18n="opt_auto">Automat (din model)</option>
-        <option value="work" data-i18n="opt_work">💪 Muncă (Zi)</option>
-        <option value="night" data-i18n="opt_night">🌙 Muncă (Noapte)</option>
-        <option value="off" data-i18n="opt_off">🏖️ Liber</option>
-        <option value="leave" data-i18n="opt_leave">🌴 Concediu (Holiday)</option>
-        <option value="sick" data-i18n="opt_sick">🤒 Medical (Bolnav)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label data-i18n="notes">Notițe</label>
-      <textarea id="modal-day-note" rows="3" data-i18n-placeholder="notes_ph"></textarea>
-    </div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn" onclick="saveDayModal()" data-i18n="save">Salvează</button>
-      <button class="btn btn-secondary" onclick="closeDayModal()" data-i18n="close">Închide</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL POZA MARITA -->
-<div id="image-modal" class="modal-overlay" onclick="this.style.display='none'">
-  <img id="full-image" style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 20px #000;">
-</div>
-
-<div id="toast-container"></div>
+<div id="toast-container" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;"></div>
 
 <script>
-/* ===== DICTIONARE LIMBI ===== */
-const translations = {
-  ro: {
-    header_sub: "Panou personal", today: "Astăzi", next: "Următoarea", shift: "tură",
-    config_shift: "⚙️ Configurare Tură", shift_pattern: "Model Tură", start_date: "Data de Start (Ziua 1)",
-    opt_44: "4 Lucru / 4 Liber (4/4)", opt_34: "3 Lucru / 4 Liber (3/4)", opt_52: "5 Lucru / 2 Liber (Luni-Vineri)", opt_12: "12h Zi / 12h Noapte / 48h Liber",
-    mon: "Lu", tue: "Ma", wed: "Mi", thu: "Jo", fri: "Vi", sat: "Sâ", sun: "Du",
-    worked: "Lucrate", off: "Libere", leave: "Concediu", sick: "Medicale", weekend_work: "Weekend Lucrat", holiday_work: "Sărbători Lucrate",
-    export_ics: "📥 Exportă .ics",
-    estimated_salary: "💰 Salariu Estimat Luna Aceasta", rate: "Tarif/oră:",
-    budget_month: "🎯 Buget Lunar", set: "Setează", spent: "Cheltuit", target: "Țintă", remaining: "Rămas",
-    inc_vs_exp: "📊 Venituri vs Cheltuieli", add_tx: "➕ Adaugă Tranzacție", title: "Titlu", amount: "Sumă", type: "Tip", category: "Categorie",
-    opt_expense: "📉 Cheltuială", opt_income: "📈 Venit",
-    cat_fuel: "Combustibil / Transport", cat_food: "Mâncare / Utilități", cat_parts: "Piese / Echipamente", cat_rent: "Chirie / Abonamente", cat_service: "Servicii / Venituri",
-    btn_add_tx: "Adaugă Tranzacție", exp_cat: "🍩 Cheltuieli pe Categorii", tx_history: "📋 Istoric Tranzacții", backup: "💾 Backup JSON",
-    company_data: "⚙️ Datele Firmei Tale", comp_name: "Nume Firmă / PFA", comp_tax: "CUI / CIF", comp_iban: "IBAN",
-    new_inv: "📄 Factură Nouă", add_line: "+ Linie", invoice_word: "FACTURĂ", client_info: "Client (Nume / CUI / Adresă)", client_ph: "Date client...",
-    items: "Articole / Servicii", subtotal: "Subtotal", vat: "TVA", total: "TOTAL", print: "🖨️ Print / PDF", save: "💾 Salvează",
-    inv_history: "📚 Istoric Facturi", no_inv: "Nicio factură.",
-    nav_shifts: "Ture", nav_budget: "Buget", nav_inv: "Facturi",
-    edit_day: "Editează Ziua", shift_type: "Tip Tură", opt_auto: "Automat (din model)", opt_work: "💪 Muncă (Zi)", opt_night: "🌙 Muncă (Noapte)", opt_off: "🏖️ Liber", opt_leave: "🌴 Concediu", opt_sick: "🤒 Medical", notes: "Notițe", notes_ph: "Adaugă o notiță...", close: "Închide",
-    add_photo: "Adaugă o poză (Chitanță / Bon)", remove_photo: "Șterge Poza", view_photo: "Vezi poza",
-    curr_symbol: "lei", days: ["Duminică","Luni","Marți","Miercuri","Joi","Vineri","Sâmbătă"], months: ["Ianuarie","Februarie","Martie","Aprilie","Mai","Iunie","Iulie","August","Septembrie","Octombrie","Noiembrie","Decembrie"], months_short: ["ian","feb","mar","apr","mai","iun","iul","aug","sep","oct","nov","dec"],
-    status_off: "Zi Liberă", status_leave: "Concediu", status_sick: "Medical", status_night: "Tură de Noapte", status_work: "Tură de Zi",
-    cd_rest: "Te odihnești", cd_home: "Acasă", cd_you_are: "Ești în", cd_today: "astăzi", cd_in: "Peste", cd_until: "până la tură", cd_none: "Fără", cd_soon: "tură curând",
-    t_saved: "Zi salvată", t_tx: "Tranzacție adăugată", t_budget: "Buget actualizat", t_inv: "Factură salvată", t_bkp: "Backup descărcat", t_ics: "Calendar .ics descărcat", t_err: "Eroare", t_err_start: "Setează data de start mai întâi", t_no_shifts: "Nu există ture în această lună", t_notif_ok: "Notificări activate!", t_notif_err: "Notificările au fost blocate din setările browserului.",
-    item_desc: "Descriere", item_qty: "Cant.", item_price: "Preț", no_tx: "Fără tranzacții încă."
-  },
-  uk: {
-    header_sub: "Personal Dashboard", today: "Today", next: "Next", shift: "shift",
-    config_shift: "⚙️ Shift Settings", shift_pattern: "Shift Pattern", start_date: "Start Date (Day 1)",
-    opt_44: "4 On / 4 Off (4/4)", opt_34: "3 On / 4 Off (3/4)", opt_52: "5 On / 2 Off (Mon-Fri)", opt_12: "12h Day / 12h Night / 48h Off",
-    mon: "Mo", tue: "Tu", wed: "We", thu: "Th", fri: "Fr", sat: "Sa", sun: "Su",
-    worked: "Worked", off: "Off", leave: "Holiday", sick: "Sick", weekend_work: "Weekend Worked", holiday_work: "Bank Holidays Worked",
-    export_ics: "📥 Export .ics",
-    estimated_salary: "💰 Estimated Salary This Month", rate: "Rate/hour:",
-    budget_month: "🎯 Monthly Budget", set: "Set", spent: "Spent", target: "Target", remaining: "Left",
-    inc_vs_exp: "📊 Income vs Expenses", add_tx: "➕ Add Transaction", title: "Title", amount: "Amount", type: "Type", category: "Category",
-    opt_expense: "📉 Expense", opt_income: "📈 Income",
-    cat_fuel: "Fuel / Transport", cat_food: "Food / Utilities", cat_parts: "Parts / Equipment", cat_rent: "Rent / Subscriptions", cat_service: "Services / Income",
-    btn_add_tx: "Add Transaction", exp_cat: "🍩 Expenses by Category", tx_history: "📋 Transaction History", backup: "💾 Backup JSON",
-    company_data: "⚙️ Company Details", comp_name: "Company Name", comp_tax: "VAT No / Tax ID", comp_iban: "IBAN",
-    new_inv: "📄 New Invoice", add_line: "+ Line", invoice_word: "INVOICE", client_info: "Client (Name / Tax ID / Address)", client_ph: "Client details...",
-    items: "Items / Services", subtotal: "Subtotal", vat: "VAT", total: "TOTAL", print: "🖨️ Print / PDF", save: "💾 Save",
-    inv_history: "📚 Invoice History", no_inv: "No invoices yet.",
-    nav_shifts: "Shifts", nav_budget: "Budget", nav_inv: "Invoices",
-    edit_day: "Edit Day", shift_type: "Shift Type", opt_auto: "Auto (from pattern)", opt_work: "💪 Work (Day)", opt_night: "🌙 Work (Night)", opt_off: "🏖️ Off", opt_leave: "🌴 Holiday", opt_sick: "🤒 Sick", notes: "Notes", notes_ph: "Add a note...", close: "Close",
-    add_photo: "Add a photo (Receipt)", remove_photo: "Remove Photo", view_photo: "View photo",
-    curr_symbol: "£", days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], months: ["January","February","March","April","May","June","July","August","September","October","November","December"], months_short: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-    status_off: "Day Off", status_leave: "Holiday", status_sick: "Sick Leave", status_night: "Night Shift", status_work: "Day Shift",
-    cd_rest: "Resting", cd_home: "At home", cd_you_are: "You are in", cd_today: "today", cd_in: "In", cd_until: "until shift", cd_none: "No", cd_soon: "shift soon",
-    t_saved: "Day saved", t_tx: "Transaction added", t_budget: "Budget updated", t_inv: "Invoice saved", t_bkp: "Backup downloaded", t_ics: "Calendar .ics downloaded", t_err: "Error", t_err_start: "Set start date first", t_no_shifts: "No shifts this month", t_notif_ok: "Notifications enabled!", t_notif_err: "Notifications blocked in browser settings.",
-    item_desc: "Description", item_qty: "Qty", item_price: "Price", no_tx: "No transactions yet."
-  }
+// ==========================================
+// 1. SETĂRI FIREBASE (Cheile tale din poză)
+// ==========================================
+const firebaseConfig = {
+  apiKey: "AIzaSyAN9nxu003_B_8zlvcJp9-E2Y7LiQeDVQY",
+  authDomain: "shift-finance-app.firebaseapp.com",
+  projectId: "shift-finance-app",
+  storageBucket: "shift-finance-app.firebasestorage.app",
+  messagingSenderId: "470894842358",
+  appId: "1:470894842358:web:538b9cecd79bb4474bb7d7"
 };
 
-/* ===== STARE ===== */
-let currentLang = localStorage.getItem('lang') || 'ro';
-let currentRegion = currentLang === 'ro' ? 'RO' : 'UK';
-let currentTaxRate = currentRegion === 'RO' ? 0.19 : 0.20;
+// Inițializare Firebase
+try {
+  firebase.initializeApp(firebaseConfig);
+  var auth = firebase.auth();
+  var db = firebase.firestore();
+} catch (e) {
+  console.error("Eroare Firebase: ", e);
+}
+
+let currentUser = null;
+let currentLang = 'ro';
+let currentTaxRate = 0.19;
 let currentMonth = new Date().getMonth(), currentYear = new Date().getFullYear();
-let budgetTarget = parseFloat(localStorage.getItem('budgetTarget'))||5000;
-let customDayNotes = JSON.parse(localStorage.getItem('customDayNotes')||'{}');
-let dayOverrides = JSON.parse(localStorage.getItem('dayOverrides')||'{}');
-let transactions = JSON.parse(localStorage.getItem('transactions')||'[]');
-let invoices = JSON.parse(localStorage.getItem('invoices')||'[]');
-let categoryChart = null, flowChart = null;
-let currentImageBase64 = null; // Pt poza de la factura
+let budgetTarget = 5000, hourlyRate = 0;
+let transactions = [], dayOverrides = {}, customDayNotes = {};
 
-let hourlyRate = parseFloat(localStorage.getItem('hourlyRate')) || 0;
-
-const t = (key) => translations[currentLang][key] || key;
-const sym = () => t('curr_symbol');
-
-/* ===== FUNCȚIE TRADUCERE INTERFAȚĂ ===== */
-function updateLanguageUI() {
-  document.documentElement.lang = currentLang;
-  document.getElementById('region-btn').innerText = currentLang === 'ro' ? '🇷🇴 RO' : '🇬🇧 UK';
-  document.getElementById('tax-rate-label').innerText = currentLang === 'ro' ? '19' : '20';
-  document.getElementById('curr-symbol-rate').innerText = sym();
-
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    el.innerText = t(el.getAttribute('data-i18n'));
+// ==========================================
+// 2. LOGICA DE LOGIN
+// ==========================================
+function loginWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(error => {
+    alert("Eroare la logare: " + error.message);
   });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
-  });
-  
-  renderCalendar();
-  renderBudget();
-  renderInvoicesHistory();
 }
 
-/* ===== TOAST ===== */
-function toast(msg, type='info'){
-  const c=document.getElementById('toast-container');
-  const t=document.createElement('div');
-  t.className='toast '+type;
-  t.innerText=msg;
-  c.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-10px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300);},2500);
+function logout() {
+  auth.signOut();
 }
 
-/* ===== TEMĂ ===== */
-function toggleTheme(){
-  document.body.classList.toggle('light');
-  const isLight=document.body.classList.contains('light');
-  localStorage.setItem('theme',isLight?'light':'dark');
-  document.getElementById('theme-icon').innerHTML=isLight
-    ? '<path d="M12 18a6 6 0 100-12 6 6 0 000 12zm0-2a4 4 0 110-8 4 4 0 010 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.5 4.9l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zm13.5 13.5l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zM1 11h3v2H1v-2zm19 0h3v2h-3v-2zM3.5 19.1l2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4zM17 4.9l2.1-2.1 1.4 1.4-2.1 2.1L17 4.9z"/>'
-    : '<path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 01-4.4 2.26 5.4 5.4 0 01-5.4-5.4c0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/>';
-  renderBudget();
-}
-if(localStorage.getItem('theme')==='light'){
-  document.body.classList.add('light');
-  document.getElementById('theme-icon').innerHTML='<path d="M12 18a6 6 0 100-12 6 6 0 000 12zm0-2a4 4 0 110-8 4 4 0 010 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.5 4.9l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zm13.5 13.5l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zM1 11h3v2H1v-2zm19 0h3v2h-3v-2zM3.5 19.1l2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4zM17 4.9l2.1-2.1 1.4 1.4-2.1 2.1L17 4.9z"/>';
-}
-
-/* ===== INIT ===== */
-document.addEventListener('DOMContentLoaded', () => {
-  const s=document.getElementById('shift-start-date');
-  if(!s.value) s.valueAsDate=new Date();
-  const d=document.getElementById('inv-date');
-  if(!d.value) d.valueAsDate=new Date();
-  
-  document.getElementById('hourly-rate').value = hourlyRate > 0 ? hourlyRate : '';
-  
-  loadCompanyInfo();
-  updateLanguageUI();
-  if(document.querySelectorAll('.inv-item-row').length===0) addInvoiceItem("",1,500);
-  
-  checkNotifications();
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('header-sub').innerText = user.displayName || user.email;
+    
+    // Încărcăm datele din Cloud
+    loadDataFromCloud();
+  } else {
+    currentUser = null;
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('main-app').style.display = 'none';
+  }
 });
 
-/* ===== TABURI ===== */
+// ==========================================
+// 3. SALVARE ȘI ÎNCĂRCARE DATE (Firestore)
+// ==========================================
+let saveTimeout = null;
+function saveDataToCloud() {
+  if (!currentUser) return;
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    db.collection("users").doc(currentUser.uid).set({
+      shiftPattern: document.getElementById('shift-pattern').value,
+      shiftStartDate: document.getElementById('shift-start-date').value,
+      budgetTarget: budgetTarget,
+      hourlyRate: hourlyRate,
+      transactions: transactions,
+      dayOverrides: dayOverrides
+    }, { merge: true }).then(() => {
+      console.log("Date salvate în Cloud.");
+    }).catch(err => console.error("Eroare salvare:", err));
+  }, 1000); // Salvează la 1 secunda după ultima modificare
+}
+
+function loadDataFromCloud() {
+  db.collection("users").doc(currentUser.uid).get().then((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      if(data.shiftPattern) document.getElementById('shift-pattern').value = data.shiftPattern;
+      if(data.shiftStartDate) document.getElementById('shift-start-date').value = data.shiftStartDate;
+      if(data.budgetTarget) budgetTarget = data.budgetTarget;
+      if(data.hourlyRate) { hourlyRate = data.hourlyRate; document.getElementById('hourly-rate').value = hourlyRate; }
+      if(data.transactions) transactions = data.transactions;
+      if(data.dayOverrides) dayOverrides = data.dayOverrides;
+    } else {
+      document.getElementById('shift-start-date').valueAsDate = new Date();
+    }
+    
+    // Randare
+    renderCalendar();
+    renderBudget();
+  }).catch(err => {
+    console.error("Eroare citire: ", err);
+    document.getElementById('shift-start-date').valueAsDate = new Date();
+    renderCalendar();
+    renderBudget();
+  });
+}
+
+// ==========================================
+// 4. LOGICA APLICAȚIEI
+// ==========================================
 function switchTab(btn, id){
   document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='budget') renderBudget();
-  if(navigator.vibrate) navigator.vibrate(10);
 }
 
-/* ===== LIMBĂ / REGIUNE ===== */
-function toggleRegion(){
-  currentLang = currentLang === 'ro' ? 'uk' : 'ro';
-  currentRegion = currentLang === 'ro' ? 'RO' : 'UK';
-  currentTaxRate = currentRegion === 'RO' ? 0.19 : 0.20;
-  localStorage.setItem('lang', currentLang);
-  
-  updateLanguageUI();
-  calculateInvoiceTotals();
-  toast(currentLang === 'ro' ? 'Limba: Română' : 'Language: English', 'info');
-}
-
-/* ===== HELPERS ===== */
 function formatDateKey(d){
   let m=''+(d.getMonth()+1), day=''+d.getDate(), y=d.getFullYear();
   if(m.length<2) m='0'+m; if(day.length<2) day='0'+day;
   return [y,m,day].join('-');
 }
-function getPublicHolidays(year, region){
-  const h={};
-  if(region==='RO'){
-    h[year+'-01-01']="Anul Nou"; h[year+'-05-01']="Ziua Muncii"; h[year+'-12-25']="Crăciunul";
-  } else {
-    h[year+'-01-01']="New Year's Day"; h[year+'-12-25']="Christmas Day"; h[year+'-12-26']="Boxing Day";
-  }
-  return h;
-}
+
 function computeDayInfo(currDate, pattern, startDate){
   const dateKey=formatDateKey(currDate);
-  let isWork=false,isNight=false,shiftLabel="";
+  let isWork=false,isNight=false,shiftLabel="Liber";
   const diffDays=Math.round((currDate-startDate)/86400000);
+  
   if(pattern==='4-4'){ const p=((diffDays%8)+8)%8; isWork=p<4; }
   else if(pattern==='3-4'){ const p=((diffDays%7)+7)%7; isWork=p<3; }
   else if(pattern==='5-2'){ const dow=currDate.getDay(); isWork=(dow!==0&&dow!==6); }
-  else if(pattern==='12-24'){ const p=((diffDays%4)+4)%4;
-    if(p===0){isWork=true;}
-    else if(p===1){isNight=true;isWork=true;}
-  }
+  else if(pattern==='12-24'){ const p=((diffDays%4)+4)%4; if(p===0){isWork=true;} else if(p===1){isNight=true;isWork=true;} }
   
-  let isLeave=false, isSick=false;
   if(dayOverrides[dateKey]){
     const ov=dayOverrides[dateKey];
     if(ov==='work'){isWork=true;isNight=false;}
     if(ov==='night'){isWork=true;isNight=true;}
     if(ov==='off'){isWork=false;isNight=false;}
-    if(ov==='leave'){isWork=false;isNight=false;isLeave=true;}
-    if(ov==='sick'){isWork=false;isNight=false;isSick=true;}
   }
 
-  if(isLeave) shiftLabel = currentLang==='ro' ? "Concediu" : "Holiday";
-  else if(isSick) shiftLabel = currentLang==='ro' ? "Medical" : "Sick";
-  else if(isNight) shiftLabel = currentLang==='ro' ? "Noapte" : "Night";
-  else if(isWork) shiftLabel = currentLang==='ro' ? "Lucru" : "Work";
-  else shiftLabel = currentLang==='ro' ? "Liber" : "Off";
+  if(isNight) shiftLabel="Noapte";
+  else if(isWork) shiftLabel="Lucru";
+  else shiftLabel="Liber";
 
-  return {dateKey,isWork,isNight,isLeave,isSick,shiftLabel};
+  return {dateKey,isWork,isNight,shiftLabel};
 }
 
-/* ===== WIDGET AZI ===== */
-function updateTodayWidget(){
-  const startVal=document.getElementById('shift-start-date').value;
-  if(!startVal) return;
-  const today=new Date(); today.setHours(0,0,0,0);
-  const pattern=document.getElementById('shift-pattern').value;
-  const startDate=new Date(startVal); startDate.setHours(0,0,0,0);
-  const info=computeDayInfo(today,pattern,startDate);
-
-  const iconEl=document.getElementById('today-icon');
-  iconEl.className='today-icon';
-  let emoji='🏖️', statusText=t('status_off');
-  
-  if(info.isLeave){emoji='🌴';statusText=t('status_leave');iconEl.classList.add('leave');}
-  else if(info.isSick){emoji='🤒';statusText=t('status_sick');iconEl.classList.add('sick');}
-  else if(info.isNight){emoji='🌙';statusText=t('status_night');iconEl.classList.add('night');}
-  else if(info.isWork){emoji='💪';statusText=t('status_work');iconEl.classList.add('work');}
-  else iconEl.classList.add('off');
-  
-  iconEl.innerText=emoji;
-  document.getElementById('today-status').innerText=statusText;
-  
-  const dName = t('days')[today.getDay()];
-  const mName = t('months_short')[today.getMonth()];
-  document.getElementById('today-date').innerText = `${dName}, ${today.getDate()} ${mName} ${today.getFullYear()}`;
-
-  let nextWorkDate=null;
-  for(let i=1;i<=60;i++){
-    const d=new Date(today); d.setDate(d.getDate()+i);
-    const inf=computeDayInfo(d,pattern,startDate);
-    if(inf.isWork){nextWorkDate=d;break;}
-  }
-  
-  if(info.isLeave || info.isSick){
-    document.getElementById('countdown-label').innerText=t('cd_rest');
-    document.getElementById('countdown-value').innerText=t('cd_home');
-    document.getElementById('countdown-sub').innerText='';
-  } else if(info.isWork){
-    document.getElementById('countdown-label').innerText=t('cd_you_are');
-    document.getElementById('countdown-value').innerText=info.isNight ? (currentLang==='ro'?'Noapte':'Night') : (currentLang==='ro'?'Tură':'Shift');
-    document.getElementById('countdown-sub').innerText=t('cd_today');
-  } else if(nextWorkDate){
-    const diff=Math.round((nextWorkDate-today)/86400000);
-    document.getElementById('countdown-label').innerText=t('cd_in');
-    document.getElementById('countdown-value').innerText=diff+' '+(currentLang==='ro'?'z':'d');
-    document.getElementById('countdown-sub').innerText=t('cd_until');
-  } else {
-    document.getElementById('countdown-label').innerText=t('cd_none');
-    document.getElementById('countdown-value').innerText='—';
-    document.getElementById('countdown-sub').innerText=t('cd_soon');
-  }
-}
-
-/* ===== CALENDAR ===== */
 function changeMonth(delta){
   currentMonth+=delta;
   if(currentMonth>11){currentMonth=0;currentYear++;}
   if(currentMonth<0){currentMonth=11;currentYear--;}
   renderCalendar();
 }
+
 function renderCalendar(){
   const startVal=document.getElementById('shift-start-date').value;
   if(!startVal) return;
   
-  document.getElementById('calendar-month-year').innerText = t('months')[currentMonth] + ' ' + currentYear;
+  const months=["Ianuarie","Februarie","Martie","Aprilie","Mai","Iunie","Iulie","August","Septembrie","Octombrie","Noiembrie","Decembrie"];
+  document.getElementById('calendar-month-year').innerText = months[currentMonth] + ' ' + currentYear;
 
   const container=document.getElementById('calendar-days-container');
   container.innerHTML='';
   const firstDay=(new Date(currentYear,currentMonth,1).getDay()+6)%7;
   const totalDays=new Date(currentYear,currentMonth+1,0).getDate();
-  const holidays=getPublicHolidays(currentYear,currentRegion);
   const pattern=document.getElementById('shift-pattern').value;
   const startDate=new Date(startVal); startDate.setHours(0,0,0,0);
   const todayKey=formatDateKey(new Date());
 
-  let workDays=0,offDays=0,weekendWork=0,holidayWork=0, leaveDays=0, sickDays=0;
+  let workDays=0,offDays=0,leaveDays=0,sickDays=0;
   let html='';
   for(let i=0;i<firstDay;i++) html+='<div class="day-cell empty"></div>';
 
   for(let d=1;d<=totalDays;d++){
     const curr=new Date(currentYear,currentMonth,d); curr.setHours(0,0,0,0);
     const info=computeDayInfo(curr,pattern,startDate);
-    const isWeekend=(curr.getDay()===0||curr.getDay()===6);
-    const isHoliday=!!holidays[info.dateKey];
     
-    if(info.isWork){
-      workDays++;
-      if(isWeekend)weekendWork++;
-      if(isHoliday)holidayWork++;
-    } else {
-      if(info.isLeave) leaveDays++;
-      else if(info.isSick) sickDays++;
-      else offDays++;
-    }
+    if(info.isWork) workDays++;
+    else offDays++;
     
     let cls='off';
-    if(info.isLeave) cls='leave';
-    else if(info.isSick) cls='sick';
-    else if(info.isNight) cls='night';
+    if(info.isNight) cls='night';
     else if(info.isWork) cls='work';
     
     const isToday=info.dateKey===todayKey;
-    const hol=isHoliday?`<div class="holiday-dot" title="${holidays[info.dateKey]}"></div>`:'';
-    const note=customDayNotes[info.dateKey]?'<div class="note-dot"></div>':'';
-    
-    html+=`<div class="day-cell ${cls} ${isHoliday?'holiday':''} ${isToday?'today':''}" onclick="openDayModal('${info.dateKey}')"><span class="day-number">${d}</span>${hol}${note}<span class="day-badge">${info.shiftLabel}</span></div>`;
+    html+=`<div class="day-cell ${cls} ${isToday?'today':''}"><span class="day-number">${d}</span><span class="day-badge">${info.shiftLabel}</span></div>`;
   }
   container.innerHTML=html;
   
   document.getElementById('stat-work-days').innerText=workDays;
   document.getElementById('stat-off-days').innerText=offDays;
-  document.getElementById('stat-leave-days').innerText=leaveDays;
-  document.getElementById('stat-sick-days').innerText=sickDays;
-  document.getElementById('stat-weekend-work').innerText=weekendWork;
-  document.getElementById('stat-holiday-work').innerText=holidayWork;
-  
-  updateTodayWidget();
-  
-  // Calcul salariu estimat pe luna afisata
-  document.getElementById('salary-estimated').innerText = (workDays * hourlyRate).toFixed(2) + ' ' + sym();
+  document.getElementById('salary-estimated').innerText = (workDays * hourlyRate).toFixed(2) + ' lei';
 }
 
-/* ===== MODAL ZI ===== */
-let activeModalDate=null;
-function openDayModal(k){
-  activeModalDate=k;
-  document.getElementById('modal-date-str').innerText=k;
-  document.getElementById('modal-shift-override').value=dayOverrides[k]||'auto';
-  document.getElementById('modal-day-note').value=customDayNotes[k]||'';
-  document.getElementById('day-modal').style.display='flex';
-}
-function closeDayModal(){document.getElementById('day-modal').style.display='none';}
-function saveDayModal(){
-  const ov=document.getElementById('modal-shift-override').value;
-  const note=document.getElementById('modal-day-note').value.trim();
-  
-  if(ov==='auto') delete dayOverrides[activeModalDate]; 
-  else dayOverrides[activeModalDate]=ov;
-  
-  if(note) customDayNotes[activeModalDate]=note; 
-  else delete customDayNotes[activeModalDate];
-  
-  localStorage.setItem('dayOverrides',JSON.stringify(dayOverrides));
-  localStorage.setItem('customDayNotes',JSON.stringify(customDayNotes));
-  
-  closeDayModal(); 
-  renderCalendar();
-  toast(t('t_saved'),'success');
-}
-
-/* ===== BUGET ===== */
 function renderBudget(){
-  let totalExp=0, totalInc=0; const cats={}; let html='';
+  let totalExp=0, totalInc=0; let html='';
   transactions.forEach(tx=>{
-    if(tx.type==='expense'){totalExp+=tx.amount;cats[tx.category]=(cats[tx.category]||0)+tx.amount;}
+    if(tx.type==='expense'){totalExp+=tx.amount;}
     else totalInc+=tx.amount;
     const sign=tx.type==='income'?'+':'-';
-    const cls=tx.type==='income'?'income':'expense';
-    const badge=tx.type==='income'?`<span class="badge badge-income">${currentLang==='ro'?'Venit':'Income'}</span>`:`<span class="badge badge-expense">${currentLang==='ro'?'Chelt.':'Exp.'}</span>`;
-    
-    let catDisplay = tx.category;
-    if(currentLang==='uk'){
-       if(tx.category==='Combustibil / Transport') catDisplay='Fuel / Transport';
-       if(tx.category==='Mâncare / Utilități') catDisplay='Food / Utilities';
-       if(tx.category==='Piese / Echipamente') catDisplay='Parts / Equipment';
-       if(tx.category==='Chirie / Abonamente') catDisplay='Rent / Subs';
-       if(tx.category==='Servicii / Venituri') catDisplay='Services / Income';
-    } else {
-       if(tx.category==='Fuel / Transport') catDisplay='Combustibil / Transport';
-       if(tx.category==='Food / Utilities') catDisplay='Mâncare / Utilități';
-       if(tx.category==='Parts / Equipment') catDisplay='Piese / Echipamente';
-       if(tx.category==='Rent / Subs') catDisplay='Chirie / Abonamente';
-       if(tx.category==='Services / Income') catDisplay='Servicii / Venituri';
-    }
-
-    html+=`<div class="list-item"><div><div class="li-title">${tx.title}</div><div class="li-meta">${tx.date} • ${catDisplay}</div></div><div style="display:flex;align-items:center;gap:8px;">${badge}<span class="li-amount ${cls}">${sign}${tx.amount.toFixed(2)} ${sym()}</span></div></div>`;
+    html+=`<div class="list-item"><div><div class="li-title">${tx.title}</div><div class="li-meta">${tx.date}</div></div><div style="font-weight:bold;color:${tx.type==='income'?'green':'red'};">${sign}${tx.amount.toFixed(2)} lei</div></div>`;
   });
-  document.getElementById('transaction-list').innerHTML=html||`<div style="text-align:center;color:var(--text-muted);padding:2rem 0;font-size:.85rem;">${t('no_tx')}</div>`;
+  document.getElementById('transaction-list').innerHTML=html||'Fără tranzacții.';
   
-  document.getElementById('budget-spent-text').innerText = t('spent') + ': ' + totalExp.toFixed(0) + ' ' + sym();
-  document.getElementById('budget-target-text').innerText = t('target') + ': ' + budgetTarget.toFixed(0) + ' ' + sym();
+  document.getElementById('budget-spent-text').innerText = 'Cheltuit: ' + totalExp.toFixed(0) + ' lei';
+  document.getElementById('budget-target-text').innerText = 'Țintă: ' + budgetTarget.toFixed(0) + ' lei';
   
   const pct=Math.min((totalExp/budgetTarget)*100,100);
-  const bar=document.getElementById('budget-progress-bar');
-  bar.style.width=pct+'%';
-  bar.classList.toggle('over', totalExp>budgetTarget);
-  
-  document.getElementById('budget-remaining').innerText = t('remaining') + ': ' + Math.max(budgetTarget-totalExp,0).toFixed(0) + ' ' + sym();
-  document.getElementById('budget-percent').innerText=pct.toFixed(0)+'%';
-  document.getElementById('header-sub').innerText = (currentLang==='ro'?'Balanță: ':'Balance: ') + (totalInc-totalExp).toFixed(0) + ' ' + sym();
-  
-  renderChart(cats);
-  renderFlowChart(totalInc, totalExp);
+  document.getElementById('budget-progress-bar').style.width=pct+'%';
 }
+
 function addTransaction(e){
   e.preventDefault();
   const amount=parseFloat(document.getElementById('tx-amount').value);
-  if(isNaN(amount)||amount<=0){toast(t('t_err'),'error');return;}
+  if(isNaN(amount)) return;
   transactions.unshift({
     id:Date.now(),
     title:document.getElementById('tx-title').value,
-    amount,
-    type:document.getElementById('tx-type').value,
-    category:document.getElementById('tx-category').value,
+    amount:amount,
+    type:'expense',
     date:new Date().toISOString().split('T')[0]
   });
-  localStorage.setItem('transactions',JSON.stringify(transactions));
   document.getElementById('transaction-form').reset();
   renderBudget();
-  toast(t('t_tx'),'success');
-  if(navigator.vibrate) navigator.vibrate(20);
+  saveDataToCloud();
 }
+
 function editBudget(){
-  const v=prompt((currentLang==='ro'?"Introdu limita de buget (":"Enter budget limit (")+sym()+"):",budgetTarget);
-  if(v===null) return;
-  const p=parseFloat(v);
-  if(!isNaN(p)&&p>0){budgetTarget=p;localStorage.setItem('budgetTarget',budgetTarget);renderBudget();toast(t('t_budget'),'success');}
-  else toast(t('t_err'),'error');
-}
-function chartColors(){
-  const light=document.body.classList.contains('light');
-  return { text: light?'#0f172a':'#f1f5f9', muted: light?'#64748b':'#94a3b8', grid: light?'rgba(15,23,42,.08)':'rgba(148,163,184,.1)' };
-}
-function renderChart(cats){
-  const ctx=document.getElementById('categoryChart').getContext('2d');
-  if(categoryChart) categoryChart.destroy();
-  const c=chartColors();
-  const labels=Object.keys(cats);
-  const data=Object.values(cats);
-  if(labels.length===0){labels.push('—');data.push(1);}
-  
-  const translatedLabels = labels.map(l => {
-    if(currentLang==='uk'){
-      if(l==='Combustibil / Transport') return 'Fuel / Transport';
-      if(l==='Mâncare / Utilități') return 'Food / Utilities';
-      if(l==='Piese / Echipamente') return 'Parts / Equipment';
-      if(l==='Chirie / Abonamente') return 'Rent / Subs';
-      if(l==='Servicii / Venituri') return 'Services / Income';
-    } else {
-      if(l==='Fuel / Transport') return 'Combustibil / Transport';
-      if(l==='Food / Utilities') return 'Mâncare / Utilități';
-      if(l==='Parts / Equipment') return 'Piese / Echipamente';
-      if(l==='Rent / Subs') return 'Chirie / Abonamente';
-      if(l==='Services / Income') return 'Servicii / Venituri';
-    }
-    return l;
-  });
-
-  categoryChart=new Chart(ctx,{
-    type:'doughnut',
-    data:{labels:translatedLabels,datasets:[{data,backgroundColor:['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4'],borderWidth:0,hoverOffset:8}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:c.muted,font:{size:11,weight:'600'},padding:12,usePointStyle:true,pointStyle:'circle'}},tooltip:{backgroundColor:'rgba(15,23,42,.95)',borderColor:'rgba(148,163,184,.3)',borderWidth:1,padding:10,titleFont:{size:12},bodyFont:{size:12}}}}
-  });
-}
-function renderFlowChart(inc, exp){
-  const ctx=document.getElementById('flowChart').getContext('2d');
-  if(flowChart) flowChart.destroy();
-  const c=chartColors();
-  flowChart=new Chart(ctx,{
-    type:'bar',
-    data:{
-      labels:[currentLang==='ro'?'Venituri':'Income', currentLang==='ro'?'Cheltuieli':'Expenses', currentLang==='ro'?'Balanță':'Balance'],
-      datasets:[{data:[inc,exp,inc-exp],backgroundColor:['rgba(16,185,129,.8)','rgba(239,68,68,.8)','rgba(59,130,246,.8)'],borderRadius:8,borderSkipped:false,barThickness:36}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(15,23,42,.95)',padding:10}},scales:{y:{beginAtZero:true,grid:{color:c.grid},ticks:{color:c.muted,font:{size:10}}},x:{grid:{display:false},ticks:{color:c.muted,font:{size:11,weight:'600'}}}}}
-  });
-}
-
-/* ===== SALARIU ===== */
-document.getElementById('hourly-rate').addEventListener('input', function() {
-  hourlyRate = parseFloat(this.value) || 0;
-  localStorage.setItem('hourlyRate', hourlyRate);
-  renderCalendar(); // Recalculeaza salariul
-});
-
-/* ===== FIRMA ===== */
-function loadCompanyInfo(){
-  document.getElementById('my-company-name').value=localStorage.getItem('myCompName')||'Service & Repair SRL';
-  document.getElementById('my-company-tax').value=localStorage.getItem('myCompTax')|| (currentLang==='ro' ? 'RO 12345678' : 'GB 123456789');
-  document.getElementById('my-company-iban').value=localStorage.getItem('myCompIban')||'RO98 RNCB ...';
-  updatePrintCompanyHeader();
-}
-function saveCompanyInfo(){
-  localStorage.setItem('myCompName',document.getElementById('my-company-name').value);
-  localStorage.setItem('myCompTax',document.getElementById('my-company-tax').value);
-  localStorage.setItem('myCompIban',document.getElementById('my-company-iban').value);
-  updatePrintCompanyHeader();
-}
-function updatePrintCompanyHeader(){
-  document.getElementById('print-my-name').innerText=document.getElementById('my-company-name').value;
-  const taxLabel = currentLang === 'ro' ? 'CUI:' : 'VAT:';
-  document.getElementById('print-my-tax').innerText=taxLabel+' '+document.getElementById('my-company-tax').value;
-  document.getElementById('print-my-iban').innerText='IBAN: '+document.getElementById('my-company-iban').value;
-}
-
-/* ===== FACTURI ===== */
-function addInvoiceItem(desc='',qty=1,price=0){
-  const c=document.getElementById('inv-items-container');
-  const row=document.createElement('div');
-  row.className='inv-item-row';
-  row.innerHTML=`<input type="text" placeholder="${t('item_desc')}" value="${desc}" oninput="calculateInvoiceTotals()">
-    <input type="number" placeholder="${t('item_qty')}" value="${qty}" oninput="calculateInvoiceTotals()">
-    <input type="number" placeholder="${t('item_price')}" value="${price}" oninput="calculateInvoiceTotals()">
-    <button class="btn btn-danger btn-sm no-print" style="padding:.4rem;width:36px;" onclick="this.parentElement.remove();calculateInvoiceTotals();">×</button>`;
-  c.appendChild(row);
-  calculateInvoiceTotals();
-}
-function calculateInvoiceTotals(){
-  let sub=0;
-  document.querySelectorAll('.inv-item-row').forEach(r=>{
-    const i=r.querySelectorAll('input');
-    sub+=(parseFloat(i[1].value)||0)*(parseFloat(i[2].value)||0);
-  });
-  const tax=sub*currentTaxRate;
-  const s = sym();
-  document.getElementById('inv-subtotal').innerText=sub.toFixed(2)+' '+s;
-  document.getElementById('inv-tax').innerText=tax.toFixed(2)+' '+s;
-  document.getElementById('inv-total').innerText=(sub+tax).toFixed(2)+' '+s;
-}
-
-/* Gestiune Poze Facturi */
-function previewImage(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    // Comprimam poza ca sa nu umplem memoria
-    const img = new Image();
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const MAX_WIDTH = 600;
-      const scaleSize = MAX_WIDTH / img.width;
-      canvas.width = MAX_WIDTH;
-      canvas.height = img.height * scaleSize;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      
-      currentImageBase64 = canvas.toDataURL('image/jpeg', 0.6); // Compresie 60%
-      
-      document.getElementById('image-preview').src = currentImageBase64;
-      document.getElementById('image-preview-container').style.display = 'block';
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function removeImage() {
-  currentImageBase64 = null;
-  document.getElementById('inv-image').value = '';
-  document.getElementById('image-preview').src = '';
-  document.getElementById('image-preview-container').style.display = 'none';
-}
-
-function viewImage(src) {
-  document.getElementById('full-image').src = src;
-  document.getElementById('image-modal').style.display = 'flex';
+  const v=prompt("Introdu limita de buget (lei):",budgetTarget);
+  if(v && !isNaN(v)){ budgetTarget=parseFloat(v); renderBudget(); saveDataToCloud(); }
 }
 
 function saveInvoice(){
-  invoices.unshift({
-    number:document.getElementById('inv-number').value,
-    date:document.getElementById('inv-date').value,
-    client:(document.getElementById('inv-client-info').value.split('\n')[0]||'Client').trim(),
-    total:document.getElementById('inv-total').innerText,
-    status: currentLang==='ro' ? 'Încasată' : 'Paid',
-    image: currentImageBase64 // Salvam poza
-  });
-  localStorage.setItem('invoices',JSON.stringify(invoices));
-  renderInvoicesHistory();
-  
-  const numEl=document.getElementById('inv-number');
-  const m=numEl.value.match(/(\d+)$/);
-  if(m){const n=(parseInt(m[1],10)+1).toString().padStart(m[1].length,'0');numEl.value=numEl.value.replace(/\d+$/,n);}
-  
-  removeImage(); // Curatam poza dupa salvare
-  toast(t('t_inv'),'success');
-  if(navigator.vibrate) navigator.vibrate(20);
+  alert("Factura a fost salvata (functie demo)!");
+  saveDataToCloud();
 }
-
-function renderInvoicesHistory(){
-  let html='';
-  invoices.forEach(i=>{
-    let stat = i.status;
-    if(currentLang==='ro' && stat==='Paid') stat='Încasată';
-    if(currentLang!=='ro' && stat==='Încasată') stat='Paid';
-
-    // Verificam daca are poza
-    let imgHtml = '';
-    if (i.image) {
-      imgHtml = `<img src="${i.image}" class="inv-thumb" onclick="viewImage('${i.image}')" title="${t('view_photo')}">`;
-    }
-
-    html+=`<div class="list-item">
-      <div><div class="li-title">${i.number} · ${i.client}</div><div class="li-meta">${i.date}</div></div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        ${imgHtml}
-        <span class="badge badge-paid">${stat}</span>
-        <strong style="color:var(--accent-primary);">${i.total}</strong>
-      </div>
-    </div>`;
-  });
-  document.getElementById('invoices-history-list').innerHTML=html||`<div style="text-align:center;color:var(--text-muted);padding:2rem 0;font-size:.85rem;">${t('no_inv')}</div>`;
-}
-
-/* ===== NOTIFICARI ===== */
-function requestNotifPermission() {
-  if (!("Notification" in window)) {
-    alert("Browserul tău nu suportă notificări.");
-    return;
-  }
-  Notification.requestPermission().then(function (permission) {
-    if (permission === "granted") {
-      toast(t('t_notif_ok'), 'success');
-      // Simulam o notificare de test
-      new Notification("Shift & Finance", { body: "Notificările sunt acum active! Te vom anunța când ai tură.", icon: "https://cdn-icons-png.flaticon.com/512/2965/2965335.png" });
-    } else {
-      toast(t('t_notif_err'), 'error');
-    }
-  });
-}
-
-function checkNotifications() {
-  // Aceasta functie verifica daca maine este tura, si trimite notificare (o data pe zi)
-  if (Notification.permission !== "granted") return;
-  
-  const today = new Date();
-  const todayKey = formatDateKey(today);
-  
-  // Verificam daca am trimis deja notificare azi
-  if (localStorage.getItem('lastNotifDate') === todayKey) return;
-  
-  const startVal = document.getElementById('shift-start-date').value;
-  if(!startVal) return;
-  
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowKey = formatDateKey(tomorrow);
-  
-  const pattern = document.getElementById('shift-pattern').value;
-  const startDate = new Date(startVal); startDate.setHours(0,0,0,0);
-  
-  const infoTom = computeDayInfo(tomorrow, pattern, startDate);
-  const infoToday = computeDayInfo(today, pattern, startDate);
-
-  let msg = "";
-  if (infoTom.isWork) {
-    msg = currentLang === 'ro' ? "Mâine ai tură! Pregătește-te." : "You have a shift tomorrow!";
-  } else if (infoToday.isWork) {
-    msg = currentLang === 'ro' ? "Ai tură astăzi! Spor la treabă." : "You have a shift today!";
-  }
-
-  if (msg) {
-    new Notification("Shift & Finance", { body: msg, icon: "https://cdn-icons-png.flaticon.com/512/2965/2965335.png" });
-    localStorage.setItem('lastNotifDate', todayKey);
-  }
-}
-
-/* ===== EXPORT ===== */
-function exportBackup(){
-  const blob=new Blob([JSON.stringify({transactions,invoices,budgetTarget,dayOverrides,customDayNotes, hourlyRate},null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='backup_'+new Date().toISOString().split('T')[0]+'.json';
-  a.click();
-  toast(t('t_bkp'),'success');
-}
-function exportICS(){
-  const startVal=document.getElementById('shift-start-date').value;
-  if(!startVal){toast(t('t_err_start'),'error');return;}
-  const pattern=document.getElementById('shift-pattern').value;
-  const startDate=new Date(startVal); startDate.setHours(0,0,0,0);
-  const totalDays=new Date(currentYear,currentMonth+1,0).getDate();
-  let ev='';
-  for(let d=1;d<=totalDays;d++){
-    const curr=new Date(currentYear,currentMonth,d); curr.setHours(0,0,0,0);
-    const info=computeDayInfo(curr,pattern,startDate);
-    if(!info.isWork) continue; 
-    const s=formatDateKey(curr).replace(/-/g,'');
-    const nx=new Date(curr); nx.setDate(nx.getDate()+1);
-    const e=formatDateKey(nx).replace(/-/g,'');
-    ev+=`BEGIN:VEVENT\nDTSTART;VALUE=DATE:${s}\nDTEND;VALUE=DATE:${e}\nSUMMARY:${currentLang==='ro'?'Tură':'Shift'} - ${info.shiftLabel}\nEND:VEVENT\n`;
-  }
-  if(!ev){toast(t('t_no_shifts'),'error');return;}
-  const ics="BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//ShiftManager//RO\nCALSCALE:GREGORIAN\n"+ev+"END:VCALENDAR";
-  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='Ture_'+currentYear+'_'+(currentMonth+1)+'.ics';
-  a.click();
-  toast(t('t_ics'),'success');
+function requestNotifPermission(){
+  if ("Notification" in window) Notification.requestPermission();
 }
 </script>
 </body>
