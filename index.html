@@ -63,13 +63,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
 .login-card{background:var(--bg-card);padding:2rem;border-radius:var(--radius);border:1px solid var(--border-strong);max-width:400px;width:100%;box-shadow:var(--shadow);}
 .google-btn{background:#fff;color:#333;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;border:none;padding:.8rem;border-radius:8px;cursor:pointer;width:100%;margin-top:12px;}
 .google-btn img{width:20px;}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
-.calendar-day-header{text-align:center;font-size:.65rem;font-weight:800;color:var(--text-muted);padding:4px 0;text-transform:uppercase;}
-.day-cell{background:var(--bg-input);aspect-ratio:.9;min-height:46px;border-radius:8px;padding:3px;display:flex;flex-direction:column;justify-content:space-between;font-size:.75rem;cursor:pointer;position:relative;border:1px solid transparent;}
-.day-cell.empty{background:transparent;cursor:default;border:none}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;width:100%}
+.calendar-day-header{text-align:center;font-size:clamp(.52rem,.65vw,.7rem);font-weight:800;color:var(--text-muted);padding:4px 0;text-transform:uppercase;}
+.day-cell{background:var(--bg-input);min-height:clamp(34px,8vw,52px);height:clamp(34px,8vw,52px);border-radius:8px;padding:3px;display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;font-size:.75rem;cursor:pointer;position:relative;border:1px solid transparent;overflow:hidden;}
+.day-cell.empty{background:transparent;cursor:default;border:none;min-height:clamp(34px,8vw,52px);height:clamp(34px,8vw,52px);padding:0;visibility:hidden;}
 .day-cell.today{box-shadow:0 0 0 2px var(--accent-primary);}
-.day-number{font-weight:800;font-size:.85rem}
-.day-badge{font-size:.5rem;padding:1px 2px;border-radius:3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;text-transform:uppercase;}
+.day-number{font-weight:800;font-size:clamp(.58rem,2.2vw,.85rem);line-height:1.1;display:block;}
+.day-badge{font-size:clamp(.34rem,1.4vw,.5rem);padding:1px 2px;border-radius:3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;text-transform:uppercase;line-height:1.1;display:block;}
 .note-dot{width:6px;height:6px;background:var(--accent-primary);border-radius:50%;position:absolute;bottom:5px;right:5px;box-shadow:0 0 6px var(--accent-primary)}
 .holiday-dot{width:6px;height:6px;background:var(--color-holiday);border-radius:50%;position:absolute;top:5px;right:5px;box-shadow:0 0 6px var(--color-holiday)}
 .day-cell.work{background:var(--color-work-bg);border-color:rgba(239,68,68,.4)}
@@ -105,9 +105,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
   .card { padding: .8rem; margin-bottom: .8rem; }
   .calendar-grid { gap: 2px; }
   .calendar-day-header { font-size: .5rem; padding: 3px 0; }
-  .day-cell { min-height: 40px; border-radius: 7px; padding: 2px; }
-  .day-number { font-size: .6rem; }
-  .day-badge { font-size: .38rem; padding: 1px 2px; }
+  .day-cell { min-height: clamp(30px, 8vw, 42px); height: clamp(30px, 8vw, 42px); padding: 2px; border-radius: 7px; }
+  .day-cell.empty { min-height: clamp(30px, 8vw, 42px); height: clamp(30px, 8vw, 42px); }
+  .day-number { font-size: .62rem; }
+  .day-badge { font-size: .35rem; padding: 1px 2px; }
   .stats-grid { gap: 6px; }
   .stat-box { padding: .55rem; }
   .stat-value { font-size: 1rem; }
