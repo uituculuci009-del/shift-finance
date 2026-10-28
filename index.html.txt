@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shift & Finance Manager</title>
+    <!-- Chart.js CDN - Corectat -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Firebase App (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <!-- Firebase Auth (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <!-- Firebase Firestore (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-hover: #2563eb;
+            --color-work: #ef4444;
+            --color-work-bg: rgba(239, 68, 68, 0.15);
+            --color-night: #f97316;
+            --color-night-bg: rgba(249, 115, 22, 0.15);
+            --color-off: #22c55e;
+            --color-off-bg: rgba(34, 197, 94, 0.15);
+            --color-holiday: #a855f7;
+            --color-paid: #22c55e;
+            --color-unpaid: #ef4444;
+            --color-pending: #f59e0b;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding-bottom: 70px;
+            min-height: 100vh;
+        }
+
+        #auth-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+
+        .auth-card {
+            background-color: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .auth-card h2 { margin-bottom: 0.5rem; font-size: 1.4rem; }
+        .auth-card p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+        .social-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: white;
+            color: #1e293b;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            transition: background-color 0.2s;
+        }
+        .social-btn:hover { background-color: #f1f5f9; }
+
+        .divider {
+            display: flex; align-items: center; text-align: center;
+            color: var(--text-muted); font-size: 0.8rem; margin: 1rem 0;
+        }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #475569; }
+        .divider::before { margin-right: .75em; }
+        .divider::after { margin-left: .75em; }
+
+        .forgot-password {
+            display: block;
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            color: var(--accent-primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .forgot-password:hover { text-decoration: underline; }
+
+        #main-app { display: none; }
+
+        header {
+            background-color: var(--bg-card);
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        header h1 { font-size: 1.1rem; font-weight: 700; }
+        .region-toggle, .logout-btn {
+            background: var(--bg-input); border: 1px solid #475569; color: var(--text-main);
+            padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+        }
+
+        nav.bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background-color: var(--bg-card); display: flex; justify-content: space-around;
+            border-top: 1px solid #334155; z-index: 100; height: 60px;
+        }
+        .nav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-muted); text-decoration: none; font-size: 0.75rem; background: none; border: none; cursor: pointer;
+        }
+        .nav-item.active { color: var(--accent-primary); font-weight: bold; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; margin-bottom: 3px; }
+
+        .tab-content { display: none; padding: 1rem; max-width: 800px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+        .card { background-color: var(--bg-card); border-radius: var(--border-radius); padding: 1.2rem; margin-bottom: 1rem; border: 1px solid #334155; }
+        .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+        input, select, textarea {
+            width: 100%; padding: 0.75rem; background-color: var(--bg-input);
+            border: 1px solid #475569; border-radius: 8px; color: var(--text-main); font-size: 0.95rem; outline: none;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent-primary); }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 0.75rem;
+            background-color: var(--accent-primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; gap: 6px;
+        }
+        .btn:hover { background-color: var(--accent-hover); }
+        .btn-secondary { background-color: #475569; }
+        .btn-danger { background-color: #dc2626; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; }
+
+        .calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .calendar-day-header { text-align: center; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); padding: 6px 0; }
+        .day-cell { background-color: var(--bg-input); aspect-ratio: 1; border-radius: 6px; padding: 4px; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.8rem; cursor: pointer; position: relative; border: 1px solid transparent; }
+        .day-cell.empty { background: transparent; cursor: default; }
+        .day-number { font-weight: bold; }
+        .day-badge { font-size: 0.65rem; padding: 1px 3px; border-radius: 3px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .day-cell.work { background-color: var(--color-work-bg); border-color: var(--color-work); }
+        .day-cell.work .day-badge { background-color: var(--color-work); color: white; }
+        .day-cell.night { background-color: var(--color-night-bg); border-color: var(--color-night); }
+        .day-cell.night .day-badge { background-color: var(--color-night); color: white; }
+        .day-cell.off { background-color: var(--color-off-bg); border-color: var(--color-off); }
+        .day-cell.off .day-badge { background-color: var(--color-off); color: white; }
+        .day-cell.holiday { border-color: var(--color-holiday); }
+        .holiday-dot { width: 5px; height: 5px; background-color: var(--color-holiday); border-radius: 50%; position: absolute; top: 4px; right: 4px; }
+        .note-dot { width: 5px; height: 5px; background-color: var(--accent-primary); border-radius: 50%; position: absolute; bottom: 4px; right: 4px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 1rem; }
+        .stat-box { background-color: var(--bg-input); padding: 10px; border-radius: 8px; text-align: center; }
+        .stat-value { font-size: 1.2rem; font-weight: bold; color: var(--accent-primary); }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); }
+
+        .progress-bar-container { background-color: var(--bg-input); height: 12px; border-radius: 6px; overflow: hidden; margin: 8px 0; }
+        .progress-bar { height: 100%; background-color: var(--accent-primary); width: 0%; transition: width 0.3s; }
+
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #334155; }
+        .list-item:last-child { border-bottom: none; }
+        .badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+        .badge-paid { background-color: rgba(34, 197, 94, 0.2); color: var(--color-paid); }
+
+        .inv-item-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 6px; margin-bottom: 6px; }
+
+        .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 200; padding: 1rem; }
+        .modal-content { background: var(--bg-card); border-radius: var(--border-radius); padding: 1.2rem; width: 100%; max-width: 450px; border: 1px solid #475569; }
+
+        @media print {
+            body { background: white !important; color: black !important; padding-bottom: 0 !important; }
+            header, nav.bottom-nav, .no-print { display: none !important; }
+            .tab-content { display: none !important; }
+            #tab-invoices { display: block !important; }
+            .card { background: white !important; border: none !important; box-shadow: none !important; padding: 0 !important; color: black !important; }
+            input, select, textarea { border: none !important; background: transparent !important; color: black !important; padding: 0 !important; }
+            .btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ecran Autentificare -->
+    <div id="auth-screen">
+        <div class="auth-card">
+            <h2>🔐 Autentificare</h2>
+            <p>Conectează-te pentru a-ți sincroniza turele, bugetul și facturile.</p>
+            <button class="social-btn" onclick="loginWithGoogle()">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                Continuă cu Google
+            </button>
+            <div class="divider">sau folosește Email</div>
+            <form id="auth-form" onsubmit="handleEmailAuth(event)">
+                <div class="form-group">
+                    <input type="email" id="auth-email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="auth-password" placeholder="Parolă" required>
+                </div>
+                <button type="submit" class="btn">Autentificare / Înregistrare</button>
+            </form>
+            <a class="forgot-password" onclick="resetPassword()">Ai uitat parola? Resetează o.</a>
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-secondary btn-sm" onclick="bypassAuth()">Mod Offline (Fără Cont)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplicația Principală -->
+    <div id="main-app">
+        <header>
+            <h1>🗓️ Shift & Finance</h1>
+            <div style="display: flex; gap: 8px;">
+                <button id="region-btn" class="region-toggle" onclick="toggleRegion()">🇷🇴 RO</button>
+                <button class="logout-btn" onclick="logout()">🚪 Ieși</button>
+            </div>
+        </header>
+
+        <!-- Tab 1: Ture -->
+        <div id="tab-shifts" class="tab-content active">
+            <div class="card">
+                <div class="form-group">
+                    <label>Model Tură:</label>
+                    <select id="shift-pattern" onchange="renderCalendar(); syncDataToCloud();">
+                        <option value="4-4">4 Lucru / 4 Liber (4/4)</option>
+                        <option value="3-4">3 Lucru / 4 Liber (3/4)</option>
+                        <option value="5-2">5 Lucru / 2 Liber (Luni-Vineri)</option>
+                        <option value="12-24">12h Zi / 12h Noapte / 48h Liber (12/24-12/48)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data de Start (Ziua 1):</label>
+                    <input type="date" id="shift-start-date" onchange="renderCalendar(); syncDataToCloud();">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="calendar-controls">
+                    <button class="btn btn-secondary btn-sm" onclick="changeMonth(-1)">◀ Înapoi</button>
+                    <h2 id="calendar-month-year" style="font-size: 1rem;">Ianuarie 2026</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="changeMonth(1)">Înainte ▶</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day-header">Lu</div>
+                    <div class="calendar-day-header">Ma</div>
+                    <div class="calendar-day-header">Mi</div>
+                    <div class="calendar-day-header">Jo</div>
+                    <div class="calendar-day-header">Vi</div>
+                    <div class="calendar-day-header">Sâ</div>
+                    <div class="calendar-day-header">Du</div>
+                </div>
+                <div id="calendar-days-container" class="calendar-grid" style="margin-top: 4px;"></div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div id="stat-work-days" class="stat-value">0</div>
+                        <div class="stat-label">Zile Lucrate</div>
+                    </div>
+                    <div class="stat-box">
+                        <div id="stat-off-days" class="stat-value">0</div>
+                        <div class="stat-label">Zile Libere</div>
+                    </div>
+                    <div class="stat-box">
+                        <div id="stat-weekend-work" class="stat-value">0</div>
+                        <div class="stat-label">Weekend Lucrat</div>
+                    </div>
+                    <div class="stat-box">
+                        <div id="stat-holiday-work" class="stat-value">0</div>
+                        <div class="stat-label">Sărbători Lucrate</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-secondary btn-sm" onclick="exportICS()">📥 Exportă în Calendar (.ics)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Buget -->
+        <div id="tab-budget" class="tab-content">
+            <div class="card">
+                <div class="card-title">
+                    <span>🎯 Buget Lunar</span>
+                    <button class="btn btn-secondary btn-sm" onclick="editBudget()">Setează Limită</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                    <span id="budget-spent-text">Cheltuit: 0 lei</span>
+                    <span id="budget-target-text">Țintă: 5000 lei</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="budget-progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">➕ Adaugă Tranzacție</div>
+                <form id="transaction-form" onsubmit="addTransaction(event)">
+                    <div class="form-group">
+                        <label>Titlu</label>
+                        <input type="text" id="tx-title" placeholder="Ex: Motorină, Piese..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Sumă (lei)</label>
+                        <input type="number" step="0.01" id="tx-amount" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <label>Tip</label>
+                            <select id="tx-type">
+                                <option value="expense">📉 Cheltuială</option>
+                                <option value="income">📈 Venit</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Categorie</label>
+                            <select id="tx-category">
+                                <option value="Combustibil / Transport">Combustibil / Transport</option>
+                                <option value="Mâncare / Utilități">Mâncare / Utilități</option>
+                                <option value="Piese / Echipamente">Piese / Echipamente</option>
+                                <option value="Chirie / Abonamente">Chirie / Abonamente</option>
+                                <option value="Servicii / Venituri">Servicii / Venituri</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Adaugă Tranzacție</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 Grafic Categorii</div>
+                <div style="max-width: 250px; margin: 0 auto;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📋 Istoric Tranzacții</div>
+                <div id="transaction-list"></div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-secondary btn-sm" onclick="exportBackup()">Backup JSON</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Facturi -->
+        <div id="tab-invoices" class="tab-content">
+            <div class="card no-print">
+                <div class="card-title">⚙️ Datele Firmei Tale</div>
+                <div class="form-group">
+                    <label>Nume Firmă / PFA:</label>
+                    <input type="text" id="my-company-name" oninput="saveCompanyInfo()">
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>CUI / CIF:</label>
+                        <input type="text" id="my-company-tax" oninput="saveCompanyInfo()">
+                    </div>
+                    <div>
+                        <label>IBAN:</label>
+                        <input type="text" id="my-company-iban" oninput="saveCompanyInfo()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>📄 Factură Nouă</span>
+                    <button class="btn btn-secondary btn-sm no-print" onclick="addInvoiceItem()">+ Adaugă Linie</button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem;">
+                    <div>
+                        <strong id="print-my-name">Service & Repair SRL</strong><br>
+                        <span id="print-my-tax" style="color:var(--text-muted)">CUI: RO12345678</span><br>
+                        <span id="print-my-iban" style="color:var(--text-muted)">IBAN: RO98...</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong>FACTURĂ</strong><br>
+                        <input type="text" id="inv-number" value="FAC-001" style="width: 100px; text-align: right; margin-top: 4px;"><br>
+                        <input type="date" id="inv-date" style="width: 130px; text-align: right; margin-top: 4px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Client (Nume / CUI / Adresă):</label>
+                    <textarea id="inv-client-info" rows="2" placeholder="Date client..."></textarea>
+                </div>
+
+                <label>Articole / Servicii</label>
+                <div id="inv-items-container" style="margin-bottom: 1rem;"></div>
+
+                <div style="text-align: right; font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                    <div>Subtotal: <strong id="inv-subtotal">0.00 lei</strong></div>
+                    <div>TVA (<span id="tax-rate-label">19</span>%): <strong id="inv-tax">0.00 lei</strong></div>
+                    <div style="font-size: 1.1rem;">TOTAL: <strong id="inv-total" style="color: var(--accent-primary);">0.00 lei</strong></div>
+                </div>
+
+                <div style="display: flex; gap: 10px;" class="no-print">
+                    <button class="btn btn-secondary" onclick="window.print()">🖨️ Printează / PDF</button>
+                    <button class="btn" onclick="saveInvoice()">💾 Salvează</button>
+                </div>
+            </div>
+
+            <div class="card no-print">
+                <div class="card-title">📚 Istoric Facturi</div>
+                <div id="invoices-history-list">Nicio factură.</div>
+            </div>
+        </div>
+
+        <!-- Meniu Navigare Jos -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="switchTab(event, 'shifts')">
+                <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+                Ture
+            </button>
+            <button class="nav-item" onclick="switchTab(event, 'budget')">
+                <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                Buget
+            </button>
+            <button class="nav-item" onclick="switchTab(event, 'invoices')">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                Facturi
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modal Editare Zi -->
+    <div id="day-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="card-title">Editează Ziua <span id="modal-date-str" style="color:var(--accent-primary)"></span></div>
+            <div class="form-group">
+                <label>Tip Tură:</label>
+                <select id="modal-shift-override">
+                    <option value="auto">Automat</option>
+                    <option value="work">Zi</option>
+                    <option value="night">Noapte</option>
+                    <option value="off">Liber</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Notițe:</label>
+                <textarea id="modal-day-note" rows="3" placeholder="Adaugă o notiță..."></textarea>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" onclick="saveDayModal()">Salvează</button>
+                <button class="btn btn-secondary" onclick="closeDayModal()">Închide</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForOfflineBypass",
+            authDomain: "shift-manager.firebaseapp.com",
+            projectId: "shift-manager",
+            storageBucket: "shift-manager.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef"
+        };
+        
+        try {
+            firebase.initializeApp(firebaseConfig);
+            window.db = firebase.firestore();
+        } catch(e) { console.error("Firebase setup error: ", e); }
+
+        let currentUser = null;
+        let currentRegion = 'RO';
+        let currentTaxRate = 0.19;
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let budgetTarget = parseFloat(localStorage.getItem('budgetTarget')) || 5000;
+        let customDayNotes = JSON.parse(localStorage.getItem('customDayNotes')) || {};
+        let dayOverrides = JSON.parse(localStorage.getItem('dayOverrides')) || {};
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+        let categoryChart = null;
+
+        function bypassAuth() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            initApp();
+        }
+
+        function loginWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider).then(() => {
+                bypassAuth();
+            }).catch((err) => {
+                alert("Mod local activat.");
+                bypassAuth();
+            });
+        }
+
+        function handleEmailAuth(e) {
+            e.preventDefault();
+            let email = document.getElementById('auth-email').value;
+            let pass = document.getElementById('auth-password').value;
+            firebase.auth().signInWithEmailAndPassword(email, pass).then(() => {
+                bypassAuth();
+            }).catch(() => {
+                firebase.auth().createUserWithEmailAndPassword(email, pass).then(() => {
+                    bypassAuth();
+                }).catch((err) => {
+                    alert("Eroare: " + err.message);
+                });
+            });
+        }
+
+        function resetPassword() {
+            let email = document.getElementById('auth-email').value.trim();
+            if (!email) { email = prompt("Introdu email-ul:"); }
+            if (email) {
+                firebase.auth().sendPasswordResetEmail(email).then(() => {
+                    alert("Email trimis!");
+                }).catch((error) => { alert("Eroare: " + error.message); });
+            }
+        }
+
+        function logout() {
+            firebase.auth().signOut().then(() => {
+                document.getElementById('main-app').style.display = 'none';
+                document.getElementById('auth-screen').style.display = 'flex';
+                currentUser = null;
+            });
+        }
+
+        try {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    bypassAuth();
+                    fetchDataFromCloud();
+                }
+            });
+        } catch(e) { console.log("Auth listener error offline"); }
+
+        function syncDataToCloud() {
+            if (!currentUser || !window.db) return;
+            window.db.collection("users").doc(currentUser.uid).set({
+                shiftPattern: document.getElementById('shift-pattern').value,
+                shiftStartDate: document.getElementById('shift-start-date').value,
+                budgetTarget: budgetTarget,
+                customDayNotes: JSON.stringify(customDayNotes),
+                dayOverrides: JSON.stringify(dayOverrides),
+                transactions: JSON.stringify(transactions),
+                invoices: JSON.stringify(invoices),
+                companyName: localStorage.getItem('myCompName') || '',
+                companyTax: localStorage.getItem('myCompTax') || '',
+                companyIban: localStorage.getItem('myCompIban') || ''
+            }).catch(err => console.log(err));
+        }
+
+        function fetchDataFromCloud() {
+            if (!currentUser || !window.db) return;
+            window.db.collection("users").doc(currentUser.uid).get().then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if(data.shiftPattern) document.getElementById('shift-pattern').value = data.shiftPattern;
+                    if(data.shiftStartDate) document.getElementById('shift-start-date').value = data.shiftStartDate;
+                    if(data.budgetTarget) budgetTarget = data.budgetTarget;
+                    if(data.customDayNotes) customDayNotes = JSON.parse(data.customDayNotes);
+                    if(data.dayOverrides) dayOverrides = JSON.parse(data.dayOverrides);
+                    if(data.transactions) transactions = JSON.parse(data.transactions);
+                    if(data.invoices) invoices = JSON.parse(data.invoices);
+                    if(data.companyName) localStorage.setItem('myCompName', data.companyName);
+                    if(data.companyTax) localStorage.setItem('myCompTax', data.companyTax);
+                    if(data.companyIban) localStorage.setItem('myCompIban', data.companyIban);
+                    loadCompanyInfo();
+                    renderCalendar();
+                    renderBudget();
+                    renderInvoicesHistory();
+                }
+            }).catch(err => console.log(err));
+        }
+
+        function initApp() {
+            if(!document.getElementById('shift-start-date').value) {
+                document.getElementById('shift-start-date').valueAsDate = new Date();
+            }
+            document.getElementById('inv-date').valueAsDate = new Date();
+            loadCompanyInfo();
+            renderCalendar();
+            renderBudget();
+            renderInvoicesHistory();
+            if(document.querySelectorAll('.inv-item-row').length === 0) {
+                addInvoiceItem("Serviciu / Intervenție", 1, 500);
+            }
+        }
+
+        function switchTab(e, tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            if (e && e.currentTarget) { e.currentTarget.classList.add('active'); }
+            if (tabId === 'budget') renderBudget();
+        }
+
+        function toggleRegion() {
+            currentRegion = currentRegion === 'RO' ? 'UK' : 'RO';
+            currentTaxRate = currentRegion === 'RO' ? 0.19 : 0.20;
+            document.getElementById('region-btn').innerText = currentRegion === 'RO' ? '🇷🇴 RO' : '🇬🇧 UK';
+            document.getElementById('tax-rate-label').innerText = currentRegion === 'RO' ? '19' : '20';
+            renderCalendar();
+            calculateInvoiceTotals();
+        }
+
+        function getPublicHolidays(year, region) {
+            let holidays = {};
+            if (region === 'RO') {
+                holidays[year + '-01-01'] = "Anul Nou";
+                holidays[year + '-05-01'] = "Ziua Muncii";
+                holidays[year + '-12-25'] = "Crăciunul";
+            } else {
+                holidays[year + '-01-01'] = "New Year's Day";
+                holidays[year + '-12-25'] = "Christmas Day";
+            }
+            return holidays;
+        }
+
+        function formatDateKey(d) {
+            let m = '' + (d.getMonth() + 1), day = '' + d.getDate(), y = d.getFullYear();
+            if (m.length < 2) m = '0' + m;
+            if (day.length < 2) day = '0' + day;
+            return [y, m, day].join('-');
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
+
+        function getShiftDataForMonth() {
+            const pattern = document.getElementById('shift-pattern').value;
+            const startDateInput = document.getElementById('shift-start-date').value;
+            if (!startDateInput) return [];
+            const startDate = new Date(startDateInput);
+            startDate.setHours(0,0,0,0);
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+            let shifts = [];
+            for (let d = 1; d <= totalDays; d++) {
+                let currDate = new Date(currentYear, currentMonth, d);
+                currDate.setHours(0,0,0,0);
+                let dateKey = formatDateKey(currDate);
+                let isWork = false, isNight = false, shiftLabel = "Liber";
+                let diffDays = Math.round((currDate - startDate) / (1000 * 60 * 60 * 24));
+                if (pattern === '4-4') {
+                    let pos = ((diffDays % 8) + 8) % 8;
+                    isWork = pos < 4;
+                    shiftLabel = isWork ? "Lucru" : "Liber";
+                } else if (pattern === '3-4') {
+                    let pos = ((diffDays % 7) + 7) % 7;
+                    isWork = pos < 3;
+                    shiftLabel = isWork ? "Lucru" : "Liber";
+                } else if (pattern === '5-2') {
+                    let dayOfWeek = currDate.getDay();
+                    isWork = (dayOfWeek !== 0 && dayOfWeek !== 6);
+                    shiftLabel = isWork ? "Lucru" : "Liber";
+                } else if (pattern === '12-24') {
+                    let pos = ((diffDays % 4) + 4) % 4;
+                    if (pos === 0) { isWork = true; shiftLabel = "Zi 12h"; }
+                    else if (pos === 1) { isNight = true; isWork = true; shiftLabel = "Noapte"; }
+                }
+                if (dayOverrides[dateKey]) {
+                    let ov = dayOverrides[dateKey];
+                    if (ov === 'work') { isWork = true; shiftLabel = "Zi"; }
+                    if (ov === 'night') { isWork = true; isNight = true; shiftLabel = "Noapte"; }
+                    if (ov === 'off') { isWork = false; shiftLabel = "Liber"; }
+                }
+                if (isWork) { shifts.push({ date: currDate, label: shiftLabel }); }
+            }
+            return shifts;
+        }
+
+        function renderCalendar() {
+            const startDateInput = document.getElementById('shift-start-date').value;
+            if (!startDateInput) return;
+            const monthNames = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
+            document.getElementById('calendar-month-year').innerText = monthNames[currentMonth] + ' ' + currentYear;
+            const container = document.getElementById('calendar-days-container');
+            container.innerHTML = '';
+            const firstDayIndex = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const holidays = getPublicHolidays(currentYear, currentRegion);
+            let workDaysCount = 0, offDaysCount = 0, weekendWorkCount = 0, holidayWorkCount = 0;
+            
+            for (let i = 0; i < firstDayIndex; i++) {
+                container.innerHTML += `<div class="day-cell empty"></div>`;
+            }
+            
+            const pattern = document.getElementById('shift-pattern').value;
+            const startDate = new Date(startDateInput);
+            startDate.setHours(0,0,0,0);
+            
+            for (let d = 1; d <= totalDays; d++) {
+                let currDate = new Date(currentYear, currentMonth, d);
+                currDate.setHours(0,0,0,0);
+                let dateKey = formatDateKey(currDate);
+                let isWork = false, isNight = false, shiftLabel = "Liber";
+                let diffDays = Math.round((currDate - startDate) / (1000 * 60 * 60 * 24));
+                
+                if (pattern === '4-4') {
+                    let pos = ((diffDays % 8) + 8) % 8;
+                    isWork = pos < 4;
+                    shiftLabel = isWork ? "Lucru" : "Liber";
+                } else if (pattern === '3-4') {
+                    let pos = ((diffDays % 7) + 7) % 7;
+                    isWork = pos < 3;
+                    shiftLabel = isWork ? "Lucru" : "Liber";
+                } else if (pattern === '5-2') {
+                    let dayOfWeek = currDate.getDay();
+                    isWork = (dayOfWeek !== 0 && dayOfWeek !== 6);
+                    shiftLabel = isWork ? "Lucru" : "Liber";
+                } else if (pattern === '12-24') {
+                    let pos = ((diffDays % 4) + 4) % 4;
+                    if (pos === 0) { isWork = true; shiftLabel = "Zi 12h"; }
+                    else if (pos === 1) { isNight = true; isWork = true; shiftLabel = "Noapte"; }
+                }
+                
+                if (dayOverrides[dateKey]) {
+                    let ov = dayOverrides[dateKey];
+                    if (ov === 'work') { isWork = true; isNight = false; shiftLabel = "Zi"; }
+                    if (ov === 'night') { isWork = true; isNight = true; shiftLabel = "Noapte"; }
+                    if (ov === 'off') { isWork = false; isNight = false; shiftLabel = "Liber"; }
+                }
+                
+                let isWeekend = (currDate.getDay() === 0 || currDate.getDay() === 6);
+                let isHoliday = !!holidays[dateKey];
+                
+                if (isWork) {
+                    workDaysCount++;
+                    if (isWeekend) weekendWorkCount++;
+                    if (isHoliday) holidayWorkCount++;
+                } else { offDaysCount++; }
+                
+                let typeClass = isNight ? 'night' : (isWork ? 'work' : 'off');
+                let holidayHtml = isHoliday ? `<div class="holiday-dot" title="${holidays[dateKey]}"></div>` : '';
+                let noteHtml = customDayNotes[dateKey] ? `<div class="note-dot"></div>` : '';
+                
+                container.innerHTML += `<div class="day-cell ${typeClass} ${isHoliday ? 'holiday' : ''}" onclick="openDayModal('${dateKey}')"><span class="day-number">${d}</span>${holidayHtml}${noteHtml}<span class="day-badge">${shiftLabel}</span></div>`;
+            }
+            
+            document.getElementById('stat-work-days').innerText = workDaysCount;
+            document.getElementById('stat-off-days').innerText = offDaysCount;
+            document.getElementById('stat-weekend-work').innerText = weekendWorkCount;
+            document.getElementById('stat-holiday-work').innerText = holidayWorkCount;
+        }
+
+        let activeModalDate = null;
+        function openDayModal(dateKey) {
+            activeModalDate = dateKey;
+            document.getElementById('modal-date-str').innerText = dateKey;
+            document.getElementById('modal-shift-override').value = dayOverrides[dateKey] || 'auto';
+            document.getElementById('modal-day-note').value = customDayNotes[dateKey] || '';
+            document.getElementById('day-modal').style.display = 'flex';
+        }
+        function closeDayModal() { document.getElementById('day-modal').style.display = 'none'; }
+        
+        function saveDayModal() {
+            let ov = document.getElementById('modal-shift-override').value;
+            let note = document.getElementById('modal-day-note').value.trim();
+            if (ov === 'auto') delete dayOverrides[activeModalDate]; else dayOverrides[activeModalDate] = ov;
+            if (note) customDayNotes[activeModalDate] = note; else delete customDayNotes[activeModalDate];
+            localStorage.setItem('dayOverrides', JSON.stringify(dayOverrides));
+            localStorage.setItem('customDayNotes', JSON.stringify(customDayNotes));
+            closeDayModal();
+            renderCalendar();
+            syncDataToCloud();
+        }
+
+        function renderBudget() {
+            let totalExpenses = 0;
+            let categories = {};
+            let listHtml = '';
+            transactions.forEach(t => {
+                if (t.type === 'expense') {
+                    totalExpenses += t.amount;
+                    categories[t.category] = (categories[t.category] || 0) + t.amount;
+                }
+                let sign = t.type === 'income' ? '+' : '-';
+                let color = t.type === 'income' ? 'var(--color-paid)' : 'var(--text-main)';
+                listHtml += `<div class="list-item"><div><strong>${t.title}</strong><div style="font-size:0.75rem; color:var(--text-muted);">${t.date} • ${t.category}</div></div><span style="font-weight:bold; color: ${color};">${sign}${t.amount.toFixed(2)} lei</span></div>`;
+            });
+            document.getElementById('transaction-list').innerHTML = listHtml || 'Fără tranzacții.';
+            document.getElementById('budget-spent-text').innerText = 'Cheltuit: ' + totalExpenses.toFixed(2) + ' lei';
+            document.getElementById('budget-target-text').innerText = 'Țintă: ' + budgetTarget.toFixed(2) + ' lei';
+            let pct = Math.min((totalExpenses / budgetTarget) * 100, 100);
+            document.getElementById('budget-progress-bar').style.width = pct + '%';
+            renderChart(categories);
+        }
+
+        function addTransaction(e) {
+            e.preventDefault();
+            transactions.unshift({
+                id: Date.now(),
+                title: document.getElementById('tx-title').value,
+                amount: parseFloat(document.getElementById('tx-amount').value),
+                type: document.getElementById('tx-type').value,
+                category: document.getElementById('tx-category').value,
+                date: new Date().toISOString().split('T')[0]
+            });
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            document.getElementById('transaction-form').reset();
+            renderBudget();
+            syncDataToCloud();
+        }
+
+        function editBudget() {
+            let val = prompt("Introdu limita de buget (lei):", budgetTarget);
+            if (val && !isNaN(val)) {
+                budgetTarget = parseFloat(val);
+                localStorage.setItem('budgetTarget', budgetTarget);
+                renderBudget();
+                syncDataToCloud();
+            }
+        }
+
+        function renderChart(categories) {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            if (categoryChart) categoryChart.destroy();
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: { 
+                    labels: Object.keys(categories), 
+                    datasets: [{ 
+                        data: Object.values(categories), 
+                        backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'] 
+                    }] 
+                },
+                options: { responsive: true, plugins: { legend: { labels: { color: '#94a3b8' } } } }
+            });
+        }
+
+        function loadCompanyInfo() {
+            document.getElementById('my-company-name').value = localStorage.getItem('myCompName') || 'Service & Repair SRL';
+            document.getElementById('my-company-tax').value = localStorage.getItem('myCompTax') || 'RO 12345678';
+            document.getElementById('my-company-iban').value = localStorage.getItem('myCompIban') || 'RO98 RNCB ...';
+            updatePrintCompanyHeader();
+        }
+
+        function saveCompanyInfo() {
+            localStorage.setItem('myCompName', document.getElementById('my-company-name').value);
+            localStorage.setItem('myCompTax', document.getElementById('my-company-tax').value);
+            localStorage.setItem('myCompIban', document.getElementById('my-company-iban').value);
+            updatePrintCompanyHeader();
+            syncDataToCloud();
+        }
+
+        function updatePrintCompanyHeader() {
+            document.getElementById('print-my-name').innerText = document.getElementById('my-company-name').value;
+            document.getElementById('print-my-tax').innerText = 'CUI: ' + document.getElementById('my-company-tax').value;
+            document.getElementById('print-my-iban').innerText = 'IBAN: ' + document.getElementById('my-company-iban').value;
+        }
+
+        function addInvoiceItem(desc = '', qty = 1, price = 0) {
+            const container = document.getElementById('inv-items-container');
+            const row = document.createElement('div');
+            row.className = 'inv-item-row';
+            row.innerHTML = `<input type="text" placeholder="Descriere" value="${desc}" oninput="calculateInvoiceTotals()">` +
+                            `<input type="number" placeholder="Cant." value="${qty}" oninput="calculateInvoiceTotals()">` +
+                            `<input type="number" placeholder="Preț" value="${price}" oninput="calculateInvoiceTotals()">` +
+                            `<button class="btn btn-danger btn-sm no-print" onclick="this.parentElement.remove(); calculateInvoiceTotals();">X</button>`;
+            container.appendChild(row);
+            calculateInvoiceTotals();
+        }
+
+        function calculateInvoiceTotals() {
+            let subtotal = 0;
+            document.querySelectorAll('.inv-item-row').forEach(row => {
+                let inputs = row.querySelectorAll('input');
+                subtotal += (parseFloat(inputs[1].value) || 0) * (parseFloat(inputs[2].value) || 0);
+            });
+            let tax = subtotal * currentTaxRate;
+            document.getElementById('inv-subtotal').innerText = subtotal.toFixed(2) + ' lei';
+            document.getElementById('inv-tax').innerText = tax.toFixed(2) + ' lei';
+            document.getElementById('inv-total').innerText = (subtotal + tax).toFixed(2) + ' lei';
+        }
+
+        function saveInvoice() {
+            invoices.unshift({
+                number: document.getElementById('inv-number').value,
+                date: document.getElementById('inv-date').value,
+                client: document.getElementById('inv-client-info').value.split('\n')[0] || 'Client',
+                total: document.getElementById('inv-total').innerText,
+                status: 'Încasată'
+            });
+            localStorage.setItem('invoices', JSON.stringify(invoices));
+            renderInvoicesHistory();
+            syncDataToCloud();
+            alert('Factură salvată!');
+        }
+
+        function renderInvoicesHistory() {
+            let listHtml = '';
+            invoices.forEach(inv => {
+                listHtml += `<div class="list-item"><div><strong>${inv.number} - ${inv.client}</strong><div style="font-size:0.75rem; color:var(--text-muted);">${inv.date}</div></div><div><span class="badge badge-paid">${inv.status}</span> <strong>${inv.total}</strong></div></div>`;
+            });
+            document.getElementById('invoices-history-list').innerHTML = listHtml || 'Nicio factură.';
+        }
+
+        function exportBackup() {
+            let blob = new Blob([JSON.stringify({ transactions, invoices, budgetTarget }, null, 2)], { type: 'application/json' });
+            let a = document.createElement('a'); 
+            a.href = URL.createObjectURL(blob); 
+            a.download = 'backup_' + new Date().toISOString().split('T')[0] + '.json'; 
+            a.click();
+        }
+
+        function exportICS() {
+            const shifts = getShiftDataForMonth();
+            if (shifts.length === 0) {
+                alert("Nu există ture de lucru programate în această lună pentru export.");
+                return;
+            }
+            let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPROID:-//ShiftManager//RO\nCALSCALE:GREGORIAN\n";
+            shifts.forEach(s => {
+                let startYMD = formatDateKey(s.date).replace(/-/g, '');
+                let nextDay = new Date(s.date);
+                nextDay.setDate(nextDay.getDate() + 1);
+                let endYMD = formatDateKey(nextDay).replace(/-/g, '');
+                icsContent += "BEGIN:VEVENT\n";
+                icsContent += "DTSTART;VALUE=DATE:" + startYMD + "\n";
+                icsContent += "DTEND;VALUE=DATE:" + endYMD + "\n";
+                icsContent += "SUMMARY:Tură - " + s.label + "\n";
+                icsContent += "DESCRIPTION:Programat prin intermediul aplicației Shift Manager\n";
+                icsContent += "END:VEVENT\n";
+            });
+            icsContent += "END:VCALENDAR";
+            let blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'Ture_Lucru_' + currentYear + '_' + (currentMonth + 1) + '.ics';
+            a.click();
+        }
+    </script>
+</body>
+</html>
