@@ -38,22 +38,22 @@ body.light header{background:rgba(255,255,255,.7)}
 .icon-btn:hover{background:var(--accent-primary);border-color:var(--accent-primary);transform:translateY(-1px)}
 .icon-btn svg{width:18px;height:18px;fill:currentColor}
 .region-btn{width:auto;padding:0 12px;font-size:.8rem;font-weight:600;gap:4px;}
-nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,23,42,.85);backdrop-filter:blur(20px);display:flex;justify-content:space-around;border-top:1px solid var(--border);z-index:100;padding-bottom:env(safe-area-inset-bottom);}
+nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,23,42,.85);backdrop-filter:blur(20px);display:flex;justify-content:space-around;border-top:1px solid var(--border);z-index:100;padding-bottom:env(safe-area-inset-bottom)}
 body.light nav.bottom-nav{background:rgba(255,255,255,.85)}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);font-size:.7rem;background:none;border:none;cursor:pointer;gap:3px;transition:color .2s ease,padding .2s ease;padding:.6rem 0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);font-size:.7rem;background:none;border:none;cursor:pointer;gap:3px;transition:color .2s ease,padding .2s ease;padding:.6rem 0}
 .nav-item svg{width:22px;height:22px;fill:currentColor;transition:transform .2s}
 .nav-item.active{color:var(--accent-primary)}
 .nav-item.active svg{transform:translateY(-2px) scale(1.1)}
 .tab-content{display:none;padding:1rem;max-width:820px;margin:0 auto;animation:fadeUp .35s ease}
 .tab-content.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.card{background:var(--bg-card);backdrop-filter:blur(20px);border-radius:var(--radius);padding:1.2rem;margin-bottom:1rem;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.card{background:var(--bg-card);backdrop-filter:blur(20px);border-radius:var(--radius);padding:1.2rem;margin-bottom:1rem;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden}
 .card-title{font-size:.95rem;font-weight:700;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;gap:8px;}
 .form-group{margin-bottom:1rem}
 label{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:600}
-input,select,textarea{width:100%;padding:.8rem;background:var(--bg-input);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-main);font-size:.95rem;outline:none;transition:all .2s ease;}
+input,select,textarea{width:100%;padding:.8rem;background:var(--bg-input);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-main);font-size:.95rem;outline:none;transition:all .2s ease}
 input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-shadow:0 0 0 3px rgba(59,130,246,.15);background:var(--bg-card-solid);}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:.85rem;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s ease;background:linear-gradient(135deg,var(--accent-primary),var(--accent-2));color:white;box-shadow:0 12px 20px rgba(59,130,246,.2);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:.85rem;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s ease;background:linear-gradient(135deg,var(--accent-primary),var(--accent-2));color:#fff;box-shadow:0 12px 20px rgba(59,130,246,.2)}
 .btn:hover{transform:translateY(-1px);}
 .btn-secondary{background:var(--bg-input);color:var(--text-main);box-shadow:none;border:1px solid var(--border-strong)}
 .btn-secondary:hover{background:var(--bg-card-solid);}
@@ -63,9 +63,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
 .login-card{background:var(--bg-card);padding:2rem;border-radius:var(--radius);border:1px solid var(--border-strong);max-width:400px;width:100%;box-shadow:var(--shadow);}
 .google-btn{background:#fff;color:#333;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;border:none;padding:.8rem;border-radius:8px;cursor:pointer;width:100%;margin-top:12px;}
 .google-btn img{width:20px;}
-.calendar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
-.calendar-day-header{text-align:center;font-size:.7rem;font-weight:800;color:var(--text-muted);padding:6px 0;text-transform:uppercase;}
-.day-cell{background:var(--bg-input);aspect-ratio:1;border-radius:10px;padding:5px;display:flex;flex-direction:column;justify-content:space-between;font-size:.8rem;cursor:pointer;position:relative;border:1px solid transparent;}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.calendar-day-header{text-align:center;font-size:.65rem;font-weight:800;color:var(--text-muted);padding:4px 0;text-transform:uppercase;}
+.day-cell{background:var(--bg-input);aspect-ratio:.9;min-height:46px;border-radius:8px;padding:3px;display:flex;flex-direction:column;justify-content:space-between;font-size:.75rem;cursor:pointer;position:relative;border:1px solid transparent;}
 .day-cell.empty{background:transparent;cursor:default;border:none}
 .day-cell.today{box-shadow:0 0 0 2px var(--accent-primary);}
 .day-number{font-weight:800;font-size:.85rem}
@@ -100,6 +100,19 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
 .salary-box{background: linear-gradient(135deg, rgba(16,185,129,.15), rgba(59,130,246,.15)); border: 1px solid rgba(16,185,129,.3); text-align: center; padding: 1.2rem; border-radius: var(--radius); margin-bottom:1rem;}
 .salary-val{font-size: 2rem; font-weight: 900; color:var(--color-off); margin: 5px 0;}
 .inv-thumb{width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-strong); cursor: pointer;}
+@media (max-width: 480px) {
+  .tab-content { padding: .6rem; }
+  .card { padding: .8rem; margin-bottom: .8rem; }
+  .calendar-grid { gap: 2px; }
+  .calendar-day-header { font-size: .5rem; padding: 3px 0; }
+  .day-cell { min-height: 40px; border-radius: 7px; padding: 2px; }
+  .day-number { font-size: .6rem; }
+  .day-badge { font-size: .38rem; padding: 1px 2px; }
+  .stats-grid { gap: 6px; }
+  .stat-box { padding: .55rem; }
+  .stat-value { font-size: 1rem; }
+  .stat-label { font-size: .58rem; }
+}
 @media print {
   body * { visibility: hidden; }
   #report-print-area, #report-print-area * { visibility: visible; }
@@ -136,7 +149,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
         <svg id="theme-icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 01-4.4 2.26 5.4 5.4 0 01-5.4-5.4c0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/></svg>
       </button>
       <button class="icon-btn" onclick="logout()" title="Deconectare" style="background:#ef4444;color:white;border-color:#dc2626;">
-        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5zm10 10h2v2h-2v-2z"/></svg>
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5zm0 0h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
       </button>
     </div>
   </header>
@@ -878,7 +891,7 @@ function renderBudget(){
   });
   flowChart = new Chart(ctx2, {
     type:'bar',
-    data:{labels:[currentLang==='ro'?'Venituri':'Income', currentLang==='ro'?'Cheltuieli':'Expenses'], datasets:[{data:[totalInc,totalExp], backgroundColor:['rgba(16,185,129,.8)','rgba(239,68,68,.8)']} ]},
+    data:{labels:[currentLang==='ro'?'Venituri':'Income', currentLang==='ro'?'Cheltuieli':'Expenses'], datasets:[{data:[totalInc,totalExp], backgroundColor:['rgba(16,185,129,.8)','rgba(239,68,68,.8)'], borderRadius:8}]},
     options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{color:txtColor}}, x:{ticks:{color:txtColor}}}}
   });
 }
@@ -1018,8 +1031,8 @@ function generateMonthlyReportPdf() {
   const report = getReportMonthData(reportMonth);
   const monthName = translations[currentLang].months[report.month - 1];
   const companyName = document.getElementById('my-company-name').value || 'Firma Mea';
-  const companyTax = document.getElementById('my-company-tax').value || '—';
-  const companyIban = document.getElementById('my-company-iban').value || '—';
+  const companyTax = document.getElementById('my-company-tax').value || '';
+  const companyIban = document.getElementById('my-company-iban').value || '';
 
   const rows = transactions
     .filter(tx => {
@@ -1033,7 +1046,7 @@ function generateMonthlyReportPdf() {
         <td>${tx.type === 'income' ? 'Venit' : 'Cheltuială'}</td>
         <td>${tx.category}</td>
         <td>${tx.date}</td>
-        <td style="text-align:right; ${tx.type === 'income' ? 'color:#22c55e;' : 'color:#ef4444;'}">${tx.type === 'income' ? '+' : '-'}${Number(tx.amount || 0).toFixed(2)} lei</td>
+        <td style="text-align:right; color:${tx.type === 'income' ? '#22c55e' : '#ef4444'};">${tx.type === 'income' ? '+' : '-'}${Number(tx.amount || 0).toFixed(2)} lei</td>
       </tr>
     `)
     .join('');
@@ -1043,54 +1056,35 @@ function generateMonthlyReportPdf() {
     <html lang="ro">
     <head>
       <meta charset="UTF-8">
-      <title>Raport lunar contabil</title>
+      <title>Raport lunar</title>
       <style>
         body { font-family: Arial, sans-serif; padding: 32px; color: #111827; background: white; }
         .header { border-bottom: 2px solid #d1d5db; padding-bottom: 12px; margin-bottom: 20px; }
         .company { font-size: 20px; font-weight: bold; }
         .meta { font-size: 12px; color: #374151; margin-top: 6px; }
-        table { width:100%; border-collapse: collapse; margin-top: 18px; }
-        th, td { border: 1px solid #e5e7eb; padding: 8px 10px; font-size: 12px; text-align:left; }
-        th { background:#f3f4f6; }
-        .summary { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
-        .box { border:1px solid #e5e7eb; border-radius: 8px; padding:12px; background:#f9fafb; }
-        .label { font-size:11px; color:#6b7280; text-transform: uppercase; }
-        .value { font-size:18px; font-weight:700; margin-top:4px; }
-        .small { font-size:12px; color:#374151; }
+        table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+        th, td { border: 1px solid #e5e7eb; padding: 8px 10px; font-size: 12px; text-align: left; }
+        th { background: #f3f4f6; }
+        .summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
+        .box { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; background: #f9fafb; }
+        .label { font-size: 11px; color: #6b7280; text-transform: uppercase; }
+        .value { font-size: 18px; font-weight: 700; margin-top: 4px; }
       </style>
     </head>
     <body>
       <div class="header">
         <div class="company">${companyName}</div>
         <div class="meta">CUI: ${companyTax} | IBAN: ${companyIban}</div>
-        <div class="meta">Raport lunar contabil – ${monthName} ${report.year}</div>
+        <div class="meta">Raport lunar • ${monthName} ${report.year}</div>
       </div>
 
       <div class="summary">
-        <div class="box">
-          <div class="label">Zile lucrate</div>
-          <div class="value">${report.workDays}</div>
-        </div>
-        <div class="box">
-          <div class="label">Zile noapte</div>
-          <div class="value">${report.nightDays}</div>
-        </div>
-        <div class="box">
-          <div class="label">Venituri</div>
-          <div class="value" style="color:#22c55e;">${report.income.toFixed(2)} lei</div>
-        </div>
-        <div class="box">
-          <div class="label">Cheltuieli</div>
-          <div class="value" style="color:#ef4444;">${report.expense.toFixed(2)} lei</div>
-        </div>
-        <div class="box">
-          <div class="label">Facturi emise</div>
-          <div class="value">${report.invoiceTotal.toFixed(2)} lei</div>
-        </div>
-        <div class="box">
-          <div class="label">Valoare estimată</div>
-          <div class="value">${report.estimatedSalary.toFixed(2)} lei</div>
-        </div>
+        <div class="box"><div class="label">Zile lucrate</div><div class="value">${report.workDays}</div></div>
+        <div class="box"><div class="label">Zile noapte</div><div class="value">${report.nightDays}</div></div>
+        <div class="box"><div class="label">Venituri</div><div class="value" style="color:#22c55e;">${report.income.toFixed(2)} lei</div></div>
+        <div class="box"><div class="label">Cheltuieli</div><div class="value" style="color:#ef4444;">${report.expense.toFixed(2)} lei</div></div>
+        <div class="box"><div class="label">Facturi emise</div><div class="value">${report.invoiceTotal.toFixed(2)} lei</div></div>
+        <div class="box"><div class="label">Valoare estimată</div><div class="value">${report.estimatedSalary.toFixed(2)} lei</div></div>
       </div>
 
       <table>
@@ -1104,20 +1098,16 @@ function generateMonthlyReportPdf() {
           </tr>
         </thead>
         <tbody>
-          ${rows || '<tr><td colspan="5">Nicio tranzacție în această lună.</td></tr>'}
+          ${rows || '<tr><td colspan="5">Nicio tranzacție.</td></tr>'}
         </tbody>
       </table>
-
-      <div class="small" style="margin-top:18px;">
-        Net lunar: <strong>${report.net.toFixed(2)} lei</strong>
-      </div>
     </body>
     </html>
   `;
 
   const printWindow = window.open('', '_blank', 'width=900,height=700');
   if (!printWindow) {
-    alert('Popup blocat. Permite ferestrele pop-up pentru a exporta pdf-ul.');
+    alert('Popup blocat. Permite ferestra pop-up pentru export PDF.');
     return;
   }
   printWindow.document.write(reportHtml);
@@ -1130,7 +1120,7 @@ function generateMonthlyReportPdf() {
 
 function exportBackup() {
   const data = { transactions, invoices, budgetTarget, dayOverrides, customNotes, hourlyRate };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_shift.json'; a.click();
 }
 
@@ -1144,15 +1134,15 @@ function exportICS() {
   for(let d=1;d<=totalDays;d++){
     const curr=new Date(currentYear,currentMonth,d); curr.setHours(0,0,0,0);
     const info=computeDayInfo(curr,pattern,startDate);
-    if(!info.isWork) continue; 
+    if(!info.isWork) continue;
     const s=formatDateKey(curr).replace(/-/g,'');
-    const nx=new Date(curr); nx.setDate(nx.getDate()+1);
-    const e=formatDateKey(nx).replace(/-/g,'');
-    ev+=`BEGIN:VEVENT\nDTSTART;VALUE=DATE:${s}\nDTEND;VALUE=DATE:${e}\nSUMMARY:${t('nav_shifts')} - ${info.shiftLabel}\nEND:VEVENT\n`;
+    const eDate=new Date(curr); eDate.setDate(eDate.getDate()+1);
+    const eKey=formatDateKey(eDate).replace(/-/g,'');
+    ev += `BEGIN:VEVENT\nDTSTART:${s}T000000Z\nDTEND:${eKey}T000000Z\nSUMMARY:${currentLang==='ro' ? 'Tură' : 'Shift'} - ${info.isNight ? (currentLang==='ro' ? 'Noapte' : 'Night') : (currentLang==='ro' ? 'Zi' : 'Day')}\nEND:VEVENT\n`;
   }
-  if(!ev) return alert("Nu exista ture in aceasta luna.");
-  const ics="BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//ShiftManager//RO\nCALSCALE:GREGORIAN\n"+ev+"END:VCALENDAR";
-  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  if(!ev) return alert('Nu există ture în această lună.');
+  const ics=`BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//ShiftManager//RO\n${ev}END:VCALENDAR`;
+  const blob=new Blob([ics], {type:'text/calendar;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='Ture.ics'; a.click();
 }
 
@@ -1160,7 +1150,7 @@ function requestNotifPermission(){ if ("Notification" in window) Notification.re
 
 function toggleTheme(){
   document.body.classList.toggle('light');
-  localStorage.setItem('theme', document.body.classList.contains('light')?'light':'dark');
+  localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
   renderBudget();
 }
 if(localStorage.getItem('theme')==='light') document.body.classList.add('light');
