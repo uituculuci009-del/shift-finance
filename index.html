@@ -100,6 +100,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
 .salary-box{background: linear-gradient(135deg, rgba(16,185,129,.15), rgba(59,130,246,.15)); border: 1px solid rgba(16,185,129,.3); text-align: center; padding: 1.2rem; border-radius: var(--radius); margin-bottom:1rem;}
 .salary-val{font-size: 2rem; font-weight: 900; color:var(--color-off); margin: 5px 0;}
 .inv-thumb{width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-strong); cursor: pointer;}
+@media print {
+  body * { visibility: hidden; }
+  #report-print-area, #report-print-area * { visibility: visible; }
+  #report-print-area { position: absolute; left: 0; top: 0; width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -321,6 +326,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
       <div class="card-title" data-i18n="inv_history">📚 Istoric Facturi</div>
       <div id="invoices-history-list">Nicio factură.</div>
     </div>
+
+    <div class="card">
+      <div class="card-title"><span data-i18n="accounting_report">📊 Raport lunar contabil</span></div>
+      <div class="form-group">
+        <label data-i18n="report_period">Perioada raport</label>
+        <input type="month" id="report-month">
+      </div>
+      <button class="btn" onclick="generateMonthlyReportPdf()" data-i18n="export_pdf_report">📄 Exportă PDF</button>
+    </div>
   </div>
 
   <nav class="bottom-nav">
@@ -366,50 +380,193 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
 <script>
 const translations = {
   ro: {
-    today: "Astăzi", next: "Următoarea", shift: "tură",
-    config_shift: "⚙️ Configurare Tură", shift_pattern: "Model Tură", start_date: "Data de Start", export_ics: "📥 Exportă .ics",
-    opt_44: "4 Lucru / 4 Liber", opt_34: "3 Lucru / 4 Liber", opt_52: "5 Lucru / 2 Liber", opt_12: "12h Zi / 12h Noapte / 48h Liber",
-    opt_auto: "Automat", opt_work: "💪 Muncă (Zi)", opt_night: "🌙 Muncă (Noapte)", opt_off: "🏖️ Liber", opt_leave: "🌴 Concediu", opt_sick: "🤒 Medical",
-    nav_shifts: "Ture", nav_budget: "Buget", nav_inv: "Facturi",
-    estimated_salary: "💰 Salariu Estimat Luna Aceasta", rate: "Tarif/oră:", budget_month: "🎯 Buget Lunar", set: "Setează",
-    inc_vs_exp: "📊 Venituri vs Cheltuieli", add_tx: "➕ Adaugă Tranzacție", title: "Titlu", amount: "Sumă", type: "Tip",
-    category: "Categorie", opt_expense: "Cheltuială", opt_income: "Venit", btn_add_tx: "Adaugă Tranzacție", exp_cat: "🍩 Cheltuieli pe Categorii",
-    tx_history: "📋 Istoric Tranzacții", backup: "💾 Backup JSON", company_data: "⚙️ Datele Firmei Tale", comp_name: "Nume Firmă", comp_tax: "CUI / CIF",
-    comp_iban: "IBAN", new_inv: "📄 Factură Nouă", invoice_word: "FACTURĂ", client_info: "Client", add_photo: "Adaugă o poză", total: "TOTAL",
-    save: "💾 Salvează", inv_history: "📚 Istoric Facturi", edit_day: "Editează Ziua", shift_type: "Tip Tură", notes: "Notițe", close: "Închide",
-    worked: "Lucrate", off: "Libere", leave: "Concediu", sick: "Medicale", today: "Astăzi",
-    status_work: "În Tură", status_night: "Noapte", status_off: "Liber", status_leave: "Concediu", status_sick: "Medical",
-    cd_rest: "Odihnă", cd_home: "Acasă", cd_you_are: "Ești în", cd_today: "astăzi", cd_in: "În", cd_until: "până la",
-    mon: "Lu", tue: "Ma", wed: "Mi", thu: "Jo", fri: "Vi", sat: "Sâ", sun: "Du",
+    today: "Astăzi",
+    next: "Următoarea",
+    shift: "tură",
+    config_shift: "⚙️ Configurare Tură",
+    shift_pattern: "Model Tură",
+    start_date: "Data de Start",
+    export_ics: "📥 Exportă .ics",
+    opt_44: "4 Lucru / 4 Liber",
+    opt_34: "3 Lucru / 4 Liber",
+    opt_52: "5 Lucru / 2 Liber",
+    opt_12: "12h Zi / 12h Noapte / 48h Liber",
+    opt_auto: "Automat",
+    opt_work: "💪 Muncă (Zi)",
+    opt_night: "🌙 Muncă (Noapte)",
+    opt_off: "🏖️ Liber",
+    opt_leave: "🌴 Concediu",
+    opt_sick: "🤒 Medical",
+    nav_shifts: "Ture",
+    nav_budget: "Buget",
+    nav_inv: "Facturi",
+    estimated_salary: "💰 Salariu Estimat Luna Aceasta",
+    rate: "Tarif/oră:",
+    budget_month: "🎯 Buget Lunar",
+    set: "Setează",
+    inc_vs_exp: "📊 Venituri vs Cheltuieli",
+    add_tx: "➕ Adaugă Tranzacție",
+    title: "Titlu",
+    amount: "Sumă",
+    type: "Tip",
+    category: "Categorie",
+    opt_expense: "Cheltuială",
+    opt_income: "Venit",
+    btn_add_tx: "Adaugă Tranzacție",
+    exp_cat: "🍩 Cheltuieli pe Categorii",
+    tx_history: "📋 Istoric Tranzacții",
+    backup: "💾 Backup JSON",
+    company_data: "⚙️ Datele Firmei Tale",
+    comp_name: "Nume Firmă",
+    comp_tax: "CUI / CIF",
+    comp_iban: "IBAN",
+    new_inv: "📄 Factură Nouă",
+    invoice_word: "FACTURĂ",
+    client_info: "Client",
+    add_photo: "Adaugă o poză",
+    total: "TOTAL",
+    save: "💾 Salvează",
+    inv_history: "📚 Istoric Facturi",
+    edit_day: "Editează Ziua",
+    shift_type: "Tip Tură",
+    notes: "Notițe",
+    close: "Închide",
+    worked: "Lucrate",
+    off: "Libere",
+    leave: "Concediu",
+    sick: "Medicale",
+    status_work: "În Tură",
+    status_night: "Noapte",
+    status_off: "Liber",
+    status_leave: "Concediu",
+    status_sick: "Medical",
+    cd_rest: "Odihnă",
+    cd_home: "Acasă",
+    cd_you_are: "Ești în",
+    cd_today: "astăzi",
+    cd_in: "În",
+    cd_until: "până la",
+    mon: "Lu",
+    tue: "Ma",
+    wed: "Mi",
+    thu: "Jo",
+    fri: "Vi",
+    sat: "Sâ",
+    sun: "Du",
     months: ["Ianuarie","Februarie","Martie","Aprilie","Mai","Iunie","Iulie","August","Septembrie","Octombrie","Noiembrie","Decembrie"],
     days: ["Duminică","Luni","Marți","Miercuri","Joi","Vineri","Sâmbătă"],
-    cat_fuel: "Combustibil", cat_food: "Mâncare", cat_parts: "Piese", cat_rent: "Chirie", cat_service: "Servicii",
-    cat_health: "Sănătate", cat_education: "Educație", cat_entertainment: "Divertisment", cat_gifts: "Cadouri", cat_taxes: "Taxe",
-    cat_salary: "Salariu", cat_bonus: "Bonus", cat_investments: "Investiții"
+    cat_fuel: "Combustibil",
+    cat_food: "Mâncare",
+    cat_parts: "Piese",
+    cat_rent: "Chirie",
+    cat_service: "Servicii",
+    cat_health: "Sănătate",
+    cat_education: "Educație",
+    cat_entertainment: "Divertisment",
+    cat_gifts: "Cadouri",
+    cat_taxes: "Taxe",
+    cat_salary: "Salariu",
+    cat_bonus: "Bonus",
+    cat_investments: "Investiții",
+    accounting_report: "📊 Raport lunar contabil",
+    report_period: "Perioada raport",
+    export_pdf_report: "📄 Exportă PDF"
   },
   uk: {
-    today: "Today", next: "Next", shift: "shift",
-    config_shift: "⚙️ Shift Settings", shift_pattern: "Shift Pattern", start_date: "Start Date", export_ics: "📥 Export .ics",
-    opt_44: "4 On / 4 Off", opt_34: "3 On / 4 Off", opt_52: "5 On / 2 Off", opt_12: "12h Day / 12h Night / 48h Off",
-    opt_auto: "Automatic", opt_work: "💪 Work (Day)", opt_night: "🌙 Work (Night)", opt_off: "🏖️ Off", opt_leave: "🌴 Leave", opt_sick: "🤒 Sick",
-    nav_shifts: "Shifts", nav_budget: "Budget", nav_inv: "Invoices",
-    estimated_salary: "💰 Estimated Salary This Month", rate: "Rate/hour:", budget_month: "🎯 Monthly Budget", set: "Set",
-    inc_vs_exp: "📊 Income vs Expenses", add_tx: "➕ Add Transaction", title: "Title", amount: "Amount", type: "Type",
-    category: "Category", opt_expense: "Expense", opt_income: "Income", btn_add_tx: "Add Transaction", exp_cat: "🍩 Expenses by Category",
-    tx_history: "📋 Transaction History", backup: "💾 Backup JSON", company_data: "⚙️ Your Company Details", comp_name: "Company Name", comp_tax: "VAT / TAX ID",
-    comp_iban: "IBAN", new_inv: "📄 New Invoice", invoice_word: "INVOICE", client_info: "Client", add_photo: "Add photo", total: "TOTAL",
-    save: "💾 Save", inv_history: "📚 Invoice History", edit_day: "Edit Day", shift_type: "Shift Type", notes: "Notes", close: "Close",
-    worked: "Worked", off: "Off", leave: "Leave", sick: "Sick",
-    status_work: "On Shift", status_night: "Night", status_off: "Off", status_leave: "Leave", status_sick: "Medical",
-    cd_rest: "Rest", cd_home: "Home", cd_you_are: "You are on", cd_today: "today", cd_in: "In", cd_until: "until",
-    mon: "Mo", tue: "Tu", wed: "We", thu: "Th", fri: "Fr", sat: "Sa", sun: "Su",
+    today: "Today",
+    next: "Next",
+    shift: "shift",
+    config_shift: "⚙️ Shift Settings",
+    shift_pattern: "Shift Pattern",
+    start_date: "Start Date",
+    export_ics: "📥 Export .ics",
+    opt_44: "4 On / 4 Off",
+    opt_34: "3 On / 4 Off",
+    opt_52: "5 On / 2 Off",
+    opt_12: "12h Day / 12h Night / 48h Off",
+    opt_auto: "Automatic",
+    opt_work: "💪 Work (Day)",
+    opt_night: "🌙 Work (Night)",
+    opt_off: "🏖️ Off",
+    opt_leave: "🌴 Leave",
+    opt_sick: "🤒 Sick",
+    nav_shifts: "Shifts",
+    nav_budget: "Budget",
+    nav_inv: "Invoices",
+    estimated_salary: "💰 Estimated Salary This Month",
+    rate: "Rate/hour:",
+    budget_month: "🎯 Monthly Budget",
+    set: "Set",
+    inc_vs_exp: "📊 Income vs Expenses",
+    add_tx: "➕ Add Transaction",
+    title: "Title",
+    amount: "Amount",
+    type: "Type",
+    category: "Category",
+    opt_expense: "Expense",
+    opt_income: "Income",
+    btn_add_tx: "Add Transaction",
+    exp_cat: "🍩 Expenses by Category",
+    tx_history: "📋 Transaction History",
+    backup: "💾 Backup JSON",
+    company_data: "⚙️ Your Company Details",
+    comp_name: "Company Name",
+    comp_tax: "VAT / TAX ID",
+    comp_iban: "IBAN",
+    new_inv: "📄 New Invoice",
+    invoice_word: "INVOICE",
+    client_info: "Client",
+    add_photo: "Add photo",
+    total: "TOTAL",
+    save: "💾 Save",
+    inv_history: "📚 Invoice History",
+    edit_day: "Edit Day",
+    shift_type: "Shift Type",
+    notes: "Notes",
+    close: "Close",
+    worked: "Worked",
+    off: "Off",
+    leave: "Leave",
+    sick: "Sick",
+    status_work: "On Shift",
+    status_night: "Night",
+    status_off: "Off",
+    status_leave: "Leave",
+    status_sick: "Medical",
+    cd_rest: "Rest",
+    cd_home: "Home",
+    cd_you_are: "You are on",
+    cd_today: "today",
+    cd_in: "In",
+    cd_until: "until",
+    mon: "Mo",
+    tue: "Tu",
+    wed: "We",
+    thu: "Th",
+    fri: "Fr",
+    sat: "Sa",
+    sun: "Su",
     months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
     days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-    cat_fuel: "Fuel", cat_food: "Food", cat_parts: "Parts", cat_rent: "Rent", cat_service: "Service", cat_health: "Health",
-    cat_education: "Education", cat_entertainment: "Entertainment", cat_gifts: "Gifts", cat_taxes: "Taxes", cat_salary: "Salary",
-    cat_bonus: "Bonus", cat_investments: "Investments"
+    cat_fuel: "Fuel",
+    cat_food: "Food",
+    cat_parts: "Parts",
+    cat_rent: "Rent",
+    cat_service: "Service",
+    cat_health: "Health",
+    cat_education: "Education",
+    cat_entertainment: "Entertainment",
+    cat_gifts: "Gifts",
+    cat_taxes: "Taxes",
+    cat_salary: "Salary",
+    cat_bonus: "Bonus",
+    cat_investments: "Investments",
+    accounting_report: "📊 Monthly accounting report",
+    report_period: "Report period",
+    export_pdf_report: "📄 Export PDF"
   }
 };
+
 let currentLang = localStorage.getItem('lang') || 'ro';
 const t = (k) => translations[currentLang][k] || k;
 
@@ -444,6 +601,10 @@ function updateUI(){
   document.documentElement.lang = currentLang;
   document.getElementById('region-btn').innerText = currentLang === 'ro' ? '🇷🇴 RO' : '🇬🇧 UK';
   document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = t(el.getAttribute('data-i18n')));
+  const todayMonth = new Date();
+  const defaultMonth = `${todayMonth.getFullYear()}-${String(todayMonth.getMonth()+1).padStart(2,'0')}`;
+  const reportMonthInput = document.getElementById('report-month');
+  if (reportMonthInput && !reportMonthInput.value) reportMonthInput.value = defaultMonth;
   updatePrintCompanyHeader();
   renderCalendar(); renderBudget(); renderInvoicesHistory();
 }
@@ -536,9 +697,12 @@ function updatePrintCompanyHeader(){
   const cName = document.getElementById('my-company-name').value || '-';
   const cTax = document.getElementById('my-company-tax').value || '-';
   const cIban = document.getElementById('my-company-iban').value || '-';
-  document.getElementById('print-my-name').innerText = cName;
-  document.getElementById('print-my-tax').innerText = (currentLang==='ro'?'CUI: ':'VAT: ') + cTax;
-  document.getElementById('print-my-iban').innerText = 'IBAN: ' + cIban;
+  const myCompanyEl = document.getElementById('print-my-name');
+  if (myCompanyEl) myCompanyEl.innerText = cName;
+  const taxEl = document.getElementById('print-my-tax');
+  if (taxEl) taxEl.innerText = (currentLang==='ro'?'CUI: ':'VAT: ') + cTax;
+  const ibanEl = document.getElementById('print-my-iban');
+  if (ibanEl) ibanEl.innerText = 'IBAN: ' + cIban;
 }
 
 function computeDayInfo(currDate, pattern, startDate){
@@ -784,6 +948,184 @@ function renderInvoicesHistory(){
     html+=`<div class="list-item"><div><div class="li-title">${i.number} · ${i.client}</div><div class="li-meta">${i.date}</div></div><div style="display:flex;gap:8px;align-items:center;">${imgHtml}<span style="font-weight:800;">${Number(i.total || 0).toFixed(2)} lei</span></div></div>`;
   });
   document.getElementById('invoices-history-list').innerHTML=html||'Nicio factură.';
+}
+
+function getReportMonthData(reportMonth) {
+  const [year, month] = (reportMonth || `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`).split('-').map(Number);
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+  const pattern = document.getElementById('shift-pattern').value;
+  const startShiftDate = document.getElementById('shift-start-date').value;
+  const shiftStart = startShiftDate ? new Date(startShiftDate) : new Date(year, month - 1, 1);
+  shiftStart.setHours(0,0,0,0);
+
+  let workDays = 0;
+  let nightDays = 0;
+  let offDays = 0;
+  let leaveDays = 0;
+  let sickDays = 0;
+
+  const cursor = new Date(startDate);
+  while (cursor <= endDate) {
+    const info = computeDayInfo(cursor, pattern, shiftStart);
+    if (info.isLeave) leaveDays++;
+    else if (info.isSick) sickDays++;
+    else if (info.isWork) {
+      workDays++;
+      if (info.isNight) nightDays++;
+    } else {
+      offDays++;
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  let income = 0;
+  let expense = 0;
+  transactions.forEach(tx => {
+    const txDate = tx.date ? new Date(tx.date) : null;
+    if (txDate && txDate.getFullYear() === year && txDate.getMonth() === month - 1) {
+      if (tx.type === 'income') income += Number(tx.amount || 0);
+      else expense += Number(tx.amount || 0);
+    }
+  });
+
+  let invoiceTotal = 0;
+  invoices.forEach(invoice => {
+    const invDate = invoice.date || '';
+    if (invDate && invDate.slice(0, 7) === `${String(year)}-${String(month).padStart(2, '0')}`) {
+      invoiceTotal += Number(invoice.total || 0);
+    }
+  });
+
+  return {
+    year,
+    month,
+    workDays,
+    nightDays,
+    offDays,
+    leaveDays,
+    sickDays,
+    income,
+    expense,
+    invoiceTotal,
+    net: income - expense,
+    estimatedSalary: workDays * Number(document.getElementById('hourly-rate').value || 0)
+  };
+}
+
+function generateMonthlyReportPdf() {
+  const reportMonth = document.getElementById('report-month').value || `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
+  const report = getReportMonthData(reportMonth);
+  const monthName = translations[currentLang].months[report.month - 1];
+  const companyName = document.getElementById('my-company-name').value || 'Firma Mea';
+  const companyTax = document.getElementById('my-company-tax').value || '—';
+  const companyIban = document.getElementById('my-company-iban').value || '—';
+
+  const rows = transactions
+    .filter(tx => {
+      const d = tx.date ? new Date(tx.date) : null;
+      return d && d.getFullYear() === report.year && d.getMonth() === report.month - 1;
+    })
+    .slice(0, 20)
+    .map(tx => `
+      <tr>
+        <td>${tx.title}</td>
+        <td>${tx.type === 'income' ? 'Venit' : 'Cheltuială'}</td>
+        <td>${tx.category}</td>
+        <td>${tx.date}</td>
+        <td style="text-align:right; ${tx.type === 'income' ? 'color:#22c55e;' : 'color:#ef4444;'}">${tx.type === 'income' ? '+' : '-'}${Number(tx.amount || 0).toFixed(2)} lei</td>
+      </tr>
+    `)
+    .join('');
+
+  const reportHtml = `
+    <!doctype html>
+    <html lang="ro">
+    <head>
+      <meta charset="UTF-8">
+      <title>Raport lunar contabil</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 32px; color: #111827; background: white; }
+        .header { border-bottom: 2px solid #d1d5db; padding-bottom: 12px; margin-bottom: 20px; }
+        .company { font-size: 20px; font-weight: bold; }
+        .meta { font-size: 12px; color: #374151; margin-top: 6px; }
+        table { width:100%; border-collapse: collapse; margin-top: 18px; }
+        th, td { border: 1px solid #e5e7eb; padding: 8px 10px; font-size: 12px; text-align:left; }
+        th { background:#f3f4f6; }
+        .summary { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
+        .box { border:1px solid #e5e7eb; border-radius: 8px; padding:12px; background:#f9fafb; }
+        .label { font-size:11px; color:#6b7280; text-transform: uppercase; }
+        .value { font-size:18px; font-weight:700; margin-top:4px; }
+        .small { font-size:12px; color:#374151; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="company">${companyName}</div>
+        <div class="meta">CUI: ${companyTax} | IBAN: ${companyIban}</div>
+        <div class="meta">Raport lunar contabil – ${monthName} ${report.year}</div>
+      </div>
+
+      <div class="summary">
+        <div class="box">
+          <div class="label">Zile lucrate</div>
+          <div class="value">${report.workDays}</div>
+        </div>
+        <div class="box">
+          <div class="label">Zile noapte</div>
+          <div class="value">${report.nightDays}</div>
+        </div>
+        <div class="box">
+          <div class="label">Venituri</div>
+          <div class="value" style="color:#22c55e;">${report.income.toFixed(2)} lei</div>
+        </div>
+        <div class="box">
+          <div class="label">Cheltuieli</div>
+          <div class="value" style="color:#ef4444;">${report.expense.toFixed(2)} lei</div>
+        </div>
+        <div class="box">
+          <div class="label">Facturi emise</div>
+          <div class="value">${report.invoiceTotal.toFixed(2)} lei</div>
+        </div>
+        <div class="box">
+          <div class="label">Valoare estimată</div>
+          <div class="value">${report.estimatedSalary.toFixed(2)} lei</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Titlu</th>
+            <th>Tip</th>
+            <th>Categorie</th>
+            <th>Dată</th>
+            <th style="text-align:right;">Sumă</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows || '<tr><td colspan="5">Nicio tranzacție în această lună.</td></tr>'}
+        </tbody>
+      </table>
+
+      <div class="small" style="margin-top:18px;">
+        Net lunar: <strong>${report.net.toFixed(2)} lei</strong>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const printWindow = window.open('', '_blank', 'width=900,height=700');
+  if (!printWindow) {
+    alert('Popup blocat. Permite ferestrele pop-up pentru a exporta pdf-ul.');
+    return;
+  }
+  printWindow.document.write(reportHtml);
+  printWindow.document.close();
+  setTimeout(() => {
+    printWindow.focus();
+    printWindow.print();
+  }, 400);
 }
 
 function exportBackup() {
