@@ -1,6 +1,6 @@
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open('shift-finance-store').then((cache) => cache.addAll([
+    caches.open('shift-finance-store-v2).then((cache) => cache.addAll([
       './index.html',
       'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js'
     ])),
