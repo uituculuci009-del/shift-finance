@@ -369,7 +369,7 @@ let currentLang = localStorage.getItem('lang') || 'ro';
 const t = (k) => translations[currentLang][k] || k;
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAN9nxu003_B_8zlvcJp9-E2Y7LiQeDVQY", authDomain: "shift-finance-app.firebaseapp.com", projectId: "shift-finance-app", storageBucket: "shift-finance-app.firebasestorage.app", messagingSenderId: "470894842358", appId: "1:470894842358:web:538b9cecd79bb4474bb7d7"
+  apiKey: "AIzaSyAN9nxuOO3_B_8zlvcJp9-E2Y7LiQeDVQY", authDomain: "shift-finance-app.firebaseapp.com", projectId: "shift-finance-app", storageBucket: "shift-finance-app.firebasestorage.app", messagingSenderId: "470894842358", appId: "1:470894842358:web:538b9cecd79bb4474bb7d7"
 };
 try { firebase.initializeApp(firebaseConfig); var auth = firebase.auth(); var db = firebase.firestore(); } catch (e) { console.error("Eroare Firebase: ", e); }
 
