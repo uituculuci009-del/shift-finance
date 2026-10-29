@@ -48,6 +48,12 @@ body.light nav.bottom-nav{background:rgba(255,255,255,.85)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .card{background:var(--bg-card);backdrop-filter:blur(20px);border-radius:var(--radius);padding:1rem;margin-bottom:.8rem;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;}
 .card-title{font-size:.9rem;font-weight:700;margin-bottom:.85rem;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.compact-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.compact-card{padding:.7rem .75rem;margin-bottom:.65rem;}
+.compact-card .card-title{font-size:.8rem;margin-bottom:.55rem;}
+.compact-card .form-group{margin-bottom:.55rem;}
+.compact-card input, .compact-card select, .compact-card textarea{padding:.55rem .6rem;font-size:.8rem;}
+.compact-card .btn{padding:.62rem .7rem;font-size:.78rem;}
 .form-group{margin-bottom:.8rem}
 label{display:block;font-size:.75rem;color:var(--text-muted);margin-bottom:.35rem;font-weight:600}
 input,select,textarea{width:100%;padding:.72rem .75rem;background:var(--bg-input);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-main);font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s,background .2s;}
@@ -100,6 +106,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
 .salary-val{font-size: 1.7rem; font-weight: 900; color:var(--color-off); margin: 5px 0;}
 .inv-thumb{width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-strong); cursor: pointer;}
 
+@media (max-width: 600px){
+  .compact-row{grid-template-columns:1fr;}
+}
 @media (max-width: 480px){
   body{font-size:13px;}
   header{padding:.65rem .7rem;}
@@ -112,6 +121,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
   .tab-content{padding:.55rem;}
   .card{padding:.8rem;margin-bottom:.7rem;}
   .card-title{font-size:.8rem;margin-bottom:.75rem;}
+  .compact-card{padding:.7rem .65rem;}
+  .compact-card .card-title{font-size:.76rem;}
   .form-group{margin-bottom:.7rem}
   label{font-size:.68rem;}
   input,select,textarea{padding:.65rem .7rem;font-size:.85rem;}
@@ -237,32 +248,39 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
   </div>
 
   <div id="tab-budget" class="tab-content">
-    <div class="salary-box card">
-      <div class="card-title" style="justify-content: center; margin-bottom: 5px;">
-        <span data-i18n="estimated_salary">💰 Salariu Estimat Luna Aceasta</span>
+    <div class="compact-row">
+      <div class="card compact-card salary-box">
+        <div class="card-title" style="justify-content: center; margin-bottom: 5px;">
+          <span data-i18n="estimated_salary">💰 Salariu Estimat Luna Aceasta</span>
+        </div>
+        <div class="salary-val" id="salary-estimated">0.00</div>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 5px; font-size: .8rem; color: var(--text-muted); margin-top: 10px;">
+          <span data-i18n="rate">Tarif/oră:</span>
+          <input type="number" id="hourly-rate" style="width: 70px; padding: 4px; text-align: center;" oninput="renderBudget(); saveDataToCloud();">
+          <span id="curr-symbol-rate">lei</span>
+        </div>
       </div>
-      <div class="salary-val" id="salary-estimated">0.00</div>
-      <div style="display: flex; justify-content: center; align-items: center; gap: 5px; font-size: .8rem; color: var(--text-muted); margin-top: 10px;">
-        <span data-i18n="rate">Tarif/oră:</span>
-        <input type="number" id="hourly-rate" style="width: 70px; padding: 4px; text-align: center;" oninput="renderBudget(); saveDataToCloud();">
-        <span id="curr-symbol-rate">lei</span>
+
+      <div class="card compact-card">
+        <div class="card-title">
+          <span data-i18n="budget_month">🎯 Buget Lunar</span>
+          <button class="btn btn-secondary btn-sm" onclick="editBudget()" data-i18n="set">Setează</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;">
+          <span id="budget-spent-text">Cheltuit: 0 lei</span>
+          <span id="budget-target-text">Țintă: 5000 lei</span>
+        </div>
+        <div class="progress-bar-container"><div id="budget-progress-bar" class="progress-bar"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.72rem;color:var(--text-muted);">
+          <span id="budget-remaining">Rămas: 5000 lei</span>
+          <span id="budget-percent">0%</span>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">
-        <span data-i18n="budget_month">🎯 Buget Lunar</span>
-        <button class="btn btn-secondary btn-sm" onclick="editBudget()" data-i18n="set">Setează</button>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;">
-        <span id="budget-spent-text">Cheltuit: 0 lei</span>
-        <span id="budget-target-text">Țintă: 5000 lei</span>
-      </div>
-      <div class="progress-bar-container"><div id="budget-progress-bar" class="progress-bar"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.75rem;color:var(--text-muted);">
-        <span id="budget-remaining">Rămas: 5000 lei</span>
-        <span id="budget-percent">0%</span>
-      </div>
+      <div class="card-title" data-i18n="savings">💸 Economii</div>
+      <div class="chart-wrapper" style="position:relative;height:180px;"><canvas id="savingsChart"></canvas></div>
     </div>
 
     <div class="card">
@@ -314,51 +332,53 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent-primary);box-s
   </div>
 
   <div id="tab-invoices" class="tab-content">
-    <div class="card no-print">
-      <div class="card-title" data-i18n="company_data">⚙️ Datele Firmei Tale</div>
-      <div class="form-group"><label data-i18n="comp_name">Nume Firmă</label><input type="text" id="my-company-name" oninput="saveDataToCloud()"></div>
-      <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><label data-i18n="comp_tax">CUI / CIF</label><input type="text" id="my-company-tax" oninput="saveDataToCloud()"></div>
-        <div><label data-i18n="comp_iban">IBAN</label><input type="text" id="my-company-iban" oninput="saveDataToCloud()"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span data-i18n="new_inv">📄 Factură Nouă</span></div>
-      
-      <div style="display:flex;justify-content:space-between;margin-bottom:1rem;font-size:.9rem;gap:10px;flex-wrap:wrap;">
-        <div style="flex:1;min-width:150px;">
-          <strong id="print-my-name" style="font-size:1rem">Firma Mea</strong><br>
-          <span id="print-my-tax" style="color:var(--text-muted);font-size:.8rem">CUI: -</span><br>
-          <span id="print-my-iban" style="color:var(--text-muted);font-size:.8rem">IBAN: -</span>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:.7rem;color:var(--text-muted);font-weight:800;letter-spacing:.1em;margin-bottom:4px;" data-i18n="invoice_word">FACTURĂ</div>
-          <input type="text" id="inv-number" value="FAC-001" style="width:110px;text-align:right;font-weight:800;">
-          <input type="date" id="inv-date" style="width:140px;text-align:right;margin-top:6px;">
+    <div class="compact-row">
+      <div class="card compact-card no-print">
+        <div class="card-title" data-i18n="company_data">⚙️ Datele Firmei Tale</div>
+        <div class="form-group"><label data-i18n="comp_name">Nume Firmă</label><input type="text" id="my-company-name" oninput="saveDataToCloud()"></div>
+        <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div><label data-i18n="comp_tax">CUI / CIF</label><input type="text" id="my-company-tax" oninput="saveDataToCloud()"></div>
+          <div><label data-i18n="comp_iban">IBAN</label><input type="text" id="my-company-iban" oninput="saveDataToCloud()"></div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label data-i18n="client_info">Client</label>
-        <input type="text" id="inv-client-info">
-      </div>
-      
-      <div class="form-group" style="padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
-        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-          📸 <span data-i18n="add_photo">Adaugă o poză</span>
-          <input type="file" id="inv-image" accept="image/*" style="display: none;" onchange="previewImage(event)">
-        </label>
-        <div id="image-preview-container" style="display: none; margin-top: 10px; text-align: center;">
-          <img id="image-preview" style="max-width: 100%; max-height: 100px; border-radius: 8px;">
+      <div class="card compact-card">
+        <div class="card-title"><span data-i18n="new_inv">📄 Factură Nouă</span></div>
+        
+        <div style="display:flex;justify-content:space-between;margin-bottom:1rem;font-size:.8rem;gap:10px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:140px;">
+            <strong id="print-my-name" style="font-size:1rem">Firma Mea</strong><br>
+            <span id="print-my-tax" style="color:var(--text-muted);font-size:.75rem">CUI: -</span><br>
+            <span id="print-my-iban" style="color:var(--text-muted);font-size:.75rem">IBAN: -</span>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:.7rem;color:var(--text-muted);font-weight:800;letter-spacing:.1em;margin-bottom:4px;" data-i18n="invoice_word">FACTURĂ</div>
+            <input type="text" id="inv-number" value="FAC-001" style="width:110px;text-align:right;font-weight:800;">
+            <input type="date" id="inv-date" style="width:140px;text-align:right;margin-top:6px;">
+          </div>
         </div>
-      </div>
 
-      <div class="totals-box" style="margin-bottom: 1rem;">
-        <div data-i18n="total">TOTAL</div>
-        <input type="number" id="inv-total" value="0.00" style="font-weight:900; font-size:1.2rem; color:var(--accent-primary); border:none; background:transparent; text-align:right; padding:0; outline:none; width:100%;">
+        <div class="form-group">
+          <label data-i18n="client_info">Client</label>
+          <input type="text" id="inv-client-info">
+        </div>
+        
+        <div class="form-group" style="padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
+          <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+            📸 <span data-i18n="add_photo">Adaugă o poză</span>
+            <input type="file" id="inv-image" accept="image/*" style="display: none;" onchange="previewImage(event)">
+          </label>
+          <div id="image-preview-container" style="display: none; margin-top: 10px; text-align: center;">
+            <img id="image-preview" style="max-width: 100%; max-height: 100px; border-radius: 8px;">
+          </div>
+        </div>
+
+        <div class="totals-box" style="margin-bottom: 1rem;">
+          <div data-i18n="total">TOTAL</div>
+          <input type="number" id="inv-total" value="0.00" style="font-weight:900; font-size:1.2rem; color:var(--accent-primary); border:none; background:transparent; text-align:right; padding:0; outline:none; width:100%;">
+        </div>
+        <button class="btn" onclick="saveInvoice()" data-i18n="save">💾 Salvează</button>
       </div>
-      <button class="btn" onclick="saveInvoice()" data-i18n="save">💾 Salvează</button>
     </div>
 
     <div class="card">
@@ -446,6 +466,7 @@ const translations = {
     rate: "Tarif/oră:",
     budget_month: "🎯 Buget Lunar",
     set: "Setează",
+    savings: "💸 Economii",
     inc_vs_exp: "📊 Venituri vs Cheltuieli",
     add_tx: "➕ Adaugă Tranzacție",
     title: "Titlu",
@@ -542,6 +563,7 @@ const translations = {
     rate: "Rate/hour:",
     budget_month: "🎯 Monthly Budget",
     set: "Set",
+    savings: "💸 Savings",
     inc_vs_exp: "📊 Income vs Expenses",
     add_tx: "➕ Add Transaction",
     title: "Title",
@@ -630,7 +652,7 @@ let currentMonth = new Date().getMonth(), currentYear = new Date().getFullYear()
 let budgetTarget = 5000, hourlyRate = 0;
 let transactions = [], invoices = [], dayOverrides = {}, customNotes = {};
 let currentImageBase64 = null; 
-let catChart = null, flowChart = null;
+let catChart = null, flowChart = null, savingsChart = null;
 
 function getHolidays(year, region) {
   const h = {};
@@ -911,10 +933,14 @@ function renderBudget(){
   
   if(catChart) catChart.destroy();
   if(flowChart) flowChart.destroy();
+  if(savingsChart) savingsChart.destroy();
+
   const ctx1=document.getElementById('categoryChart').getContext('2d');
   const ctx2=document.getElementById('flowChart').getContext('2d');
+  const ctx3=document.getElementById('savingsChart').getContext('2d');
   const isLight = document.body.classList.contains('light');
   const txtColor = isLight ? '#0f172a' : '#f1f5f9';
+  const netSavings = Math.max(totalInc - totalExp, 0);
 
   catChart = new Chart(ctx1, {
     type:'doughnut',
@@ -924,10 +950,33 @@ function renderBudget(){
     },
     options:{responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{position:'bottom', labels:{color:txtColor}}}}
   });
+
   flowChart = new Chart(ctx2, {
     type:'bar',
     data:{labels:[currentLang==='ro'?'Venituri':'Income', currentLang==='ro'?'Cheltuieli':'Expenses'], datasets:[{data:[totalInc,totalExp], backgroundColor:['rgba(16,185,129,.8)','rgba(239,68,68,.8)'], borderRadius:8}]},
     options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{color:txtColor}}, x:{ticks:{color:txtColor}}}}
+  });
+
+  savingsChart = new Chart(ctx3, {
+    type:'bar',
+    data:{
+      labels:[currentLang==='ro'?'Economii':'Savings', currentLang==='ro'?'Cheltuieli':'Expenses'],
+      datasets:[{
+        label: currentLang==='ro'?'Valoare':'Value',
+        data:[netSavings, totalExp],
+        backgroundColor:['rgba(16,185,129,.8)','rgba(59,130,246,.7)'],
+        borderRadius:8
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{beginAtZero:true, ticks:{color:txtColor}},
+        x:{ticks:{color:txtColor}}
+      }
+    }
   });
 }
 
